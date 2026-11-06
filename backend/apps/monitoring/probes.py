@@ -56,6 +56,7 @@ def probe_model(ctx, kind):
     started = time.monotonic()
     result = {
         "kind": kind,
+        "trace_id": ctx.trace_id,
         "embedding_profile": settings.EMBEDDING_PROFILE,
         "protocol_verified": False,
         "status": "running",

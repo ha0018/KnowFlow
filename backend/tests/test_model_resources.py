@@ -168,6 +168,20 @@ def test_missing_usage_is_unknown_and_never_reports_precise_cost(world, compatib
     assert ModelCallLog.objects.get().price_snapshot["estimated_cost_usd"] is None
 
 
+def test_empty_completion_fails_without_fabricating_an_answer(world, compatible, monkeypatch):
+    transport(
+        monkeypatch,
+        lambda request: completion(
+            text="", usage={"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15}
+        ),
+    )
+    with pytest.raises(GatewayError, match="MODEL_EMPTY_RESPONSE"):
+        collect(ctx=world["ctx"])
+    row = UsageReservation.objects.get()
+    assert row.status == "settled" and row.charged_tokens == 15
+    assert ModelCallLog.objects.get().status == "failed"
+
+
 def test_known_usage_settles_once_and_records_price_snapshot(world, settings):
     settings.GENERATION_INPUT_USD_PER_MILLION = "1"
     settings.GENERATION_OUTPUT_USD_PER_MILLION = "2"

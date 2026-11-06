@@ -245,11 +245,15 @@ async def generate(question, sources, *, history=(), prepared=None, ctx=None, ru
                                     emitted = True
                                     yield {"text": text}
                                 if choice.get("finish_reason"):
+                                    if choice["finish_reason"] == "content_filter":
+                                        raise GatewayError("MODEL_CONTENT_FILTERED")
                                     completed = True
                         if not completed:
                             raise GatewayError("MODEL_STREAM_INTERRUPTED")
                     finally:
                         await manager.__aexit__(None, None, None)
+            if not output.strip():
+                raise GatewayError("MODEL_EMPTY_RESPONSE")
             await meter.afinish(usage, output)
             yield {"usage": usage}
             return
