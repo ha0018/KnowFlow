@@ -63,6 +63,9 @@ class MessageReference(TenantEntity):
     excerpt_snapshot = models.TextField()
     retrieval_scores = models.JSONField(default=dict)
 
+    class Meta(TenantEntity.Meta):
+        ordering = ["rank", "id"]
+
 
 class MessageFeedback(TenantEntity):
     message = models.ForeignKey(Message, on_delete=models.CASCADE)

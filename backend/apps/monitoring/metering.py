@@ -84,6 +84,8 @@ def settle(
     row = UsageReservation.objects.select_for_update().get(pk=reservation_id)
     if row.status != "reserved":
         return row
+    if sent is None:
+        sent = row.dispatched
     usage = dict(usage or {"source": "unknown"})
     actual = usage.get("total_tokens")
     known = usage.get("source") == "provider" and type(actual) is int and actual >= 0
@@ -128,6 +130,19 @@ def settle(
     return row
 
 
+@transaction.atomic
+def mark_dispatched(reservation_id):
+    from ai_engine.gateway.config import GatewayError
+
+    tenant_id = UsageReservation.objects.values_list("tenant_id", flat=True).get(pk=reservation_id)
+    Tenant.objects.select_for_update().get(pk=tenant_id)
+    row = UsageReservation.objects.select_for_update().get(pk=reservation_id)
+    if row.status != "reserved" or row.expires_at <= timezone.now():
+        raise GatewayError("MODEL_RESERVATION_EXPIRED")
+    row.dispatched = True
+    row.save(update_fields=["dispatched"])
+
+
 class CallMeter:
     def __init__(self, ctx, model, input_estimate, output_limit=0, *, run=None, task=None):
         self.ctx, self.model = ctx, model
@@ -141,9 +156,9 @@ class CallMeter:
             self.row = reserve(self.ctx, self.amount, self.model, run=self.run, task=self.task)
 
     def mark_sent(self):
-        self.sent = True
         if self.row:
-            UsageReservation.objects.filter(pk=self.row.pk, status="reserved").update(dispatched=True)
+            mark_dispatched(self.row.pk)
+        self.sent = True
 
     def finish(self, usage=None, text="", error=None):
         if not self.row:
@@ -176,5 +191,6 @@ def recover_stale_reservations():
     for pk in UsageReservation.objects.filter(status="reserved", expires_at__lt=timezone.now()).values_list(
         "id", flat=True
     )[:100]:
-        row = UsageReservation.objects.get(pk=pk)
-        settle(pk, sent=row.dispatched, status="interrupted")
+        # Read dispatched under the same lock as settlement, so a stale scan
+        # cannot release a reservation that has already begun an upstream call.
+        settle(pk, sent=None, status="interrupted")

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 from urllib.parse import urlsplit
 
@@ -20,8 +20,8 @@ class GatewayError(ValueError):
 class ModelProfile:
     kind: str
     provider: str
-    base_url: str
-    api_key: str
+    base_url: str = field(repr=False)
+    api_key: str = field(repr=False)
     model: str
     auth_required: bool
     timeout: int

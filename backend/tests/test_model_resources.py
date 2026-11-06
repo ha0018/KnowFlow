@@ -24,7 +24,7 @@ from apps.conversations.services import (
     save_progress,
 )
 from apps.knowledge.services import replace_acl
-from apps.monitoring.metering import QuotaExceeded, recover_stale_reservations, reserve, settle
+from apps.monitoring.metering import CallMeter, QuotaExceeded, recover_stale_reservations, reserve, settle
 from apps.monitoring.models import ModelCallLog, UsageReservation
 from apps.users.models import Tenant, User
 from common.context import RequestContext
@@ -222,6 +222,20 @@ def test_expired_reservations_are_recovered_without_double_charge(world):
     assert before_send.status == "released" and before_send.charged_tokens == 0
     assert sent.status == "settled" and sent.charged_tokens == 200
     assert ModelCallLog.objects.count() == 2
+
+
+def test_expired_or_settled_reservation_cannot_start_an_upstream_call(world):
+    meter = CallMeter(world["ctx"], profile("generation"), 100, 100)
+    meter.start()
+    UsageReservation.objects.filter(pk=meter.row.pk).update(expires_at=timezone.now() - timedelta(seconds=1))
+    with pytest.raises(GatewayError, match="MODEL_RESERVATION_EXPIRED"):
+        meter.mark_sent()
+    assert not meter.sent
+    recover_stale_reservations()
+    with pytest.raises(GatewayError, match="MODEL_RESERVATION_EXPIRED"):
+        meter.mark_sent()
+    meter.row.refresh_from_db()
+    assert meter.row.status == "released" and meter.row.charged_tokens == 0
 
 
 def test_database_guards_usage_and_call_log_tenant_scope(world):
@@ -440,6 +454,26 @@ def test_legacy_credentials_are_not_forwarded_to_an_override_host(settings):
     settings.EMBEDDING_AUTH_REQUIRED = True
     with pytest.raises(GatewayError, match="MODEL_NOT_CONFIGURED"):
         profile("embedding")
+
+
+def test_profile_repr_never_exposes_keys_or_endpoint(compatible):
+    value = repr(profile("generation"))
+    assert "generation-test-key" not in value and "generation.example" not in value
+
+
+def test_rest_gateway_error_is_redacted(world, compatible, settings, ingest, client_for, monkeypatch):
+    settings.EMBEDDING_PROVIDER = "demo"
+    ingest()
+    settings.EMBEDDING_PROVIDER = "compatible"
+    transport(
+        monkeypatch, lambda request: httpx.Response(401, json={"error": {"message": "private-upstream-body"}})
+    )
+    response = client_for(world["admin"]).post("/api/v1/retrieval/search", {"query": "退款"}, format="json")
+    assert response.status_code == 503 and response.json()["error"] == "MODEL_AUTH_FAILED"
+    assert (
+        "private-upstream-body" not in response.content.decode()
+        and "embedding-test-key" not in response.content.decode()
+    )
 
 
 def test_generation_deadline_and_cancellation_close_stream(world, compatible, settings, monkeypatch):

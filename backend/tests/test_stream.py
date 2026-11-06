@@ -40,6 +40,10 @@ def test_authenticated_sse_contract_and_reference_access(world, ingest, client_f
     assert run.status == "completed" and "30" in run.output_message.content
     ref = run.output_message.references.first()
     assert client_for(world["member"]).get(f"/api/v1/references/{ref.pk}").status_code == 200
+    source_event = next(block for block in wire.split("\n\n") if block.startswith("event: references"))
+    streamed_ids = [source["id"] for source in json.loads(source_event.split("data: ", 1)[1])["sources"]]
+    history_response = client_for(world["member"]).get(f"/api/v1/conversations/{c.pk}/messages").json()
+    assert [ref["id"] for ref in history_response[-1]["references"]] == streamed_ids
     assert client_for(world["outsider"]).get(f"/api/v1/references/{ref.pk}").status_code == 404
 
 
