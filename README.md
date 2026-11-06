@@ -62,7 +62,7 @@ npm run dev
 
 API 文档见 [docs/api.md](docs/api.md)，实现边界和验收状态见 [docs/implementation-status.md](docs/implementation-status.md)。
 
-后续开发按 [分阶段计划](docs/development-plan.md) 推进；当前在补齐 [真实基础设施验收](docs/infrastructure-verification.md)。
+后续开发按 [分阶段计划](docs/development-plan.md) 推进；[真实基础设施验收 S1](docs/infrastructure-verification.md) 已通过，下一阶段为真实模型与资源控制。
 
 ## 接入真实模型
 
@@ -86,7 +86,7 @@ EMBEDDING_DIMENSIONS=128
 
 ## PostgreSQL / Redis / MinIO 部署模板
 
-需要 Docker Compose。此环境没有 Docker，**容器组合尚未实际启动验收**。
+需要 Docker Compose。本机没有 Docker，完整容器组合已在 [GitHub Actions](https://github.com/ha0018/KnowFlow/actions/runs/42160359237) 实际启动并通过业务及故障恢复验收。
 
 1. 复制 `.env.example` 为 `.env`，替换 `SECRET_KEY`（至少 32 位随机字符）、迁移账号密码 `POSTGRES_PASSWORD`、应用账号密码 `POSTGRES_APP_PASSWORD` 和 MinIO 密码。
 2. `.env` 的 `ALLOWED_HOSTS` 加入实际访问域名。默认容器映射本地 HTTP 8080；对外部署请设置 HTTPS 并启用 `SECURE_SSL_REDIRECT`。
@@ -121,7 +121,7 @@ npx playwright install chromium
 npx playwright test
 ```
 
-后端测试默认使用 SQLite。真实 PostgreSQL 集成可设置 `DATABASE_URL` 后运行同一组测试；仓库的 GitHub Actions 提供两种数据库矩阵，尚未在远程执行。详细本机验证见 [docs/verification.md](docs/verification.md)。
+后端测试默认使用 SQLite。真实 PostgreSQL 集成可设置 `DATABASE_URL` 后运行同一组测试；GitHub Actions 的两种数据库矩阵及整套 Compose 验收均已通过。详细结果见 [docs/verification.md](docs/verification.md)。
 
 导出开发集逐题召回报告：
 

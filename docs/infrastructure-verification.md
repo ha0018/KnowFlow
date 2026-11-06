@@ -40,4 +40,6 @@ docker compose --env-file .env -f deploy/compose.yaml exec postgres sh /docker-e
 
 ## CI 证据
 
-`.github/workflows/infrastructure.yaml` 在干净的 GitHub runner 上构建整个栈，执行上述业务和故障检查，并上传 `infrastructure-verification` artifact（报告、镜像 ID、容器状态、服务日志）。运行完成前本阶段仍标记为“实现中”，通过后再更新开发计划与验证记录。
+`.github/workflows/infrastructure.yaml` 在干净的 GitHub runner 上构建整个栈，执行上述业务和故障检查，并上传 `infrastructure-verification` artifact（报告、镜像 ID、容器状态、服务日志）。
+
+2026-11-06 的 [实际运行](https://github.com/ha0018/KnowFlow/actions/runs/42160359237) 已通过，源码修订为 `8979f42`，八组业务检查及两项故障恢复全部成功。[已保存报告](benchmarks/infrastructure-2026-11-06.json) 包含原始结果与 artifact SHA-256；它不会随 14 天的在线 artifact 保留期一同过期。

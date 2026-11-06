@@ -1,0 +1,124 @@
+{
+  "pipeline_url": "https://github.com/ha0018/KnowFlow/actions/runs/42160359237",
+  "artifact_sha256": "b89cfa7d05f64e75f87fd75f3730cda8c12d73c0070c424fe643bc384540c94d",
+  "infrastructure": {
+    "schema": "knowflow-infrastructure-v1",
+    "started_at": "2026-11-06T04:07:11.754951+00:00",
+    "revision": "8979f429dbcfd65c8550ec04e3bdcf7013beef9e",
+    "status": "passed",
+    "checks": [
+      {
+        "name": "dependencies",
+        "status": "passed",
+        "details": {
+          "database": "PostgreSQL 17.8 (Debian 17.8-1.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+          "pgvector": "0.8.1",
+          "redis": "7.4.12",
+          "worker_count": 1,
+          "model": "demo"
+        },
+        "duration_ms": 5287
+      },
+      {
+        "name": "database_permissions",
+        "status": "passed",
+        "details": {
+          "application_role": "knowflow_app",
+          "schema_create_denied": true
+        },
+        "duration_ms": 2
+      },
+      {
+        "name": "fixtures",
+        "status": "passed",
+        "details": {
+          "tenant_id": "c61aa5e5-ae11-4a62-8a93-426af2541c8f",
+          "knowledge_base_id": "1ff4068c-ad5a-4b94-8440-78208d6dfd77",
+          "cross_tenant_insert_denied": true
+        },
+        "duration_ms": 1265
+      },
+      {
+        "name": "ingestion",
+        "status": "passed",
+        "details": {
+          "task_id": "4c69f3e1-8586-4c47-bdfc-41d9c5822564",
+          "attempt": 1,
+          "chunk_count": 2,
+          "private_object": true,
+          "authorized_download": true
+        },
+        "duration_ms": 2084
+      },
+      {
+        "name": "retrieval_and_stream",
+        "status": "passed",
+        "details": {
+          "run_id": "179d5ae4-f744-45c6-98a5-1e7bcbe771ed",
+          "reference_id": "02ad7430-e78c-43ae-a6d8-31c9731b3dc8",
+          "events": [
+            "meta",
+            "references",
+            "delta",
+            "delta",
+            "delta",
+            "delta",
+            "done"
+          ],
+          "idempotent": true,
+          "through_nginx": true
+        },
+        "duration_ms": 909
+      },
+      {
+        "name": "revoked_history",
+        "status": "passed",
+        "details": {
+          "history_redacted": true,
+          "reference_denied": true,
+          "run_redacted": true
+        },
+        "duration_ms": 134
+      },
+      {
+        "name": "failed_rebuild",
+        "status": "passed",
+        "details": {
+          "failed_task_id": "fede6b4f-db1a-4cd2-bde4-87ee182a54a9",
+          "old_build_preserved": true
+        },
+        "duration_ms": 695
+      },
+      {
+        "name": "outbox_recovery",
+        "status": "passed",
+        "details": {
+          "task_id": "1df8c859-5796-4079-9fa3-763f4a88ded6",
+          "attempt": 1,
+          "recovered_by_independent_scheduler": true
+        },
+        "duration_ms": 17604
+      }
+    ],
+    "finished_at": "2026-11-06T04:07:39.734462+00:00"
+  },
+  "dependency_faults": {
+    "status": "passed",
+    "checks": [
+      {
+        "service": "redis",
+        "status": "passed",
+        "unavailable_in_ms": 148,
+        "live_during_outage": true,
+        "recovered": true
+      },
+      {
+        "service": "minio",
+        "status": "passed",
+        "unavailable_in_ms": 779,
+        "live_during_outage": true,
+        "recovered": true
+      }
+    ]
+  }
+}
