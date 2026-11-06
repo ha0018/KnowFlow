@@ -6,7 +6,8 @@ COPY backend/pyproject.toml backend/uv.lock ./
 RUN uv sync --frozen --no-dev
 COPY backend/ ./
 RUN groupadd --system knowflow && useradd --system --create-home --gid knowflow knowflow && \
-    mkdir -p /app/media /app/staticfiles && chown -R knowflow:knowflow /app
+    mkdir -p /app/media /app/staticfiles && chown -R knowflow:knowflow /app /home/knowflow
 USER knowflow
+RUN uv run --no-sync python -c "import os; assert os.geteuid() != 0"
 EXPOSE 8000
 CMD ["uv", "run", "--no-sync", "uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
