@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1
+FROM golang:1.26-alpine@sha256:87c65a688975c0b1d4585d204874c45ca78354670e3a5f11368c5a492303d696 AS build
+WORKDIR /src
+ENV CGO_ENABLED=0 GOTOOLCHAIN=local GOMAXPROCS=2
+# Upstream RELEASE.2025-10-15T17-29-55Z, verified immutable source archive.
+ADD --checksum=sha256:45521908307306e925c98d629e1c17d78c8b72b6ee242b1bfb1409f7d8ee5841 https://codeload.github.com/minio/minio/tar.gz/9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a /tmp/minio.tar.gz
+RUN tar -xzf /tmp/minio.tar.gz --strip-components=1 -C /src && \
+    go build -p 2 -mod=readonly -trimpath -ldflags='-s -w' -o /out/minio .
+
+FROM alpine:3.24@sha256:3f4d6b32e26703c6082839234f43769d5046b3ac7c910033911d1e71d8cd630a
+RUN apk add --no-cache ca-certificates && addgroup -S minio && \
+    adduser -S -G minio minio && mkdir /data && chown minio:minio /data
+COPY --from=build /out/minio /usr/bin/minio
+COPY --from=build /src/LICENSE /licenses/minio-LICENSE
+LABEL org.opencontainers.image.source="https://github.com/minio/minio" \
+      org.opencontainers.image.revision="9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a" \
+      org.opencontainers.image.licenses="AGPL-3.0-only"
+USER minio
+EXPOSE 9000 9001
+ENTRYPOINT ["/usr/bin/minio"]
+CMD ["server", "/data", "--console-address", ":9001"]

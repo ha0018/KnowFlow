@@ -2,6 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+from botocore.config import Config
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 env = environ.Env()
@@ -91,6 +92,13 @@ if S3_ENABLED:
             "default_acl": None,
             "querystring_auth": True,
             "file_overwrite": False,
+            "client_config": Config(
+                signature_version="s3v4",
+                connect_timeout=2,
+                read_timeout=3,
+                retries={"max_attempts": 1, "mode": "standard"},
+                s3={"addressing_style": "path"},
+            ),
         },
     }
 REST_FRAMEWORK = {
@@ -120,6 +128,18 @@ CORS_ALLOW_HEADERS = [
 CELERY_BROKER_URL = env("REDIS_URL", default="redis://localhost:6379/0")
 CELERY_TASK_ALWAYS_EAGER = env.bool("CELERY_TASK_ALWAYS_EAGER", default=False)
 CELERY_TASK_IGNORE_RESULT = True
+# The database outbox owns publication retries; HTTP uploads should fail fast
+# when Redis is down, while workers keep reconnecting independently.
+CELERY_TASK_PUBLISH_RETRY = False
+CELERY_BROKER_CONNECTION_TIMEOUT = 2
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BROKER_CONNECTION_MAX_RETRIES = None
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    "socket_connect_timeout": 2,
+    "socket_timeout": 2,
+    "max_retries": 0,
+    "visibility_timeout": 3600,
+}
 CELERY_TASK_ACKS_LATE = True
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 CELERY_TASK_TIME_LIMIT = 300

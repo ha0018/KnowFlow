@@ -62,6 +62,8 @@ npm run dev
 
 API 文档见 [docs/api.md](docs/api.md)，实现边界和验收状态见 [docs/implementation-status.md](docs/implementation-status.md)。
 
+后续开发按 [分阶段计划](docs/development-plan.md) 推进；当前在补齐 [真实基础设施验收](docs/infrastructure-verification.md)。
+
 ## 接入真实模型
 
 复制 `.env.example` 为根目录 `.env`。默认无需此文件即可本地运行。
@@ -86,7 +88,7 @@ EMBEDDING_DIMENSIONS=128
 
 需要 Docker Compose。此环境没有 Docker，**容器组合尚未实际启动验收**。
 
-1. 复制 `.env.example` 为 `.env`，替换 `SECRET_KEY`（至少 32 位随机字符）、数据库密码、MinIO 密码。
+1. 复制 `.env.example` 为 `.env`，替换 `SECRET_KEY`（至少 32 位随机字符）、迁移账号密码 `POSTGRES_PASSWORD`、应用账号密码 `POSTGRES_APP_PASSWORD` 和 MinIO 密码。
 2. `.env` 的 `ALLOWED_HOSTS` 加入实际访问域名。默认容器映射本地 HTTP 8080；对外部署请设置 HTTPS 并启用 `SECURE_SSL_REDIRECT`。
 3. 运行：
 
@@ -97,7 +99,7 @@ docker compose --env-file .env -f deploy/compose.yaml exec backend uv run --no-s
 
 访问 [http://localhost:8080](http://localhost:8080)。Compose 提供 PostgreSQL 17/pgvector、Redis、MinIO/bucket 初始化、迁移、后端、worker、scheduler 与 Nginx/Vue。迁移为一次性服务，后端等待迁移成功；文档文件不通过公开静态目录提供。SSE 已关闭 Nginx 缓冲。
 
-当前模板使用同一数据库账号执行迁移和应用查询，镜像固定 tag、尚未固定 digest；生产部署前需分离迁移/应用账号、增加备份和 TLS，并完成集成验收。
+迁移和应用已使用独立数据库账号，基础镜像固定 digest。MinIO 从固定源码版本构建。完整容器验收由独立 CI 执行，状态及操作说明见基础设施验收文档；对外部署仍需增加备份和 TLS。
 
 ## 测试与开发
 

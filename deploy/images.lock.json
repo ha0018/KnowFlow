@@ -1,0 +1,18 @@
+{
+  "verified_at": "2026-11-06",
+  "registry": "Docker Hub Registry v2 manifest API",
+  "images": {
+    "python:3.12-slim": "sha256:4840d514c583a4d3d8cad3940e68dee6f0f6f3635c12fcd0a3d74c21a5b93a54",
+    "node:22-alpine": "sha256:0e1754758c2df4cfa3e68d59e2e1b7374bb7fd9ea6328eaaacf15cc934af8202",
+    "nginx:1.28-alpine": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+    "pgvector/pgvector:0.8.1-pg17": "sha256:3e8b3adfd27b5707128f60956f62a793c3c9326ea8cfaf0eab7adccb5d700b21",
+    "redis:7.4-alpine": "sha256:c5d34a98396a4775e223c74e929162c35c5a2182901ba26b50ade939941ce14b",
+    "golang:1.26-alpine": "sha256:87c65a688975c0b1d4585d204874c45ca78354670e3a5f11368c5a492303d696",
+    "alpine:3.24": "sha256:3f4d6b32e26703c6082839234f43769d5046b3ac7c910033911d1e71d8cd630a"
+  },
+  "minio_source": {
+    "tag": "RELEASE.2025-10-15T17-29-55Z",
+    "commit": "9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a",
+    "archive_sha256": "45521908307306e925c98d629e1c17d78c8b72b6ee242b1bfb1409f7d8ee5841"
+  }
+}
