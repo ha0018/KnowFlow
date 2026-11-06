@@ -116,6 +116,7 @@ class StackVerifier:
         }
 
     def database_permissions(self):
+        ensure("POSTGRES_PASSWORD" not in os.environ, "MIGRATION_SECRET_IN_APPLICATION_ENV")
         with connection.cursor() as cursor:
             cursor.execute(
                 "SELECT current_user, rolsuper, rolcreatedb, rolcreaterole, rolbypassrls "

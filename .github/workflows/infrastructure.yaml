@@ -38,8 +38,18 @@ jobs:
           Path('.runtime').mkdir(exist_ok=True)
       - name: Validate deployment definition
         run: docker compose --env-file .env -f deploy/compose.yaml config --quiet
+      - uses: docker/setup-buildx-action@v3
+      - name: Build and cache pinned MinIO source
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/Dockerfile.minio
+          tags: knowflow-minio:source
+          load: true
+          cache-from: type=gha,scope=minio-source-v1
+          cache-to: type=gha,mode=min,scope=minio-source-v1
       - name: Build reproducible application images
-        run: docker compose --env-file .env -f deploy/compose.yaml build
+        run: docker compose --env-file .env -f deploy/compose.yaml build backend frontend
       - name: Start clean deployment
         run: docker compose --env-file .env -f deploy/compose.yaml up -d --wait --wait-timeout 240
       - name: Exercise real queue, storage, authorization and SSE
@@ -54,12 +64,14 @@ jobs:
           docker compose --env-file .env -f deploy/compose.yaml ps -a > .runtime/containers.txt || true
           docker compose --env-file .env -f deploy/compose.yaml logs --no-color --tail 300 > .runtime/service-logs.txt 2>&1 || true
           docker compose --env-file .env -f deploy/compose.yaml images --format json > .runtime/images.json || true
+          if [ "${{ job.status }}" != "success" ]; then tail -n 100 .runtime/service-logs.txt; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: infrastructure-verification
           path: .runtime/
           retention-days: 14
+          include-hidden-files: true
       - name: Stop disposable deployment
         if: always()
         run: docker compose --env-file .env -f deploy/compose.yaml down -v --remove-orphans

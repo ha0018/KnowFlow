@@ -24,7 +24,7 @@ python scripts/verify-infrastructure.py
 
 ## 数据库账号
 
-`knowflow` 用于数据库初始化和迁移；后端、worker、scheduler 使用 `knowflow_app`，只有业务表读写、序列使用及 schema USAGE 权限。应用角色没有 superuser/createdb/createrole/bypassrls 或 schema CREATE 权限。迁移创建的后续表由 default privileges 自动授予应用角色读写。
+`knowflow` 用于数据库初始化和迁移；后端、worker、scheduler 使用 `knowflow_app`，只有业务表读写、序列使用及 schema USAGE 权限。应用角色没有 superuser/createdb/createrole/bypassrls 或 schema CREATE 权限。迁移密码不注入应用容器；迁移创建的后续表由 default privileges 自动授予应用角色读写。
 
 对之前已经创建的持久卷，初始化脚本不会自动重跑。备份后可显式执行以下幂等脚本，为现有数据库增加/更新应用角色；不删除数据：
 

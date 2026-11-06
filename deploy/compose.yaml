@@ -4,10 +4,22 @@ x-backend: &backend
   build:
     context: ..
     dockerfile: deploy/Dockerfile.backend
-  env_file: ../.env
   environment: &environment
     DJANGO_SETTINGS_MODULE: config.settings.prod
     DEBUG: "false"
+    SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY}
+    ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+    SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-true}
+    AI_PROVIDER: ${AI_PROVIDER:-demo}
+    AI_BASE_URL: ${AI_BASE_URL:-https://api.openai.com/v1}
+    AI_API_KEY: ${AI_API_KEY:-}
+    AI_MODEL: ${AI_MODEL:-}
+    AI_TIMEOUT_SECONDS: ${AI_TIMEOUT_SECONDS:-60}
+    EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-demo}
+    EMBEDDING_MODEL: ${EMBEDDING_MODEL:-demo-hash-v1}
+    EMBEDDING_DIMENSIONS: ${EMBEDDING_DIMENSIONS:-128}
+    MAX_CONCURRENT_RUNS: ${MAX_CONCURRENT_RUNS:-3}
+    CODE_REVISION: ${CODE_REVISION:-workspace}
     DATABASE_URL: postgres://knowflow_app:${POSTGRES_APP_PASSWORD:?Set POSTGRES_APP_PASSWORD in .env}@postgres:5432/knowflow
     REDIS_URL: redis://redis:6379/0
     CELERY_TASK_ALWAYS_EAGER: "false"
