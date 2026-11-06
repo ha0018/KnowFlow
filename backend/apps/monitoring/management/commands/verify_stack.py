@@ -7,6 +7,7 @@ model credentials and reports IDs/metadata rather than passwords or document tex
 import hashlib
 import json
 import os
+import re
 import secrets
 import time
 import uuid
@@ -60,7 +61,13 @@ class StackVerifier:
             print(f"PASS {name}", flush=True)
         except Exception as exc:
             record.update(status="failed", error_type=type(exc).__name__)
-            raise CommandError(f"Verification failed: {name} ({type(exc).__name__})") from None
+            code = (
+                str(exc)
+                if isinstance(exc, AssertionError) and re.fullmatch(r"[A-Z0-9_]+", str(exc))
+                else type(exc).__name__
+            )
+            record["error_code"] = code
+            raise CommandError(f"Verification failed: {name} ({code})") from None
         finally:
             record["duration_ms"] = round((time.monotonic() - started) * 1000)
 
@@ -285,9 +292,15 @@ class StackVerifier:
                         ensure(data["status"] == "completed", "SSE_TERMINAL_NOT_COMPLETED")
         ensure(all(name in events for name in ["meta", "references", "delta", "done"]), "SSE_EVENTS_MISSING")
         ensure(self.marker in text and references, "SSE_EVIDENCE_MISSING")
-        self.reference_id = references[0]["id"]
-        reference = self.request("GET", f"/references/{self.reference_id}", self.member_token).json()
-        ensure(self.marker in reference["excerpt"], "REFERENCE_PREVIEW_MISMATCH")
+        # A title chunk can rank first; verify the actual cited evidence rather
+        # than assuming the first reference contains the document body.
+        self.reference_id = None
+        for candidate in references:
+            reference = self.request("GET", f"/references/{candidate['id']}", self.member_token).json()
+            if self.marker in reference["excerpt"]:
+                self.reference_id = candidate["id"]
+                break
+        ensure(self.reference_id is not None, "REFERENCE_PREVIEW_MISMATCH")
         repeated = self.request(
             "POST",
             f"/conversations/{self.conversation_id}/messages:stream",
