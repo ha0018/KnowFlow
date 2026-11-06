@@ -59,6 +59,7 @@ npm run dev
 - 20 条开发集的 Dense/Hybrid 召回比较，保存逐题结果、DocRecall@5、MRR@5 与配置。
 - 结构化日志、trace_id、任务状态、模型调用记录、活性/就绪检查。
 - SQLite 本地备份恢复、文件 SHA-256 校验、Docker Compose 模板、CI 配置。
+- 生成/向量服务独立配置、连通性检查、授权历史预算、每日额度、按次原子预留和幂等结算；未知用量与估算费用明确标记。
 
 API 文档见 [docs/api.md](docs/api.md)，实现边界和验收状态见 [docs/implementation-status.md](docs/implementation-status.md)。
 

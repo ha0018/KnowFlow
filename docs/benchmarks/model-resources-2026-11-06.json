@@ -1,0 +1,158 @@
+{
+  "source_revision": "ecd047e21a79b3e6842f6297e0fb9cb468ebf927",
+  "infrastructure_workflow": "https://github.com/ha0018/KnowFlow/actions/runs/42177509880",
+  "checks_workflow": "https://github.com/ha0018/KnowFlow/actions/runs/42177509836",
+  "artifact_sha256": "fe17b52002cad69d2a47164694c6d217e822ea002b49f0d042e309615cdd9b22",
+  "unit_checks": {
+    "sqlite": {
+      "passed": 74,
+      "skipped": 2
+    },
+    "postgresql": {
+      "passed": 75,
+      "skipped": 1
+    },
+    "frontend_sse_tests": 2
+  },
+  "browser": {
+    "extended_workflow": "passed",
+    "model_probes": "demo only",
+    "quota_edit_and_restore": "passed"
+  },
+  "supplier_validation": {
+    "status": "pending_configuration",
+    "real_supplier_verified": false,
+    "note": "HTTP fixture tests validate protocol and transport; they are not an LLM or supplier-quality evaluation."
+  },
+  "infrastructure": {
+    "schema": "knowflow-infrastructure-v1",
+    "started_at": "2026-11-06T06:57:28.329612+00:00",
+    "revision": "ecd047e21a79b3e6842f6297e0fb9cb468ebf927",
+    "status": "passed",
+    "checks": [
+      {
+        "name": "dependencies",
+        "status": "passed",
+        "details": {
+          "database": "PostgreSQL 17.8 (Debian 17.8-1.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+          "pgvector": "0.8.1",
+          "redis": "7.4.12",
+          "worker_count": 1,
+          "model": "demo"
+        },
+        "duration_ms": 5354
+      },
+      {
+        "name": "database_permissions",
+        "status": "passed",
+        "details": {
+          "application_role": "knowflow_app",
+          "schema_create_denied": true
+        },
+        "duration_ms": 2
+      },
+      {
+        "name": "fixtures",
+        "status": "passed",
+        "details": {
+          "tenant_id": "5d907e3f-3e00-449f-8f5b-933faad0c3d1",
+          "knowledge_base_id": "d48305af-20f3-47b3-b544-84353c98a69a",
+          "cross_tenant_insert_denied": true
+        },
+        "duration_ms": 1258
+      },
+      {
+        "name": "ingestion",
+        "status": "passed",
+        "details": {
+          "task_id": "68a9e672-b17b-4044-a061-013086532277",
+          "attempt": 1,
+          "chunk_count": 2,
+          "private_object": true,
+          "authorized_download": true
+        },
+        "duration_ms": 2121
+      },
+      {
+        "name": "retrieval_and_stream",
+        "status": "passed",
+        "details": {
+          "run_id": "9491ee72-a0a7-435c-b8db-801eb707b8dd",
+          "reference_id": "a3d5a546-b5c3-4768-9f7b-5db1b0b3eee9",
+          "events": [
+            "meta",
+            "references",
+            "delta",
+            "delta",
+            "delta",
+            "delta",
+            "done"
+          ],
+          "idempotent": true,
+          "through_nginx": true
+        },
+        "duration_ms": 887
+      },
+      {
+        "name": "revoked_history",
+        "status": "passed",
+        "details": {
+          "history_redacted": true,
+          "reference_denied": true,
+          "run_redacted": true
+        },
+        "duration_ms": 131
+      },
+      {
+        "name": "failed_rebuild",
+        "status": "passed",
+        "details": {
+          "failed_task_id": "dba5aa30-e41b-43fd-8106-8c662fc80dca",
+          "old_build_preserved": true
+        },
+        "duration_ms": 701
+      },
+      {
+        "name": "outbox_recovery",
+        "status": "passed",
+        "details": {
+          "task_id": "efec5bbb-9299-4d72-9489-adbc53b05594",
+          "attempt": 1,
+          "recovered_by_independent_scheduler": true
+        },
+        "duration_ms": 18105
+      },
+      {
+        "name": "resource_accounting",
+        "status": "passed",
+        "details": {
+          "recorded_model_calls": 6,
+          "no_reservation_leak": true,
+          "quota_denied_before_model": true,
+          "model_schema_matches": true
+        },
+        "duration_ms": 104
+      }
+    ],
+    "finished_at": "2026-11-06T06:57:56.992821+00:00"
+  },
+  "dependency_faults": {
+    "status": "passed",
+    "checks": [
+      {
+        "service": "redis",
+        "status": "passed",
+        "unavailable_in_ms": 158,
+        "live_during_outage": true,
+        "recovered": true
+      },
+      {
+        "service": "minio",
+        "status": "passed",
+        "unavailable_in_ms": 955,
+        "live_during_outage": true,
+        "recovered": true
+      }
+    ]
+  }
+}

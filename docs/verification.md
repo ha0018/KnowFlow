@@ -7,8 +7,8 @@
 | `manage.py migrate`、`check` | SQLite 全部迁移成功，系统检查无问题 |
 | `makemigrations --check --dry-run` | 模型与已提交迁移一致 |
 | `ruff check`、`ruff format --check` | 通过 |
-| `pytest -q` | SQLite 45 项通过；增加队列/存储停机健康检查及发布失败补投测试 |
-| PostgreSQL 后端 CI | 44 项通过、1 项跳过；跳过仅适用 SQLite 的本地备份测试 |
+| SQLite 后端 CI | 74 项通过、2 项跳过；跳过仅适用 PostgreSQL 的两个并发测试 |
+| PostgreSQL 后端 CI | 75 项通过、1 项跳过；跳过仅适用 SQLite 的本地备份测试 |
 | `npm run build` | TypeScript 检查与 Vite 生产构建通过 |
 | `npm test` | 2 条 SSE 客户端协议测试通过（UTF-8 边界、CRLF 拆包、合包、心跳） |
 | `npx playwright test` | 1 条浏览器端完整业务测试通过 |
@@ -17,9 +17,15 @@
 | 完整 Compose CI | 从空卷启动完整服务组合，八组业务检查全部通过 |
 | 真实依赖故障演练 | Redis/MinIO 分别停机时返回 unready，活性保持，重启后就绪恢复 |
 
-浏览器实际操作包括：登录 → 检索退款问题 → 流式问答 → 打开引用原文 → 上传 Markdown 并等待发布 → 删除测试文档 → 执行评估 → 检查 390px 手机布局。没有页面脚本错误，手机页面没有横向溢出。
+浏览器实际操作包括：登录 → 检索退款问题 → 流式问答 → 打开引用原文 → 上传 Markdown 并等待发布 → 删除测试文档 → 执行评估 → 检查生成/向量服务 → 修改并恢复每日额度 → 检查 390px 手机布局。没有页面脚本错误，手机页面没有横向溢出。
 
 已保存截图：`docs/demo/workspace.png`、`answer-reference.png`、`mobile.png`。浏览器测试会产生少量真实演示会话及评估记录；测试上传的文档软删除，保留审计记录。
+
+S2 新增 [模型与额度界面截图](demo/models-and-quota.png)。[自动检查](https://github.com/ha0018/KnowFlow/actions/runs/42177509836) 覆盖独立 endpoint/key、schema 维度、429/Retry-After、断流不重放、总超时、空回复、取消结算、未知用量/价格、过期预留、跨租户关联及授权历史。真实 PostgreSQL 并发用例验证不会超额准入或重复结算。
+
+[S2 容器验收](https://github.com/ha0018/KnowFlow/actions/runs/42177509880) 九组业务检查及 Redis/MinIO 两项故障恢复全部通过，包含新增用量账本、预留无遗留和零额度请求拒绝。原始报告已 [保存到仓库](benchmarks/model-resources-2026-11-06.json)。
+
+另通过实际 HTTP socket 启动受控协议服务验证探测命令、认证、SSE 和向量超时；该服务返回确定性测试结果，不是实际 LLM/供应商。
 
 本机没有 Docker。完整容器组合已在 GitHub Linux runner 实际运行：PostgreSQL 17.8、pgvector 0.8.1、Redis 7.4.12、独立 Celery worker/beat、源码构建的 MinIO、Nginx/Vue。应用使用无 schema CREATE 权限的独立账号。
 
