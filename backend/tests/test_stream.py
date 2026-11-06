@@ -84,7 +84,7 @@ def test_cancel_closes_upstream_and_preserves_partial_answer(world, ingest, monk
     run, _ = begin_run(ctx, c.pk, "退款", "cancel")
     closed = []
 
-    async def fake(question, sources):
+    async def fake(question, sources, **kwargs):
         try:
             yield {"text": "部分答案"}
             await asyncio.sleep(30)
@@ -113,7 +113,7 @@ def test_model_error_persists_failed_terminal(world, ingest, monkeypatch):
     c = Conversation.objects.create(tenant=world["tenant"], user=world["admin"])
     run, _ = begin_run(world["ctx"], c.pk, "退款", "failure")
 
-    async def broken(question, sources):
+    async def broken(question, sources, **kwargs):
         yield {"text": "已生成"}
         raise RuntimeError("secret upstream details")
 

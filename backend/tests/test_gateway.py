@@ -10,7 +10,7 @@ from ai_engine.gateway import embed, generate
 def test_embedding_protocol_preserves_order_and_provider_usage(settings, monkeypatch):
     settings.EMBEDDING_PROVIDER = "compatible"
     settings.AI_API_KEY = "test-key"
-    original_client = httpx.Client
+    original_client = httpx.AsyncClient
 
     def handle(request):
         assert request.headers["Authorization"] == "Bearer test-key"
@@ -24,12 +24,12 @@ def test_embedding_protocol_preserves_order_and_provider_usage(settings, monkeyp
         )
 
     monkeypatch.setattr(
-        "ai_engine.gateway.httpx.Client",
+        "ai_engine.gateway.httpx.AsyncClient",
         lambda **kw: original_client(transport=httpx.MockTransport(handle), **kw),
     )
     vectors, usage = embed(["第一条", "第二条"])
     assert vectors[0][0] == 1.0 and vectors[1][0] == 0.5
-    assert usage == {"source": "provider", "total_tokens": 12}
+    assert usage == {"source": "provider", "total_tokens": 12, "input_tokens": 12, "output_tokens": 0}
 
 
 @pytest.mark.parametrize("bad_vector", [[0.0] * 128, [1.0] * 127, [float("nan")] * 128])

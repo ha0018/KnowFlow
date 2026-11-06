@@ -10,6 +10,7 @@ from apps.evaluation.api import DatasetsView, EvalRunsView
 from apps.knowledge.api import KnowledgeBaseViewSet
 from apps.knowledge.retrieval_api import SearchView
 from apps.monitoring.api import CallsView, DashboardView, live, ready
+from apps.monitoring.model_api import ModelsView, QuotaView
 from apps.users.api import LoginView, LogoutView, MemberRolesView, MembersView, MeView, RefreshView, RolesView
 
 router = DefaultRouter(trailing_slash=False)
@@ -41,5 +42,7 @@ urlpatterns = [
     path("api/v1/evaluations/runs", EvalRunsView.as_view()),
     path("api/v1/monitoring/dashboard", DashboardView.as_view()),
     path("api/v1/monitoring/calls", CallsView.as_view()),
+    path("api/v1/monitoring/models", ModelsView.as_view()),
+    path("api/v1/monitoring/quota", QuotaView.as_view()),
     path("api/v1/", include(router.urls)),
 ]

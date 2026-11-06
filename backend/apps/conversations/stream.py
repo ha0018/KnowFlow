@@ -11,11 +11,12 @@ from rest_framework import serializers
 from rest_framework.exceptions import APIException
 
 from ai_engine.gateway import generate
+from ai_engine.gateway.config import GatewayError
 from ai_engine.retrieval import search
 from common.auth import TenantJWTAuthentication
 from common.context import RequestContext
 
-from .services import attach_sources, begin_run, run_is_allowed, save_progress
+from .services import attach_sources, begin_run, prepare_generation, run_is_allowed, save_progress
 
 logger = logging.getLogger(__name__)
 
@@ -71,8 +72,10 @@ async def stream_events(ctx, run):
         )
         async with asyncio.timeout(settings.AI_TIMEOUT_SECONDS):
             sources = await sync_to_async(search)(
-                ctx, run.input_message.content, run.config_snapshot["kb_ids"] or None
+                ctx, run.input_message.content, run.config_snapshot["kb_ids"] or None, run=run
             )
+            prepared = await sync_to_async(prepare_generation)(ctx, run, sources)
+            sources = prepared.sources
             await sync_to_async(attach_sources)(ctx, run, sources)
             refs = await sync_to_async(
                 lambda: list(run.output_message.references.values("id", "source_id"))
@@ -92,7 +95,19 @@ async def stream_events(ctx, run):
             )
             if not await sync_to_async(run_is_allowed)(ctx, run.pk):
                 raise PermissionError("PERMISSION_CHANGED")
-            upstream = generate(run.input_message.content, sources)
+
+            async def before_request():
+                if not await sync_to_async(run_is_allowed)(ctx, run.pk):
+                    raise GatewayError("PERMISSION_CHANGED")
+
+            upstream = generate(
+                run.input_message.content,
+                sources,
+                prepared=prepared,
+                ctx=ctx,
+                run=run,
+                before_request=before_request,
+            )
             seq = 0
             while True:
                 if pending is None:
@@ -140,11 +155,23 @@ async def stream_events(ctx, run):
         final = True
         raise
     except Exception as exc:
-        code = "MODEL_TIMEOUT" if isinstance(exc, TimeoutError) else "GENERATION_FAILED"
+        from apps.monitoring.metering import QuotaExceeded
+
+        code = (
+            exc.code
+            if isinstance(exc, GatewayError)
+            else "QUOTA_EXCEEDED"
+            if isinstance(exc, QuotaExceeded)
+            else "MODEL_TIMEOUT"
+            if isinstance(exc, TimeoutError)
+            else "GENERATION_FAILED"
+        )
         logger.warning("stream_failed trace_id=%s code=%s", ctx.trace_id, code)
-        await sync_to_async(save_progress)(run.pk, text, "failed", usage, code)
-        yield event("error", {"code": code, "trace_id": ctx.trace_id})
-        yield event("done", {"status": "failed", "usage": usage})
+        terminal = "interrupted" if code == "PERMISSION_CHANGED" else "failed"
+        state = await sync_to_async(save_progress)(run.pk, text, terminal, usage, code)
+        if state == "failed":
+            yield event("error", {"code": code, "trace_id": ctx.trace_id})
+        yield event("done", {"status": state, "usage": usage})
         final = True
     finally:
         if pending is not None:
@@ -167,6 +194,11 @@ async def messages_stream(request, conversation_id):
         ctx, run, created = await sync_to_async(prepare)(request, conversation_id)
     except APIException as exc:
         return JsonResponse({"error": exc.detail}, status=exc.status_code)
+    except GatewayError as exc:
+        return JsonResponse(
+            {"error": exc.code, "trace_id": getattr(request, "trace_id", "")},
+            status=400 if exc.code == "QUESTION_TOKEN_BUDGET_EXCEEDED" else 503,
+        )
     except Exception as exc:
         from django.http import Http404
 

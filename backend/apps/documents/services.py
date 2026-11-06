@@ -17,8 +17,10 @@ from rest_framework.exceptions import ValidationError
 from ai_engine.chunking import split_blocks
 from ai_engine.embeddings import tokenize
 from ai_engine.gateway import embed
+from ai_engine.gateway.config import GatewayError
 from ai_engine.parsers import ParseError, parse, validate_file
 from apps.knowledge.selectors import get_knowledge_base
+from apps.users.models import Tenant
 from common.context import RequestContext, audit
 
 from .models import Document, DocumentChunk, DocumentTask, DocumentVersion, IndexBuild
@@ -68,6 +70,7 @@ def upload(ctx, kb_id, uploaded, title=None, document_id=None):
     key = default_storage.save(f"tenants/{ctx.tenant_id}/{uuid.uuid4().hex}{ext}", ContentFile(raw))
     try:
         with transaction.atomic():
+            Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
             if doc:
                 doc = Document.objects.select_for_update().get(pk=doc.pk)
             else:
@@ -107,6 +110,8 @@ def dispatch(task_id):
 
 @transaction.atomic
 def claim(task_id):
+    tenant_id = DocumentTask.objects.values_list("tenant_id", flat=True).get(pk=task_id)
+    Tenant.objects.select_for_update().get(pk=tenant_id)
     task = (
         DocumentTask.objects.select_for_update()
         .select_related("build__version__document", "actor__tenant")
@@ -130,7 +135,7 @@ def check_task(task, fence):
     current = DocumentTask.objects.get(pk=task.pk)
     ctx = RequestContext.for_user(current.actor, current.trace_id)
     if current.fence_token != fence or current.status != "RUNNING" or current.lease_until <= timezone.now():
-        raise ParseError("STALE_WORKER")
+        raise GatewayError("STALE_WORKER")
     if (
         not current.actor.is_active
         or not current.actor.tenant.is_active
@@ -138,12 +143,13 @@ def check_task(task, fence):
         .filter(pk=task.build.version.document_id, desired_build_id=task.build_id)
         .exists()
     ):
-        raise ParseError("DOCUMENT_UNAVAILABLE")
+        raise GatewayError("DOCUMENT_UNAVAILABLE")
     return ctx
 
 
 @transaction.atomic
 def stage(task, fence, name):
+    Tenant.objects.select_for_update().get(pk=task.tenant_id)
     DocumentTask.objects.select_for_update().get(pk=task.pk)
     check_task(task, fence)
     DocumentTask.objects.filter(pk=task.pk).update(
@@ -171,8 +177,14 @@ def process(task_id):
         for start in range(0, len(chunks), 16):
             ctx = check_task(task, fence)
             batch = chunks[start : start + 16]
-            vectors, usage = embed([c["content"] for c in batch])
+            vectors, _ = embed(
+                [c["content"] for c in batch],
+                ctx=ctx,
+                task=task,
+                before_request=lambda: check_task(task, fence),
+            )
             with transaction.atomic():
+                Tenant.objects.select_for_update().get(pk=task.tenant_id)
                 DocumentTask.objects.select_for_update().get(pk=task.pk)
                 check_task(task, fence)
                 for data, vector in zip(batch, vectors):
@@ -198,19 +210,9 @@ def process(task_id):
                 DocumentTask.objects.filter(pk=task.pk).update(
                     lease_until=timezone.now() + timedelta(minutes=6)
                 )
-                from apps.monitoring.models import ModelCallLog
-
-                ModelCallLog.objects.create(
-                    tenant_id=ctx.tenant_id,
-                    task=task,
-                    trace_id=ctx.trace_id,
-                    task_type="embedding",
-                    model=settings.EMBEDDING_MODEL,
-                    usage=usage,
-                    status="completed",
-                )
         stage(task, fence, "INDEXING")
         with transaction.atomic():
+            Tenant.objects.select_for_update().get(pk=task.tenant_id)
             DocumentTask.objects.select_for_update().get(pk=task.pk)
             ctx = check_task(task, fence)
             doc = Document.objects.select_for_update().get(pk=build.version.document_id)
@@ -230,14 +232,27 @@ def process(task_id):
         if str(exc) == "STALE_WORKER":
             return
         cancelled = str(exc) == "DOCUMENT_UNAVAILABLE"
-        transient = isinstance(exc, (httpx.TransportError, httpx.HTTPStatusError)) and (
-            not isinstance(exc, httpx.HTTPStatusError)
-            or exc.response.status_code in {408, 429, 500, 502, 503, 504}
+        transient = (
+            (isinstance(exc, GatewayError) and exc.retryable)
+            or isinstance(exc, (httpx.TransportError, httpx.HTTPStatusError))
+            and (
+                not isinstance(exc, httpx.HTTPStatusError)
+                or exc.response.status_code in {408, 429, 500, 502, 503, 504}
+            )
         )
         state = "CANCELLED" if cancelled else ("RETRY_WAIT" if transient and task.attempt < 3 else "FAILED")
-        code = str(exc) if isinstance(exc, (ParseError, ValueError)) else "PROCESSING_ERROR"
+        from apps.monitoring.metering import QuotaExceeded
+
+        code = (
+            "QUOTA_EXCEEDED"
+            if isinstance(exc, QuotaExceeded)
+            else str(exc)
+            if isinstance(exc, (ParseError, ValueError))
+            else "PROCESSING_ERROR"
+        )
         # Every failure update is fenced too, so a late worker cannot overwrite a successor.
         with transaction.atomic():
+            Tenant.objects.select_for_update().get(pk=task.tenant_id)
             current = DocumentTask.objects.select_for_update().get(pk=task.pk)
             if current.fence_token != fence:
                 return
@@ -255,6 +270,7 @@ def process(task_id):
 
 @transaction.atomic
 def reindex(ctx, document_id):
+    Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
     doc = get_document(ctx, document_id, "edit")
     Document.objects.select_for_update().get(pk=doc.pk)
     version = doc.versions.order_by("-version_no").first()

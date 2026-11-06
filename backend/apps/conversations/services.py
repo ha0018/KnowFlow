@@ -10,6 +10,8 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.exceptions import APIException, ValidationError
 
+from ai_engine.gateway.budget import prepare_input
+from ai_engine.gateway.config import profile
 from apps.documents.selectors import active_chunks, chunk_readable
 from apps.knowledge.selectors import knowledge_bases
 from apps.users.models import Tenant, User
@@ -30,7 +32,8 @@ def get_conversation(ctx, pk):
 
 @transaction.atomic
 def begin_run(ctx, conversation_id, question, key, parent_id=None):
-    # Lock user for both per-user idempotency and concurrency budget across conversations.
+    # All admission/accounting paths lock tenant first to avoid lock inversion.
+    Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
     User.objects.select_for_update().get(pk=ctx.user.pk)
     conversation = get_conversation(ctx, conversation_id)
     Conversation.objects.select_for_update().get(pk=conversation.pk)
@@ -40,6 +43,9 @@ def begin_run(ctx, conversation_id, question, key, parent_id=None):
         if prior.request_hash != digest:
             raise Conflict("相同幂等键不能用于不同请求")
         return prior, False
+    model = profile("generation")
+    profile("embedding")
+    prepare_input(question, [])
     if Run.objects.filter(user=ctx.user, status="streaming").count() >= settings.MAX_CONCURRENT_RUNS:
         raise Conflict("并发运行数已达上限")
     if Run.objects.filter(conversation=conversation, status="streaming").exists():
@@ -75,10 +81,10 @@ def begin_run(ctx, conversation_id, question, key, parent_id=None):
         trace_id=ctx.trace_id,
         acl_epoch=Tenant.objects.get(pk=ctx.tenant_id).acl_epoch,
         config_snapshot={
-            "provider": settings.AI_PROVIDER,
-            "model": settings.AI_MODEL,
+            "provider": model.provider,
+            "model": model.model,
             "embedding_profile": settings.EMBEDDING_PROFILE,
-            "prompt": "grounded-v1",
+            "prompt": "grounded-v2",
             "retrieval": "rrf-v1",
             "kb_ids": [str(pk) for pk in scope_ids],
         },
@@ -133,23 +139,60 @@ def save_progress(run_id, content, status=None, usage=None, error=""):
     run.heartbeat_at = timezone.now()
     if status:
         run.status, run.error_code, run.usage = status, error, usage or {"source": "unknown"}
-        from apps.monitoring.models import ModelCallLog
-
-        ModelCallLog.objects.create(
-            tenant_id=run.tenant_id,
-            run=run,
-            trace_id=run.trace_id,
-            task_type="generation",
-            model=run.config_snapshot.get("model") or "demo-extractive",
-            status=status,
-            usage=run.usage,
-        )
     run.save()
     return run.status
 
 
 def message_visible(ctx, message):
     return all(chunk_readable(ctx, ref.chunk_id) for ref in message.references.all())
+
+
+def model_history(ctx, run):
+    pairs = []
+    messages = list(
+        Message.objects.filter(conversation_id=run.conversation_id, seq__lt=run.input_message.seq)
+        .order_by("-seq")
+        .prefetch_related("references")[:40]
+    )
+    by_seq = {m.seq: m for m in messages}
+    for answer in reversed(messages):
+        if answer.role != "assistant" or answer.status != "completed":
+            continue
+        question = by_seq.get(answer.seq - 1)
+        refs = list(answer.references.all())
+        if not question or question.role != "user" or not refs:
+            continue
+        # Current permissions AND current published versions govern replay.
+        ids = {ref.chunk_id for ref in refs}
+        if active_chunks(ctx).filter(pk__in=ids).count() != len(ids):
+            continue
+        text = re.sub(r"\[S\d+\]", "", answer.content)
+        pairs.append(
+            [
+                {"role": "user", "content": question.content},
+                {"role": "assistant", "content": "历史回答（不是本轮证据）：" + text},
+            ]
+        )
+    return pairs
+
+
+@transaction.atomic
+def prepare_generation(ctx, run, sources):
+    Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
+    if not run_is_allowed(ctx, run.pk):
+        from ai_engine.gateway.config import GatewayError
+
+        raise GatewayError("PERMISSION_CHANGED")
+    prepared = prepare_input(run.input_message.content, sources, model_history(ctx, run))
+    snapshot = dict(run.config_snapshot)
+    snapshot.update(
+        input_tokens_estimate=prepared.input_tokens_estimate,
+        history_messages=prepared.history_messages,
+        token_estimator="utf8-upper-bound-v1",
+        max_output_tokens=settings.GENERATION_MAX_OUTPUT_TOKENS,
+    )
+    Run.objects.filter(pk=run.pk).update(config_snapshot=snapshot)
+    return prepared
 
 
 def reference_data(ref):
@@ -190,17 +233,6 @@ def cancel_run(ctx, run_id):
         run.status = "cancelled"
         run.save(update_fields=["status"])
         Message.objects.filter(pk=run.output_message_id).update(status="cancelled")
-        from apps.monitoring.models import ModelCallLog
-
-        ModelCallLog.objects.create(
-            tenant_id=run.tenant_id,
-            run=run,
-            trace_id=run.trace_id,
-            task_type="generation",
-            model=run.config_snapshot.get("model") or "demo-extractive",
-            status="cancelled",
-            usage={"source": "unknown"},
-        )
     return run
 
 

@@ -14,6 +14,8 @@ const fileInput = ref<HTMLInputElement>(), versionTarget = ref(''), source = ref
 const conversations = ref<any[]>([]), activeConversation = ref(''), messages = ref<any[]>([]), question = ref(''), streaming = ref(false), runId = ref('')
 const searchQuery = ref(''), hits = ref<any[]>([]), toolName = ref('DataAnalysisTool'), toolArgs = ref('{\n  "date_from": "2026-01-01",\n  "date_to": "2026-12-31",\n  "group_by": "category"\n}'), toolResult = ref<any>(null)
 const datasets = ref<any[]>([]), evalRuns = ref<any[]>([]), calls = ref<any[]>([]), evalMode = ref('hybrid')
+const modelStatus = ref<any>(null), quota = ref<any>(null), probeResults = ref<Record<string, any>>({})
+const tenantLimit = ref(1000000), userLimit = ref(100000)
 let controller: AbortController | null = null
 const visibleDocs = computed(() => docs.value.filter(d => d.title.toLowerCase().includes(filter.value.toLowerCase())))
 const readableError = (e: any) => { error.value = e.message || '操作失败，请稍后重试' }
@@ -26,7 +28,11 @@ async function load() {
     await loadDocs()
     if (section.value === 'chat') conversations.value = list(await api('/conversations'))
     if (section.value === 'evaluation') { datasets.value = await api('/evaluations/datasets'); evalRuns.value = await api('/evaluations/runs') }
-    if (section.value === 'monitoring') calls.value = await api('/monitoring/calls')
+    if (section.value === 'monitoring') {
+      const [logs, models, allowance] = await Promise.all([api('/monitoring/calls'), api('/monitoring/models'), api('/monitoring/quota')])
+      calls.value = logs; modelStatus.value = models; quota.value = allowance
+      tenantLimit.value = allowance.limits?.daily_tokens ?? 1000000; userLimit.value = allowance.limits?.user_daily_tokens ?? 100000
+    }
   } catch (e) { readableError(e) }
 }
 async function loadDocs() { docs.value = selectedKb.value ? list(await api(`/knowledge-bases/${selectedKb.value}/documents`)) : [] }
@@ -63,6 +69,8 @@ async function evaluate() { await protect(async () => { await api('/evaluations/
 const statuses: Record<string, string> = { READY: '已就绪', FAILED: '处理失败', CANCELLED: '已取消', PENDING: '待处理', PARSING: '解析中', EMBEDDING: '向量化中', CHUNKING: '切片中', INDEXING: '索引中', RETRY_WAIT: '等待重试' }
 const statusLabel = (status: string) => statuses[status] || status
 const date = (v: string) => new Date(v).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })
+async function probe(kind: string) { await protect(async () => { probeResults.value[kind] = await api('/monitoring/models', { method: 'POST', body: JSON.stringify({ kind }) }); quota.value = await api('/monitoring/quota'); calls.value = await api('/monitoring/calls') }) }
+async function saveQuota() { await protect(async () => { quota.value = await api('/monitoring/quota', { method: 'PUT', body: JSON.stringify({ daily_tokens: tenantLimit.value, user_daily_tokens: userLimit.value }) }); notice.value = '每日额度已更新' }) }
 </script>
 
 <template>
@@ -100,6 +108,8 @@ const date = (v: string) => new Date(v).toLocaleDateString('zh-CN', { month: '2-
     </template>
 
     <template v-else-if="section === 'monitoring'">
+      <div v-if="modelStatus" class="two-columns model-panels"><section v-for="model in modelStatus.models" :key="model.kind" class="panel padded"><h2 class="panel-title">{{ model.kind === 'generation' ? '回答生成服务' : '文档向量服务' }}<span class="badge" :class="model.configured ? 'success' : 'danger'">{{ model.provider === 'demo' ? '演示模式' : model.configured ? '已配置' : '配置错误' }}</span></h2><p class="model-name">{{ model.model || '本地原文摘录' }}</p><p class="format-note">{{ model.error_code || (model.provider === 'demo' ? '用于验证业务流程，不调用外部模型。' : '发送公开测试文本验证连接，用量计入当前额度。') }}</p><button class="secondary" :disabled="busy || !model.configured" @click="probe(model.kind)"><RefreshCw :size="14"/>{{ model.kind === 'generation' ? '检查生成服务' : '检查向量服务' }}</button><span v-if="probeResults[model.kind]" class="probe-result" :class="{ 'text-danger': probeResults[model.kind].status !== 'passed' }">{{ probeResults[model.kind].status === 'passed' ? '检查通过' : probeResults[model.kind].error_code }}</span></section></div>
+      <section v-if="quota" class="panel padded quota-panel"><div class="section-heading"><h2>今日额度占用</h2><span>{{ quota.date }} · UTC</span></div><p><strong>{{ quota.user_committed.toLocaleString() }}</strong> / {{ quota.user_limit.toLocaleString() }} <span class="muted">我的额度 · {{ quota.user_active_reservations }} 个进行中的预留</span></p><p class="format-note">{{ quota.note }}</p><form v-if="auth.user.is_tenant_admin" class="quota-form" @submit.prevent="saveQuota"><label>租户每日额度<input v-model.number="tenantLimit" type="number" min="0" max="1000000000" required/></label><label>每人每日额度<input v-model.number="userLimit" type="number" min="0" max="1000000000" required/></label><button class="primary" :disabled="busy">保存额度</button></form></section>
       <div class="panel table-scroll"><table><thead><tr><th>调用类型</th><th>模型</th><th>状态</th><th>用量来源</th><th>追踪编号</th><th>日期</th></tr></thead><tbody><tr v-for="call in calls" :key="call.id"><td>{{ call.task_type === 'embedding' ? '文档向量化' : '回答生成' }}</td><td>{{ call.model }}</td><td><span class="badge" :class="['READY', 'completed'].includes(call.status) ? 'success' : ''">{{ call.status }}</span></td><td>{{ call.usage.source === 'provider' ? '供应商报告' : '未知' }}</td><td><code>{{ call.trace_id.slice(0, 12) }}</code></td><td>{{ date(call.created_at) }}</td></tr></tbody></table><div v-if="!calls.length" class="empty"><Clock3 :size="28"/><p>文档处理与问答完成后会留下调用记录。</p></div></div>
     </template>
   </div>

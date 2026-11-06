@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ai_engine.gateway.config import GatewayError, profile
 from apps.agents.models import ToolCall
 from apps.conversations.models import Run
 from apps.documents.models import DocumentTask
@@ -47,11 +48,15 @@ def ready(request):
         except Exception:
             dependencies["object_storage"] = "unavailable"
     healthy = all(value == "ok" for value in dependencies.values())
+    try:
+        model = "demo" if profile("generation").provider == "demo" else "configured-unprobed"
+    except GatewayError:
+        model = "misconfigured"
     return JsonResponse(
         {
             "status": "ready" if healthy else "unavailable",
             "dependencies": dependencies,
-            "model": "demo" if settings.AI_PROVIDER == "demo" else "configured-unprobed",
+            "model": model,
         },
         status=200 if healthy else 503,
     )
@@ -64,7 +69,7 @@ class DashboardView(APIView):
             "knowledge_bases": knowledge_bases(ctx).count(),
             "documents": documents(ctx).count(),
             "my_runs": Run.objects.filter(user=ctx.user, tenant_id=ctx.tenant_id).count(),
-            "mode": settings.AI_PROVIDER,
+            "mode": profile("generation").provider,
         }
         if ctx.user.is_tenant_admin:
             data["tasks"] = list(
@@ -83,7 +88,7 @@ class CallsView(APIView):
         return Response(
             list(
                 ModelCallLog.objects.filter(tenant_id=ctx.tenant_id).values(
-                    "id", "trace_id", "task_type", "model", "status", "usage", "created_at"
+                    "id", "trace_id", "task_type", "model", "status", "usage", "price_snapshot", "created_at"
                 )[:100]
             )
         )

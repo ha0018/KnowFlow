@@ -25,6 +25,9 @@ def recover_work():
     for task_id in tasks.values_list("id", flat=True)[:100]:
         dispatch(task_id)
     interrupt_stale_runs()
+    from apps.monitoring.metering import recover_stale_reservations
+
+    recover_stale_reservations()
     from apps.evaluation.models import EvalRun
     from apps.evaluation.services import dispatch_evaluation
 

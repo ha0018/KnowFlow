@@ -28,6 +28,7 @@ from kombu.exceptions import OperationalError
 from apps.conversations.models import Run
 from apps.documents.models import Document, DocumentChunk, DocumentTask, DocumentVersion
 from apps.documents.services import upload
+from apps.monitoring.models import UsageReservation
 from apps.users.models import Tenant, User
 from common.context import RequestContext
 from config.celery import app as celery_app
@@ -384,6 +385,29 @@ class StackVerifier:
             "recovered_by_independent_scheduler": True,
         }
 
+    def resource_accounting(self):
+        models = self.request("GET", "/monitoring/models", self.admin_token).json()
+        ensure(models["schema_matches"], "MODEL_SCHEMA_MISMATCH")
+        self.request("GET", "/monitoring/models", self.member_token, expected=403)
+        rows = UsageReservation.objects.filter(tenant=self.tenant)
+        ensure(rows.exists() and not rows.filter(status="reserved").exists(), "USAGE_RESERVATIONS_LEAKED")
+        self.request(
+            "PUT", "/monitoring/quota", self.admin_token, json={"daily_tokens": 0, "user_daily_tokens": 0}
+        )
+        self.request(
+            "POST",
+            "/retrieval/search",
+            self.admin_token,
+            expected=429,
+            json={"query": self.question, "kb_ids": [self.kb_id]},
+        )
+        return {
+            "recorded_model_calls": rows.count(),
+            "no_reservation_leak": True,
+            "quota_denied_before_model": True,
+            "model_schema_matches": True,
+        }
+
     def run(self):
         try:
             for name in [
@@ -395,6 +419,7 @@ class StackVerifier:
                 "revoked_history",
                 "failed_rebuild",
                 "outbox_recovery",
+                "resource_accounting",
             ]:
                 self.check(name, getattr(self, name))
             self.report["status"] = "passed"

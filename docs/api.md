@@ -34,6 +34,8 @@
 | GET/POST `/evaluations/runs` | 运行记录/创建 `{dataset_id,mode:"dense"或"hybrid"}` |
 | GET `/monitoring/dashboard` | 授权资源计数 |
 | GET `/monitoring/calls` | 本租户最近 100 条调用元数据 |
+| GET/POST `/monitoring/models` | 配置/维度状态；显式探测 `{kind:"generation"或"embedding"}`，需要 monitoring.read |
+| GET/PUT `/monitoring/quota` | 查看本人额度；管理员更新 `{daily_tokens,user_daily_tokens}`，UTC 每日生效 |
 | GET `/health/live`、`/health/ready` | 不在 `/api/v1` 下；活性/依赖就绪检查 |
 
 角色权限代码：`knowledge.create`、`agent.execute`、`evaluation.run`、`monitoring.read`。租户管理员在本租户内具有上述能力。ACL 的 read/edit/manage 为递进权限，文档授权只能收紧知识库范围。

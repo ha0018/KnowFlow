@@ -47,7 +47,9 @@ def validate_vectors(vectors, count):
     if len(vectors) != count:
         raise ValueError("EMBEDDING_COUNT_MISMATCH")
     for vector in vectors:
-        if len(vector) != settings.EMBEDDING_DIMENSIONS or not all(math.isfinite(v) for v in vector):
+        if len(vector) != settings.EMBEDDING_DIMENSIONS or not all(
+            type(v) in {int, float} and math.isfinite(v) and abs(v) <= 3.402823e38 for v in vector
+        ):
             raise ValueError("INVALID_EMBEDDING")
         if not any(vector):
             raise ValueError("ZERO_EMBEDDING")

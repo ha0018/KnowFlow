@@ -18,12 +18,14 @@ def rrf(rankings, constant=60):
     return sorted(scores, key=lambda key: (-scores[key], str(key))), scores
 
 
-def search(ctx, query, kb_ids=None, top_k=5, mode="hybrid"):
-    vector, _ = embed([query])
-    vector = vector[0]
-    terms = set(tokenize(query))
+def search(ctx, query, kb_ids=None, top_k=5, mode="hybrid", *, run=None):
     qs = active_chunks(ctx, kb_ids).filter(build__embedding_profile=settings.EMBEDDING_PROFILE)
     qs = qs.select_related("document", "build__version")
+    if not qs.exists():
+        return []
+    vector, _ = embed([query], ctx=ctx, run=run)
+    vector = vector[0]
+    terms = set(tokenize(query))
     if connection.vendor == "postgresql":
         dense = list(
             qs.annotate(distance=CosineDistance("embedding", vector)).order_by("distance", "id")[:40]

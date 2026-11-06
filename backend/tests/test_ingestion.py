@@ -55,7 +55,7 @@ def test_fencing_rejects_late_worker(ingest, monkeypatch):
     with patch("apps.documents.services.dispatch"):
         doc, _, build, task = ingest()
 
-    def stale_embedding(texts):
+    def stale_embedding(texts, **kwargs):
         DocumentTask.objects.filter(pk=task.pk).update(fence_token=99, status="RUNNING")
         return [[1.0] * 128 for _ in texts], {"source": "unknown"}
 

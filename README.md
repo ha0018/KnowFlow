@@ -78,11 +78,11 @@ EMBEDDING_MODEL=your-embedding-model
 EMBEDDING_DIMENSIONS=128
 ```
 
-供应商需要实现 Chat Completions SSE 和 Embeddings 协议。密钥只从服务端环境读取。供应商 usage 缺失时记录 `unknown`，不编造 Token 或成本。当前只配置一组服务地址/密钥，聊天和向量模型可以分别指定名称。
+供应商需要实现 Chat Completions SSE 和 Embeddings 协议。密钥只从服务端环境读取。供应商 usage 缺失时记录 `unknown`，不编造 Token 或成本。上面的 `AI_*` 仍兼容旧配置；生成和向量服务现在可以分别设置地址和密钥，配置方式及预算/结算语义见 [模型接入说明](docs/model-integration.md)。
 
 **向量维度在数据库结构中固定。** 示例初始维度是 128。若所选模型使用其他维度，应先设置环境变量，在新数据库上运行 `uv run python manage.py makemigrations documents` 生成并审阅维度迁移，再迁移及重新导入资料。已有数据需要按独立检索空间迁移，不能直接混用旧向量。profile 改变后旧构建不进入新查询空间，需要重新构建。
 
-默认生成不向模型重放聊天历史，每次问题独立检索。历史仍供用户查看；长上下文、受控历史重放与重排适配器留待后续扩展。
+每次问题重新检索，并在预算内重放仍有权限且来源版本有效的最近问答。已撤权或已被新版替代的旧答案不会进入模型上下文。可在“调用记录”页检查模型连接和设置每日额度。
 
 ## PostgreSQL / Redis / MinIO 部署模板
 
