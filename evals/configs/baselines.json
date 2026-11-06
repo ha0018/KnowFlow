@@ -1,0 +1,6 @@
+{
+  "version": "development-v1",
+  "B0": {"mode": "dense", "candidate_k": 40, "final_k": 5},
+  "B1": {"mode": "hybrid", "candidate_k_per_path": 40, "rrf_constant": 60, "final_k": 5},
+  "note": "真实模型与保留集实验尚未执行；演示 provider 仅验证流程。"
+}

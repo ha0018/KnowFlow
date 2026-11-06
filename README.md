@@ -1,0 +1,156 @@
+# KnowFlow AI
+
+基于 Django 5.2 / DRF 与 Vue 3 的多租户企业知识库项目。按所提供的技术方案实现了可运行的核心业务链路，并附带中文演示界面、数据库迁移、自动化测试和部署模板。
+
+> 当前版本为开发演示版。默认用本地哈希向量和原文摘录演示完整流程，不代表真实语义模型的回答质量。方案里的性能目标、100 条保留集、完整自主 Agent 等没有被当作已完成成果。
+
+![工作台](docs/demo/workspace.png)
+
+## 本机快速体验（Windows）
+
+需要 Python 3.12、[uv](https://docs.astral.sh/uv/getting-started/installation/)、Node.js 22。本地演示无需 Docker、Redis 或模型密钥。
+
+在项目根目录运行：
+
+```powershell
+.\scripts\start-local.ps1
+```
+
+访问 [http://127.0.0.1:5173](http://127.0.0.1:5173)。默认新建账号的演示密码为 `KnowFlowDemo!2026`；也可使用 `-Password '自行设置的密码'`。重复初始化保留已有用户密码。
+
+| 租户 | 管理员 | 普通成员 |
+| --- | --- | --- |
+| 星河科技 | admin@acme.demo | member@acme.demo |
+| 远山实验室 | admin@atlas.demo | member@atlas.demo |
+
+初始化会为每个租户导入四份自编中文资料、36 条业务问题和 20 条召回开发集问题。演示账号只用于本地。租户管理员不能进入 Django 运维后台。
+
+也可以手动启动，先在一个终端运行后端：
+
+```powershell
+cd backend
+uv sync --frozen --python 3.12
+uv run python manage.py migrate
+uv run python manage.py seed_demo --password 'KnowFlowDemo!2026'
+uv run uvicorn config.asgi:application --host 127.0.0.1 --port 8000
+```
+
+另开终端运行前端：
+
+```powershell
+cd frontend
+npm ci
+npm run dev
+```
+
+建议先提问“退款超过 30 天还能申请吗？”，再点来源查看原文。也可上传 UTF-8 Markdown/TXT、文本 PDF 或 DOCX，等待“已就绪”后提问。PDF 上限 200 页，单文件上限 20 MB；扫描 PDF 会明确报 `OCR_REQUIRED`。
+
+## 已实现的内容
+
+- 邮箱登录、JWT 刷新轮换/撤销、停用账号检查；单账号归属单租户。
+- 租户角色及操作权限；知识库用户/角色 ACL；文档继承权限或进一步收紧。
+- 私有/租户可见知识库，上传、授权下载、版本列表、重试、软删除。
+- PDF/DOCX/TXT/Markdown 解析、保留原文位置、确定性切片、批量向量化。
+- 不可变文件版本及构建配置；数据库任务清单、租约、fencing、重复投递保护、旧版本继续服务。
+- 授权范围内的向量/关键词召回、RRF、检索调试；PostgreSQL 路径使用 pgvector 和中文分词后的 `simple` 全文检索。
+- ASGI POST SSE、来源引用、无证据拒答、部分答案保存、取消、断流处理、幂等请求、悬挂运行扫描。
+- 会话只限创建者访问；历史正文、运行结果及引用重新检查当前文档权限。
+- 三个显式只读工具：知识检索、文档摘录摘要、演示业务统计，含参数校验与调用审计。
+- 20 条开发集的 Dense/Hybrid 召回比较，保存逐题结果、DocRecall@5、MRR@5 与配置。
+- 结构化日志、trace_id、任务状态、模型调用记录、活性/就绪检查。
+- SQLite 本地备份恢复、文件 SHA-256 校验、Docker Compose 模板、CI 配置。
+
+API 文档见 [docs/api.md](docs/api.md)，实现边界和验收状态见 [docs/implementation-status.md](docs/implementation-status.md)。
+
+## 接入真实模型
+
+复制 `.env.example` 为根目录 `.env`。默认无需此文件即可本地运行。
+
+```dotenv
+AI_PROVIDER=compatible
+AI_BASE_URL=https://your-provider.example/v1
+AI_API_KEY=your-secret
+AI_MODEL=your-chat-model
+EMBEDDING_PROVIDER=compatible
+EMBEDDING_MODEL=your-embedding-model
+EMBEDDING_DIMENSIONS=128
+```
+
+供应商需要实现 Chat Completions SSE 和 Embeddings 协议。密钥只从服务端环境读取。供应商 usage 缺失时记录 `unknown`，不编造 Token 或成本。当前只配置一组服务地址/密钥，聊天和向量模型可以分别指定名称。
+
+**向量维度在数据库结构中固定。** 示例初始维度是 128。若所选模型使用其他维度，应先设置环境变量，在新数据库上运行 `uv run python manage.py makemigrations documents` 生成并审阅维度迁移，再迁移及重新导入资料。已有数据需要按独立检索空间迁移，不能直接混用旧向量。profile 改变后旧构建不进入新查询空间，需要重新构建。
+
+默认生成不向模型重放聊天历史，每次问题独立检索。历史仍供用户查看；长上下文、受控历史重放与重排适配器留待后续扩展。
+
+## PostgreSQL / Redis / MinIO 部署模板
+
+需要 Docker Compose。此环境没有 Docker，**容器组合尚未实际启动验收**。
+
+1. 复制 `.env.example` 为 `.env`，替换 `SECRET_KEY`（至少 32 位随机字符）、数据库密码、MinIO 密码。
+2. `.env` 的 `ALLOWED_HOSTS` 加入实际访问域名。默认容器映射本地 HTTP 8080；对外部署请设置 HTTPS 并启用 `SECURE_SSL_REDIRECT`。
+3. 运行：
+
+```powershell
+docker compose --env-file .env -f deploy/compose.yaml up --build -d
+docker compose --env-file .env -f deploy/compose.yaml exec backend uv run --no-sync python manage.py seed_demo --password '自行设置的密码'
+```
+
+访问 [http://localhost:8080](http://localhost:8080)。Compose 提供 PostgreSQL 17/pgvector、Redis、MinIO/bucket 初始化、迁移、后端、worker、scheduler 与 Nginx/Vue。迁移为一次性服务，后端等待迁移成功；文档文件不通过公开静态目录提供。SSE 已关闭 Nginx 缓冲。
+
+当前模板使用同一数据库账号执行迁移和应用查询，镜像固定 tag、尚未固定 digest；生产部署前需分离迁移/应用账号、增加备份和 TLS，并完成集成验收。
+
+## 测试与开发
+
+```powershell
+cd backend
+uv run python manage.py check
+uv run python manage.py makemigrations --check --dry-run
+uv run ruff check .
+uv run ruff format --check .
+uv run pytest -q
+```
+
+```powershell
+cd frontend
+npm run build
+npm test
+# 后端和前端均已启动、演示数据已导入时：
+npx playwright install chromium
+npx playwright test
+```
+
+后端测试默认使用 SQLite。真实 PostgreSQL 集成可设置 `DATABASE_URL` 后运行同一组测试；仓库的 GitHub Actions 提供两种数据库矩阵，尚未在远程执行。详细本机验证见 [docs/verification.md](docs/verification.md)。
+
+导出开发集逐题召回报告：
+
+```powershell
+cd backend
+uv run python manage.py evaluate_demo --mode hybrid --output ../evals/reports/demo-hybrid.json
+```
+
+## 备份与恢复（本地模式）
+
+```powershell
+cd backend
+uv run python manage.py backup_local --output ../.runtime/backup.zip
+uv run python manage.py restore_local --archive ../.runtime/backup.zip --destination ../.runtime/restored
+```
+
+该命令使用 SQLite 在线备份 API，归档数据库快照内引用的本地文件及校验清单。恢复只允许写入新的空目录，先核验所有哈希和路径，再写入；不会覆盖运行中的数据库。可用 `.env` 的 `DATABASE_URL` 与 `MEDIA_ROOT` 指向恢复副本。包含账号和原文的备份需妥善保管。PostgreSQL/S3 部署请使用对应的数据库快照和对象存储备份流程，本命令不适用。
+
+## 结构
+
+```text
+backend/
+  config/              设置、ASGI、路由、Celery
+  apps/                users / knowledge / documents / conversations
+                       agents / evaluation / monitoring
+  common/              显式上下文、认证、日志、审计
+  ai_engine/           解析、切片、向量、检索、生成网关
+  tests/               权限、任务、流式、认证、工具、评估、备份
+frontend/              Vue 3 + TypeScript + Pinia + Vue Router
+deploy/                Dockerfile、Compose、Nginx
+docs/                  架构、API、ADR、验收与截图
+evals/                 数据集说明与实验报告
+scripts/               Windows 本地启动
+```

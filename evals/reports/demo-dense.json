@@ -1,0 +1,296 @@
+{
+  "run_id": "54944fc8-c427-412c-b1f6-0688a2edd856",
+  "status": "COMPLETED",
+  "config": {
+    "mode": "dense",
+    "embedding_profile": "demo:demo-hash-v1:128:tokens-v1",
+    "dataset_version": "v1",
+    "corpus_manifest_hash": "e622a683526366211ed671d6755ca7257af5a896dba9c9c4b36b86e47233806a",
+    "python": "3.12.13",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "dependency_lock_sha256": "01d80520bd24c67166d0e8f044624571bdbda1b5124ab5b6d58e9fc8e3819ba3"
+  },
+  "metrics": {
+    "doc_recall_at_5": 1.0,
+    "mrr_at_5": 1.0,
+    "answerable_evaluated": 20,
+    "case_count": 20,
+    "errors": 0,
+    "provider": "demo",
+    "note": "小型开发集召回实验；不包含回答质量、证据支撑率或生产性能验收。"
+  },
+  "started_at": "2026-11-06T03:17:43.210855+00:00",
+  "finished_at": "2026-11-06T03:17:43.963669+00:00",
+  "results": [
+    {
+      "case_id": "c791040a-37c1-4c1e-9049-a95560897419",
+      "question": "账号安全指南对密码有什么要求？",
+      "retrieved_ids": [
+        "fcf82cd7-aecd-45dd-9a3e-14fa166cc9bc",
+        "985681ee-d821-4449-9017-948be2b1c7bc",
+        "351b21d1-4a14-485a-b647-7c449fbe7bb2"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "5548e9d7-b3ef-46ae-a520-3fae6a8f9e0a",
+      "question": "刷新令牌轮换后旧凭据会怎样？",
+      "retrieved_ids": [
+        "91d6dc96-24fe-44c6-9914-321d7bf4d162"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "e48d84e6-017c-408d-916e-20e43d9faf79",
+      "question": "可以共享密码吗？",
+      "retrieved_ids": [
+        "351b21d1-4a14-485a-b647-7c449fbe7bb2"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "4b56047d-602b-49b7-a33b-2c473290a5d0",
+      "question": "离职成员如何处理？",
+      "retrieved_ids": [
+        "351b21d1-4a14-485a-b647-7c449fbe7bb2",
+        "985681ee-d821-4449-9017-948be2b1c7bc"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "8522c235-80d8-4efc-983d-0921339fba5b",
+      "question": "访问令牌有效期多久？",
+      "retrieved_ids": [
+        "91d6dc96-24fe-44c6-9914-321d7bf4d162",
+        "738d2758-6291-4d38-ac9d-7bfc209beba3"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "e09f667b-d1da-48b8-9a98-9e7633de7797",
+      "question": "年假由谁审批？",
+      "retrieved_ids": [
+        "05a8f2b9-af70-4d10-b4bd-9851f60e49a3"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "86cb408e-9331-4cea-9325-8f182f15a994",
+      "question": "紧急病假能否返岗后补交？",
+      "retrieved_ids": [
+        "738d2758-6291-4d38-ac9d-7bfc209beba3",
+        "3eecd296-84c8-4c8d-870c-9c757815806f"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "eb6cbeda-10c0-4071-a8da-b706f5c6e72c",
+      "question": "病假需要什么证明？",
+      "retrieved_ids": [
+        "738d2758-6291-4d38-ac9d-7bfc209beba3",
+        "985681ee-d821-4449-9017-948be2b1c7bc",
+        "e59bdaad-d26b-474d-b371-0203a28cb4ac"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "83adc2bb-159e-4dff-9988-0f7e1a28fb2b",
+      "question": "年假提前几天申请？",
+      "retrieved_ids": [
+        "05a8f2b9-af70-4d10-b4bd-9851f60e49a3",
+        "97531229-61c2-4dbd-bc38-5d7655c8c768",
+        "3eecd296-84c8-4c8d-870c-9c757815806f"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "14bbf655-6d1a-42a6-88b0-631e6d3c25f7",
+      "question": "员工每年有几天年假？",
+      "retrieved_ids": [
+        "05a8f2b9-af70-4d10-b4bd-9851f60e49a3",
+        "56adc1cd-297e-4a6e-a276-d5bcb381d692",
+        "985681ee-d821-4449-9017-948be2b1c7bc"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "fbc3e1b6-c443-4946-aa8b-9f1da6f9d8dd",
+      "question": "成员可以检索哪些知识库？",
+      "retrieved_ids": [
+        "985681ee-d821-4449-9017-948be2b1c7bc",
+        "351b21d1-4a14-485a-b647-7c449fbe7bb2"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "a1fa891b-75c3-46e6-b2bf-2a765fd2feae",
+      "question": "私有知识库如何访问？",
+      "retrieved_ids": [
+        "985681ee-d821-4449-9017-948be2b1c7bc",
+        "351b21d1-4a14-485a-b647-7c449fbe7bb2",
+        "91d6dc96-24fe-44c6-9914-321d7bf4d162"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "ed709e0d-ebf0-4b9c-8fdd-ddf04632d99b",
+      "question": "扫描PDF支持吗？",
+      "retrieved_ids": [
+        "e59bdaad-d26b-474d-b371-0203a28cb4ac",
+        "3eecd296-84c8-4c8d-870c-9c757815806f"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "eb501a9e-94d9-4e47-9c1b-5b80fe66110c",
+      "question": "上传文件最大多大？",
+      "retrieved_ids": [
+        "e59bdaad-d26b-474d-b371-0203a28cb4ac"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "a08c0e52-f624-44bc-8130-5fb9e4270aaf",
+      "question": "支持上传哪些文档？",
+      "retrieved_ids": [
+        "e59bdaad-d26b-474d-b371-0203a28cb4ac",
+        "3eecd296-84c8-4c8d-870c-9c757815806f"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "f015b0f1-293f-4659-8b9f-831dafd3de1a",
+      "question": "产品质量问题如何退款？",
+      "retrieved_ids": [
+        "3eecd296-84c8-4c8d-870c-9c757815806f",
+        "aeb2a30e-d9d6-4053-bc60-3ce042c9e56e",
+        "37b25f4b-104e-4a0b-9837-c26b7eb0f58d"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "4134e1a4-b09a-4e38-81b0-da9496ea2e79",
+      "question": "购买后多少天内可以退款？",
+      "retrieved_ids": [
+        "3eecd296-84c8-4c8d-870c-9c757815806f",
+        "aeb2a30e-d9d6-4053-bc60-3ce042c9e56e",
+        "05a8f2b9-af70-4d10-b4bd-9851f60e49a3",
+        "738d2758-6291-4d38-ac9d-7bfc209beba3"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "b640bcd9-5e25-4e16-8aa7-644d4f66af22",
+      "question": "申请退款需要什么资料？",
+      "retrieved_ids": [
+        "aeb2a30e-d9d6-4053-bc60-3ce042c9e56e",
+        "97531229-61c2-4dbd-bc38-5d7655c8c768",
+        "05a8f2b9-af70-4d10-b4bd-9851f60e49a3",
+        "985681ee-d821-4449-9017-948be2b1c7bc",
+        "e59bdaad-d26b-474d-b371-0203a28cb4ac"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "28be4bfa-ff50-43ab-8f51-343c2e0cc5fc",
+      "question": "退款审核需要几天？",
+      "retrieved_ids": [
+        "aeb2a30e-d9d6-4053-bc60-3ce042c9e56e",
+        "97531229-61c2-4dbd-bc38-5d7655c8c768",
+        "e59bdaad-d26b-474d-b371-0203a28cb4ac",
+        "985681ee-d821-4449-9017-948be2b1c7bc"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    },
+    {
+      "case_id": "7f56e4d9-72dc-4e10-9695-ced4a0f24be9",
+      "question": "退款超过30天还能申请吗？",
+      "retrieved_ids": [
+        "3eecd296-84c8-4c8d-870c-9c757815806f",
+        "05a8f2b9-af70-4d10-b4bd-9851f60e49a3",
+        "aeb2a30e-d9d6-4053-bc60-3ce042c9e56e"
+      ],
+      "metrics": {
+        "doc_recall_at_5": 1.0,
+        "mrr_at_5": 1.0
+      },
+      "error": ""
+    }
+  ]
+}

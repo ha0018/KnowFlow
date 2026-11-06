@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.env
+*.sqlite3
+backend/media/
+backend/staticfiles/
+node_modules/
+frontend/dist/
+*.log
+.coverage
+htmlcov/
+test-results/
+.runtime/

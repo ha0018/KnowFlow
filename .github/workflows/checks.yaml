@@ -1,0 +1,31 @@
+name: checks
+on: [push, pull_request]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.1-pg17
+        env: {POSTGRES_USER: knowflow, POSTGRES_PASSWORD: knowflow, POSTGRES_DB: knowflow}
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U knowflow" --health-interval 5s --health-timeout 3s --health-retries 20
+    strategy:
+      matrix: {database: [sqlite, postgres]}
+    env:
+      DATABASE_URL: ${{ matrix.database == 'postgres' && 'postgres://knowflow:knowflow@localhost:5432/knowflow' || 'sqlite:///db.sqlite3' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: "0.11.32"}
+      - run: uv sync --frozen --python 3.12
+        working-directory: backend
+      - run: uv run python manage.py check && uv run python manage.py makemigrations --check --dry-run && uv run ruff check . && uv run ruff format --check . && uv run pytest -q
+        working-directory: backend
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22", cache: npm, cache-dependency-path: frontend/package-lock.json}
+      - run: npm ci && npm run build && npm test
+        working-directory: frontend
