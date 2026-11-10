@@ -1,0 +1,267 @@
+{
+  "date": "2026-11-10",
+  "timezone": "Asia/Shanghai",
+  "source_revision": "46ad7713a684be27e6e751e249d2238ee3029556",
+  "scope": "self_authored_synthetic_corpus_demo_hash_embedding_extractive_generation_lexical_reranking",
+  "real_supplier_verified": false,
+  "human_quality_accepted": false,
+  "load_acceptance_claimed": false,
+  "dataset_source_sha256": "87338706abfa766222454bbdbf8c87353eeac5da69803f498be498b39a6073dd",
+  "holdout_cases": 60,
+  "answerable_cases": 42,
+  "holdout_metrics": {
+    "B0": {
+      "note": "失败题保留在分母；回答支撑与事实正确性仅来自人工复核。",
+      "errors": 0,
+      "mrr_at_5": 0.9464285714285714,
+      "provider": "demo",
+      "citations": {
+        "rate": 1.0,
+        "total": 172,
+        "valid": 172
+      },
+      "case_count": 60,
+      "case_p95_ms": 185.42254500000155,
+      "human_review": {
+        "pending": 60,
+        "reviewed": 0,
+        "answer_pass": {
+          "rate": null,
+          "passed": 0,
+          "required": 42,
+          "reviewed": 0
+        },
+        "faithfulness": {
+          "rate": null,
+          "total": 0,
+          "supported": 0
+        },
+        "refusal_correct": {
+          "rate": null,
+          "passed": 0,
+          "required": 9,
+          "reviewed": 0
+        },
+        "citation_support": {
+          "rate": null,
+          "total": 0,
+          "supported": 0
+        }
+      },
+      "success_rate": 1.0,
+      "quality_scope": "demo_mechanics",
+      "precision_at_5": 0.21428571428571427,
+      "doc_recall_at_5": 1.0,
+      "retrieval_p95_ms": 46.271353000001625,
+      "evidence_hit_at_5": 0.9523809523809523,
+      "answerable_evaluated": 42,
+      "mrr_at_5_denominator": 42,
+      "precision_at_5_denominator": 42,
+      "doc_recall_at_5_denominator": 42,
+      "evidence_hit_at_5_denominator": 42,
+      "retrieval_latency_includes_embedding_rewrite_and_rerank": true
+    },
+    "B1": {
+      "note": "失败题保留在分母；回答支撑与事实正确性仅来自人工复核。",
+      "errors": 0,
+      "mrr_at_5": 0.9761904761904762,
+      "provider": "demo",
+      "citations": {
+        "rate": 1.0,
+        "total": 174,
+        "valid": 174
+      },
+      "case_count": 60,
+      "case_p95_ms": 191.83371500000135,
+      "human_review": {
+        "pending": 60,
+        "reviewed": 0,
+        "answer_pass": {
+          "rate": null,
+          "passed": 0,
+          "required": 42,
+          "reviewed": 0
+        },
+        "faithfulness": {
+          "rate": null,
+          "total": 0,
+          "supported": 0
+        },
+        "refusal_correct": {
+          "rate": null,
+          "passed": 0,
+          "required": 9,
+          "reviewed": 0
+        },
+        "citation_support": {
+          "rate": null,
+          "total": 0,
+          "supported": 0
+        }
+      },
+      "success_rate": 1.0,
+      "quality_scope": "demo_mechanics",
+      "precision_at_5": 0.21904761904761907,
+      "doc_recall_at_5": 1.0,
+      "retrieval_p95_ms": 50.22566799999595,
+      "evidence_hit_at_5": 0.9761904761904762,
+      "answerable_evaluated": 42,
+      "mrr_at_5_denominator": 42,
+      "precision_at_5_denominator": 42,
+      "doc_recall_at_5_denominator": 42,
+      "evidence_hit_at_5_denominator": 42,
+      "retrieval_latency_includes_embedding_rewrite_and_rerank": true
+    },
+    "B2": {
+      "note": "失败题保留在分母；回答支撑与事实正确性仅来自人工复核。",
+      "errors": 0,
+      "mrr_at_5": 0.9880952380952381,
+      "provider": "demo",
+      "citations": {
+        "rate": 1.0,
+        "total": 174,
+        "valid": 174
+      },
+      "case_count": 60,
+      "case_p95_ms": 196.82006200000046,
+      "human_review": {
+        "pending": 60,
+        "reviewed": 0,
+        "answer_pass": {
+          "rate": null,
+          "passed": 0,
+          "required": 42,
+          "reviewed": 0
+        },
+        "faithfulness": {
+          "rate": null,
+          "total": 0,
+          "supported": 0
+        },
+        "refusal_correct": {
+          "rate": null,
+          "passed": 0,
+          "required": 9,
+          "reviewed": 0
+        },
+        "citation_support": {
+          "rate": null,
+          "total": 0,
+          "supported": 0
+        }
+      },
+      "success_rate": 1.0,
+      "quality_scope": "demo_mechanics",
+      "precision_at_5": 0.21904761904761907,
+      "doc_recall_at_5": 1.0,
+      "retrieval_p95_ms": 56.71147299999291,
+      "evidence_hit_at_5": 0.9761904761904762,
+      "answerable_evaluated": 42,
+      "mrr_at_5_denominator": 42,
+      "precision_at_5_denominator": 42,
+      "doc_recall_at_5_denominator": 42,
+      "evidence_hit_at_5_denominator": 42,
+      "retrieval_latency_includes_embedding_rewrite_and_rerank": true
+    }
+  },
+  "security": {
+    "case_count": 50,
+    "failed": 0,
+    "unauthorized_occurrences": 0
+  },
+  "checks": {
+    "sqlite": {
+      "passed": 89,
+      "skipped": 2
+    },
+    "postgresql": {
+      "passed": 89,
+      "skipped": 2
+    },
+    "frontend_protocol_tests": 2,
+    "browser_scenarios": 2,
+    "infrastructure": {
+      "passed": 9,
+      "faults_passed": 2
+    }
+  },
+  "workflows": {
+    "checks": "https://github.com/ha0018/KnowFlow/actions/runs/42814584804",
+    "tuning": "https://github.com/ha0018/KnowFlow/actions/runs/42814584720",
+    "holdout": "https://github.com/ha0018/KnowFlow/actions/runs/42814606608",
+    "infrastructure": "https://github.com/ha0018/KnowFlow/actions/runs/42814584991"
+  },
+  "artifacts": [
+    {
+      "run_id": 42814584720,
+      "prefix": "tuning",
+      "zip_sha256_verified": "03fdb28787410ea994eff474a47c95699cc371e6f7efbcec18e91bd89eab0eef"
+    },
+    {
+      "run_id": 42814606608,
+      "prefix": "holdout",
+      "zip_sha256_verified": "d66b11fe1526d19fe0020c0e2e0d9bba3f370ca5bc60c830255717695e79d2a7"
+    },
+    {
+      "run_id": 42814584991,
+      "prefix": "infrastructure",
+      "zip_sha256_verified": "15b19492a47e71b853fef9f20e9e97a42caad4fe315354e7165644f1190247cd"
+    }
+  ],
+  "raw_reports": [
+    {
+      "path": "s3-2026-11-10/holdout-index.json",
+      "sha256": "efba7556372ee80dd44c3a911a50a20b8eaadbb8495e6ff501a21ff446884c30"
+    },
+    {
+      "path": "s3-2026-11-10/holdout-quality.json",
+      "sha256": "2040315832cfc5593ea8d0b8929d183e6f497fae124c8711822f2480bace5cf4"
+    },
+    {
+      "path": "s3-2026-11-10/holdout-security.json",
+      "sha256": "31b9a10c941398f9c6624a54b3ceda741b0387bd0db4f9277b730d627a697bf3"
+    },
+    {
+      "path": "s3-2026-11-10/infrastructure-dependency-faults.json",
+      "sha256": "946891456e0b89c2d37db749263ffe9108615452f1f05b91f8acb9d1bb5c9c52"
+    },
+    {
+      "path": "s3-2026-11-10/infrastructure-images.json",
+      "sha256": "762ee7cef67395cc6de310c76c786c94d973bf8d10a2d29342e6d5eee580d90c"
+    },
+    {
+      "path": "s3-2026-11-10/infrastructure-infrastructure-report.json",
+      "sha256": "705759cf3fbd445b26d4e465a6ca24daefb1a72dc8569686d9fad7b88e000136"
+    },
+    {
+      "path": "s3-2026-11-10/tuning-index.json",
+      "sha256": "47773a12e1f27c621799a3d5528404c433b44d391f0c5887154389ac9451579e"
+    },
+    {
+      "path": "s3-2026-11-10/tuning-quality.json",
+      "sha256": "35d25224c3af52f9912316ba69cc06e78195da1445e50543767c3c664cc9dad6"
+    },
+    {
+      "path": "s3-2026-11-10/tuning-security.json",
+      "sha256": "4f3bcbe26367dd1eae6f3edd765b00a0b155216d1b2bafd446e0b960d10e559a"
+    }
+  ],
+  "index_revision_marker_note": "The +dirty marker in raw index output comes from the earlier generated reports/ directory in this clean CI checkout. The original marker is retained; future report directories are ignored.",
+  "acceptance": {
+    "A06": "demo_holdout_measured; real_semantic_model_validation_pending",
+    "A07": "human_fact_and_citation_support_review_pending",
+    "A08": "50_independent_matrix_cases_passed; real_model_refusal_and_injection_review_pending",
+    "A09": "formal_20_concurrency_list_API_load_not_executed",
+    "A10": "1000_10000_chunk_single_connection_synthetic_index_diagnostic_passed; formal_10_concurrency_1000_requests_10_minutes_load_pending",
+    "A11": "real_model_region_fixed_5_concurrency_QA_load_pending",
+    "A12": "real_embedding_10_PDF_publication_timing_pending"
+  },
+  "followup_regression": {
+    "revision": "c17bb16",
+    "change": "Legacy development-only entry and explicit stratified split admission; retrieval parameters unchanged.",
+    "checks": "https://github.com/ha0018/KnowFlow/actions/runs/42815905414",
+    "tuning": "https://github.com/ha0018/KnowFlow/actions/runs/42815905597",
+    "infrastructure": "https://github.com/ha0018/KnowFlow/actions/runs/42815905532",
+    "conclusion": "success"
+  }
+}

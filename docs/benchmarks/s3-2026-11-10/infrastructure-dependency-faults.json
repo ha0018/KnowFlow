@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 114,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 197,
+      "live_during_outage": true,
+      "recovered": true
+    }
+  ]
+}

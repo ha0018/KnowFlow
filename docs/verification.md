@@ -1,5 +1,9 @@
 # 验证记录
 
+2026-11-10 的 S3 记录及原始证据见 [S3 报告](benchmarks/retrieval-quality-2026-11-10.md)：SQLite/PostgreSQL 各 89 通过、2 跳过；前端构建与协议测试通过；浏览器业务和 S3 查看逐题/复核保存/导出/手机布局两场景通过，临时额度已恢复。固定 60 题保留集 B0/B1/B2 各组错误 0；独立 50 项安全矩阵、两种规模/选择率的真实 HNSW 诊断与完整容器九组业务/两项故障恢复通过。
+
+S3 使用演示模型，人工语义指标保持 N/A，没有替代真实模型及正式负载验收。新截图：[评测配置](demo/retrieval-quality.png)、[逐题复核](demo/quality-case-review.png)。以下各节保留 2026-11-06 的 S1/S2 历史基线。
+
 日期：2026-11-06；环境：Windows、Python 3.12.13、Node.js 22.21.0。完整 Python 依赖固定于 `backend/uv.lock`，前端固定于 `frontend/package-lock.json`。
 
 | 检查 | 实际结果 |

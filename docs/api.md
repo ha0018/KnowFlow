@@ -21,7 +21,7 @@
 | POST `/documents/{id}/reindex` | 同版本、同 pipeline 复用构建；失败任务可重试，成功任务幂等返回 |
 | POST `/documents/{id}/access` | `{acl_mode:"inherit"或"restricted",entries:[...]}` |
 | GET `/tasks/{id}` | 处理阶段、状态、尝试次数、Chunk 数、trace_id |
-| POST `/retrieval/search` | `{query,kb_ids?,top_k?}` → 本次授权的召回片段 |
+| POST `/retrieval/search` | `{query,kb_ids?,top_k?,mode?,rewrite?,rerank?}` → 本次授权片段及分段 diagnostics |
 | GET/POST `/conversations` | 分页会话/创建；`{title?,kb_ids?}` |
 | GET `/conversations/{id}/messages` | 当前授权下的历史正文与引用 |
 | POST `/conversations/{id}/messages:stream` | `{question,parent_id?}` + `Idempotency-Key`；parent_id 保留再生成关系 |
@@ -30,7 +30,7 @@
 | GET `/references/{id}` | 当前权限下的原文摘录、不可变版本与位置 |
 | POST `/messages/{id}/feedback` | `{rating:1或-1,reason?}` |
 | GET/POST `/agents/tools` | 工具清单/单个只读工具调用 `{tool,args}` |
-| GET `/evaluations/datasets` | 开发集清单 |
+| GET `/evaluations/datasets` | 数据集、分集计数与冻结 manifest hash |
 | GET/POST `/evaluations/runs` | 运行记录/创建 `{dataset_id,mode:"dense"或"hybrid"}` |
 | GET `/monitoring/dashboard` | 授权资源计数 |
 | GET `/monitoring/calls` | 本租户最近 100 条调用元数据 |
@@ -64,3 +64,14 @@ data: {"status":"completed","usage":{"source":"unknown"}}
 ```
 
 统计 group_by 只允许 month/product/category，时间跨度最多 366 天；使用固定 ORM 聚合，不接受 SQL。摘要为有来源的原文摘录，最多八个片段；focus 预留，当前不改变摘录排序。
+
+
+## S3 评测与复核
+
+POST `/evaluations/runs` 接受 dataset_id、baseline（B0/B1/B2）、split（development/tuning/holdout）、answers、rewrite。分层数据集默认 tuning，生成回答默认关闭；原 mode 字段保留向后兼容。
+
+GET `/evaluations/runs/{id}` 返回配置、逐题标准证据、实际回答、来源、原始片段位次、指标、分段耗时与复核记录；仅允许创建者，且当前请求者和原题身份都必须仍能读取相关证据，否则隐藏。该响应可直接保存为 JSON 报告。
+
+PUT `/evaluations/runs/{id}/results/{result_id}/review` 接受 answer_pass、refusal_correct（可为 null）、facts_total、facts_supported、cited_claims_total、cited_claims_supported、notes。仅允许已完成且生成过回答的评测；支撑数量不超过总数，notes 必填。服务端记录 reviewer_id/reviewed_at 并刷新汇总。未完成复核时总体通过率为 N/A。
+
+检索 mode 为 dense/hybrid；rewrite/rerank 为布尔开关，服务端决定供应商和地址。sources 中包含版本 ID、原文 SHA、定位、RRF 和可选重排分数；diagnostics 包含本次参数、授权候选排名及阶段耗时，分数不是答案置信概率。
