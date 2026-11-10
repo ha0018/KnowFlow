@@ -8,6 +8,10 @@ test('quality tuning, per-case evidence, manual review, export and mobile layout
   await page.getByLabel('邮箱地址').fill('admin@acme.demo')
   await page.getByLabel('登录密码').fill(process.env.KNOWFLOW_DEMO_PASSWORD || 'KnowFlowDemo!2026')
   await page.getByRole('button', { name: '登录工作空间' }).click()
+  await expect(page.getByRole('heading', { name: '知识，从这里连接' })).toBeVisible()
+  const originalQuota = await page.evaluate(async () => (await fetch('/api/v1/monitoring/quota', { headers: { Authorization: 'Bearer ' + sessionStorage.getItem('kf_access') } })).json())
+  await page.evaluate(async () => { const r = await fetch('/api/v1/monitoring/quota', { method: 'PUT', headers: { Authorization: 'Bearer ' + sessionStorage.getItem('kf_access'), 'Content-Type': 'application/json' }, body: JSON.stringify({ daily_tokens: 10000000, user_daily_tokens: 1000000 }) }); if (!r.ok) throw new Error('Cannot set disposable evaluation quota') })
+  try {
   await page.getByRole('link', { name: '检索调试' }).click()
   await page.locator('.retrieval-form select').selectOption({ label: '企业知识中心' })
   await page.getByLabel('召回方式').selectOption('hybrid')
@@ -25,7 +29,7 @@ test('quality tuning, per-case evidence, manual review, export and mobile layout
   const [created] = await Promise.all([page.waitForResponse(r => r.url().endsWith('/evaluations/runs') && r.request().method() === 'POST'), page.getByRole('button', { name: '运行评估', exact: true }).click()])
   const runId = (await created.json()).id
   const runRow = page.locator('.eval-row').filter({ hasText: runId.slice(0, 8) })
-  await expect(runRow).toContainText('COMPLETED', { timeout: 60000 })
+  await expect(runRow.getByText('COMPLETED', { exact: true })).toBeVisible({ timeout: 60000 })
   await expect(runRow).toContainText('tuning')
   await page.screenshot({ path: '../docs/demo/retrieval-quality.png' })
   await runRow.getByRole('button', { name: '查看逐题' }).click()
@@ -42,4 +46,7 @@ test('quality tuning, per-case evidence, manual review, export and mobile layout
   await page.setViewportSize({ width: 390, height: 844 })
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy()
   expect(errors).toEqual([])
+  } finally {
+    await page.evaluate(async (limits) => { const r = await fetch('/api/v1/monitoring/quota', { method: 'PUT', headers: { Authorization: 'Bearer ' + sessionStorage.getItem('kf_access'), 'Content-Type': 'application/json' }, body: JSON.stringify(limits) }); if (!r.ok) throw new Error('Cannot restore evaluation quota') }, originalQuota.limits)
+  }
 })

@@ -160,6 +160,19 @@ def configure_reranker(settings):
     settings.RERANKER_MODEL = "fixture-reranker-v1"
 
 
+def test_portable_dense_ranking_is_cosine_not_unnormalized_dot_product(world, ingest, monkeypatch):
+    if connection.vendor != "sqlite":
+        pytest.skip("Portable exact implementation only")
+    correct, *_ = ingest(text="退款政策正确方向。", name="correct.md")
+    scaled, *_ = ingest(text="退款政策较大模长。", name="scaled.md")
+    vector = [1.0] + [0.0] * (config.EMBEDDING_DIMENSIONS - 1)
+    DocumentChunk.objects.filter(document=correct).update(embedding=vector)
+    DocumentChunk.objects.filter(document=scaled).update(embedding=[100.0, 100.0] + [0.0] * (len(vector) - 2))
+    monkeypatch.setattr("ai_engine.retrieval.embed", lambda *a, **kw: ([vector], {"source": "unknown"}))
+    hits = search(world["ctx"], "退款政策", top_k=1, options=baseline("B0"))
+    assert hits[0]["document_id"] == str(correct.pk)
+
+
 def test_remote_reranker_validates_permutation_keeps_keys_separate_and_accounts(
     world, ingest, settings, monkeypatch
 ):

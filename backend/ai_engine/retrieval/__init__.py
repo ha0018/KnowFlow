@@ -1,3 +1,4 @@
+import math
 import time
 from collections import defaultdict
 from dataclasses import replace
@@ -40,9 +41,14 @@ def dense_rows(qs, vector, options, trace):
             raise GatewayError("HNSW_REQUIRES_POSTGRESQL")
         if qs.count() > 5000:
             raise ValueError("LOCAL_CORPUS_LIMIT_USE_POSTGRESQL")
-        return sorted(qs, key=lambda row: (-sum(a * b for a, b in zip(row.embedding, vector)), str(row.pk)))[
-            : options.candidate_k
-        ]
+        return sorted(
+            qs,
+            key=lambda row: (
+                -math.fsum(float(a) * float(b) for a, b in zip(row.embedding, vector))
+                / (math.hypot(*map(float, row.embedding)) or 1),
+                str(row.pk),
+            ),
+        )[: options.candidate_k]
     if options.vector_index == "exact":
         return list(dense_queryset(qs, vector)[: options.candidate_k])
     if settings.EMBEDDING_DIMENSIONS > 2000:

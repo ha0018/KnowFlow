@@ -19,7 +19,7 @@ from django.db import connection, transaction
 from ai_engine.retrieval import dense_queryset
 from apps.documents.models import Document, DocumentChunk, DocumentVersion, IndexBuild
 from apps.documents.selectors import active_chunks
-from apps.evaluation.configuration import revision
+from apps.evaluation.configuration import environment, revision
 from apps.evaluation.metrics import percentile
 from apps.knowledge.models import KnowledgeBase, KnowledgeBaseACL
 from apps.users.models import Tenant, User
@@ -250,6 +250,7 @@ class Command(BaseCommand):
             "schema_version": 1,
             "code_revision": revision(),
             "vector_dimensions": settings.EMBEDDING_DIMENSIONS,
+            "environment": environment(),
             "seed": 20261110,
             "data_kind": "synthetic_random_vectors_not_semantic_quality",
             "reports": reports,
