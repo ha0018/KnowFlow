@@ -1,0 +1,473 @@
+{
+  "schema_version": 1,
+  "scope": "independent_retrieval_prompt_input_and_tool_schema_matrix",
+  "not_verified": [
+    "real_model_prompt_injection_resistance",
+    "all_A01_100_authorization_cases"
+  ],
+  "cases": [
+    {
+      "actor": "admin",
+      "baseline": "B0",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "fcf26385fb9d4e6eb53cb490b087caea"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B0",
+      "scope": "private",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "8ac5998cd63245d990b1f8da1043bdbd"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B0",
+      "scope": "restricted",
+      "target_allowed": true,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "0e01574dff4745b293274efb51487aa8"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B0",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "e77dd17013c443859fda19fb934eaa57"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B1",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "19a915bd321b4b9c9c2098d09e101d81"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B1",
+      "scope": "private",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "14d6c39330cc4a00a65ce7bb8b252d6d"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B1",
+      "scope": "restricted",
+      "target_allowed": true,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "56f00cb96c654a4fa885236e2e5e42d3"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B1",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "3cf78dad8b174882b4d71d4a81589107"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B2",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "5f1f983083ac443fa9bad3d816203727"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B2",
+      "scope": "private",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "c069cede0aff4495b8e45dcd76e63911"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B2",
+      "scope": "restricted",
+      "target_allowed": true,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "1ca951b1998b462b8eddb4ef8e34e09a"
+    },
+    {
+      "actor": "admin",
+      "baseline": "B2",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "89b4a620e31a4b0bb65b8afa6e365efa"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B0",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "494fa6e2fc00433d8f351143258cb920"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B0",
+      "scope": "private",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "3dd889a009d54feabfd1debdf54fdaca"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B0",
+      "scope": "restricted",
+      "target_allowed": true,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "de4b4ad217f24b0b82b629202738dd83"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B0",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "0e9c3ad47c2141a6b4924cf8b7a3162a"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B1",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "8bd4c70387ef40489b84465d776f4d13"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B1",
+      "scope": "private",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "323d797cde584bbfa8a0f2b954e84ae3"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B1",
+      "scope": "restricted",
+      "target_allowed": true,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "73d1b6bb5a204fec9c8c8c4c85af047e"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B1",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "ae4013b0b17b4ec5be9cf923a96ec124"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B2",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "b2da484583fd407abe3c622fda9bb2fd"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B2",
+      "scope": "private",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "e264101767f7431db22d5fa7224998d8"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B2",
+      "scope": "restricted",
+      "target_allowed": true,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "32aa14b59bbe4f4495947bfa049fe32e"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B2",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 3,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "39e017f107d848b7919e4cb9af0c3015"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B0",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "bf55a5dca6df43adbea935214b097592"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B0",
+      "scope": "private",
+      "target_allowed": false,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "8b3a2c3222b040bb9a328e226df7d414"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B0",
+      "scope": "restricted",
+      "target_allowed": false,
+      "retrieved_count": 1,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "026eb14f24a34e3f9ccc2a298becd0ee"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B0",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 1,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "4ffa31e4ec5f4f758667afb9040c0c98"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B1",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "44bdd114067c49929be7ec8705a745dc"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B1",
+      "scope": "private",
+      "target_allowed": false,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "904925b34c904bf6904b9a5b350fcc19"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B1",
+      "scope": "restricted",
+      "target_allowed": false,
+      "retrieved_count": 1,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "ebde81ae68334bd4a4ec1d220ba55765"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B1",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 1,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "5663466909824462a9718d683158389b"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B2",
+      "scope": "public",
+      "target_allowed": true,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "1aeeeecd55e74384a272010398e7f23c"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B2",
+      "scope": "private",
+      "target_allowed": false,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "c144a0b99946441d957216989c0fcce0"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B2",
+      "scope": "restricted",
+      "target_allowed": false,
+      "retrieved_count": 1,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "e24d1ba1b60741ddb4b9a4639e4e4b43"
+    },
+    {
+      "actor": "reader",
+      "baseline": "B2",
+      "scope": "foreign",
+      "target_allowed": false,
+      "retrieved_count": 1,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "886f86eeac2941e38421b624f3b4e261"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B0",
+      "scope": "revoked",
+      "target_allowed": false,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "699faa1cf49b43d59b0042e3bbede586"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B1",
+      "scope": "revoked",
+      "target_allowed": false,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "d387cdcd6abf416c9d05b9f00c8d7640"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B2",
+      "scope": "revoked",
+      "target_allowed": false,
+      "retrieved_count": 5,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "81458f55c9d24f3aa97bbbb0faa83ed0"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B0",
+      "scope": "document_revoked",
+      "target_allowed": false,
+      "retrieved_count": 2,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "b99fe2fa68834cce9ce3c4dc55e156f4"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B1",
+      "scope": "document_revoked",
+      "target_allowed": false,
+      "retrieved_count": 2,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "22a0e1226325429fa10c655463d0568d"
+    },
+    {
+      "actor": "editor",
+      "baseline": "B2",
+      "scope": "document_revoked",
+      "target_allowed": false,
+      "retrieved_count": 2,
+      "unauthorized_occurrences": 0,
+      "status": "passed",
+      "trace_id": "ff59822a587f41fe8a6c424535cf7b08"
+    },
+    {
+      "scope": "tool_schema",
+      "case": 1,
+      "status": "passed"
+    },
+    {
+      "scope": "tool_schema",
+      "case": 2,
+      "status": "passed"
+    },
+    {
+      "scope": "tool_schema",
+      "case": 3,
+      "status": "passed"
+    },
+    {
+      "scope": "tool_schema",
+      "case": 4,
+      "status": "passed"
+    },
+    {
+      "scope": "tool_schema",
+      "case": 5,
+      "status": "passed"
+    },
+    {
+      "scope": "tool_schema",
+      "case": 6,
+      "status": "passed"
+    },
+    {
+      "scope": "tool_schema",
+      "case": 7,
+      "status": "passed"
+    },
+    {
+      "scope": "tool_schema",
+      "case": 8,
+      "status": "passed"
+    }
+  ],
+  "case_count": 50,
+  "failed": 0,
+  "unauthorized_occurrences": 0
+}

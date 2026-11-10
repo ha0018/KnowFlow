@@ -27,7 +27,7 @@ class Command(BaseCommand):
             raise CommandError("Active evaluation user not found; seed the demo first")
         ctx = RequestContext.for_user(user)
         require_capability(ctx, "evaluation.run")
-        dataset = EvalDataset.objects.filter(tenant=user.tenant).first()
+        dataset = EvalDataset.objects.filter(tenant=user.tenant, split="development").first()
         if not dataset:
             raise CommandError("Dataset not found")
         config = {

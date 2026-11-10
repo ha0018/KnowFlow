@@ -13,10 +13,18 @@ from rest_framework.exceptions import APIException
 from ai_engine.gateway import generate
 from ai_engine.gateway.config import GatewayError
 from ai_engine.retrieval import search
+from ai_engine.retrieval.options import RetrievalOptions
 from common.auth import TenantJWTAuthentication
 from common.context import RequestContext
 
-from .services import attach_sources, begin_run, prepare_generation, run_is_allowed, save_progress
+from .services import (
+    attach_sources,
+    begin_run,
+    model_history,
+    prepare_generation,
+    run_is_allowed,
+    save_progress,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -71,9 +79,27 @@ async def stream_events(ctx, run):
             {"run_id": str(run.pk), "message_id": str(run.output_message_id), "trace_id": ctx.trace_id},
         )
         async with asyncio.timeout(settings.AI_TIMEOUT_SECONDS):
-            sources = await sync_to_async(search)(
-                ctx, run.input_message.content, run.config_snapshot["kb_ids"] or None, run=run
+            retrieval_options = RetrievalOptions(
+                **{
+                    k: v
+                    for k, v in run.config_snapshot.get("retrieval_options", {}).items()
+                    if k in RetrievalOptions.__dataclass_fields__
+                }
             )
+            allowed_history = (
+                await sync_to_async(model_history)(ctx, run) if retrieval_options.rewrite else ()
+            )
+            diagnostics = {}
+            sources = await sync_to_async(search)(
+                ctx,
+                run.input_message.content,
+                run.config_snapshot["kb_ids"] or None,
+                run=run,
+                options=retrieval_options,
+                history=allowed_history,
+                diagnostics=diagnostics,
+            )
+            run.config_snapshot["retrieval_diagnostics"] = diagnostics
             prepared = await sync_to_async(prepare_generation)(ctx, run, sources)
             sources = prepared.sources
             await sync_to_async(attach_sources)(ctx, run, sources)

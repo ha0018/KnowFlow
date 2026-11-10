@@ -14,3 +14,4 @@ frontend/dist/
 htmlcov/
 test-results/
 .runtime/
+/reports/

@@ -8,6 +8,7 @@ class EvalDataset(TenantEntity):
     version = models.CharField(max_length=40)
     corpus_manifest_hash = models.CharField(max_length=64)
     split = models.CharField(max_length=20, default="development")
+    manifest = models.JSONField(default=dict)
 
     class Meta(TenantEntity.Meta):
         constraints = [
@@ -22,6 +23,9 @@ class EvalCase(TenantEntity):
     gold_evidence = models.JSONField(default=list)
     category = models.CharField(max_length=40, default="answerable")
     actor_fixture = models.CharField(max_length=120, blank=True)
+    case_key = models.CharField(max_length=80, blank=True)
+    split = models.CharField(max_length=20, default="development")
+    spec = models.JSONField(default=dict)
 
 
 class EvalRun(TenantEntity):
@@ -34,6 +38,7 @@ class EvalRun(TenantEntity):
     trace_id = models.CharField(max_length=64)
     started_at = models.DateTimeField(null=True)
     finished_at = models.DateTimeField(null=True)
+    heartbeat_at = models.DateTimeField(null=True)
 
 
 class EvalResult(TenantEntity):
@@ -43,6 +48,9 @@ class EvalResult(TenantEntity):
     metrics = models.JSONField(default=dict)
     error = models.CharField(max_length=80, blank=True)
     human_review = models.JSONField(default=dict)
+    retrieval_snapshot = models.JSONField(default=list)
+    answer = models.TextField(blank=True)
+    trace = models.JSONField(default=dict)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["run", "case"], name="unique_eval_case_result")]
