@@ -136,6 +136,9 @@ class Command(BaseCommand):
                     cursor.execute("SET LOCAL statement_timeout = '120s'")
                 member, bases, samples = seed(size, random.Random(20261110))
                 with connection.cursor() as cursor:
+                    # Flush deferred FK events before DDL on the same table.
+                    # All tenant/resource constraints still remain enabled.
+                    cursor.execute("SET CONSTRAINTS ALL IMMEDIATE")
                     tick = time.perf_counter()
                     cursor.execute(
                         "CREATE INDEX s3_diagnostic_hnsw ON documents_documentchunk USING hnsw (embedding vector_cosine_ops) WITH (m=16, ef_construction=64)"

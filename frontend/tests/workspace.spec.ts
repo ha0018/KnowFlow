@@ -33,8 +33,9 @@ test('login, search, streamed answer, citation, upload and evaluation', async ({
   await expect(page.locator('tr', { hasText: title })).toHaveCount(0)
   await page.getByRole('link', { name: '效果评估' }).click()
   await page.getByLabel('评估数据集').selectOption({ label: '演示召回开发集 · v1' })
-  await page.getByRole('button', { name: '运行评估' }).click()
-  await expect(page.locator('.eval-row').first()).toContainText('COMPLETED')
+  const [evaluation] = await Promise.all([page.waitForResponse(r => r.url().endsWith('/evaluations/runs') && r.request().method() === 'POST'), page.getByRole('button', { name: '运行评估' }).click()])
+  const evaluationId = (await evaluation.json()).id
+  await expect(page.locator('.eval-row').filter({ hasText: evaluationId.slice(0, 8) })).toContainText('COMPLETED')
   await page.getByRole('link', { name: '调用记录' }).click()
   await expect(page.getByRole('heading', { name: '回答生成服务' })).toBeVisible()
   await page.getByRole('button', { name: '检查生成服务' }).click()
