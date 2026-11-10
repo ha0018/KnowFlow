@@ -12,6 +12,7 @@ from rest_framework.exceptions import APIException, ValidationError
 
 from ai_engine.gateway.budget import prepare_input
 from ai_engine.gateway.config import profile
+from ai_engine.retrieval.options import defaults
 from apps.documents.selectors import active_chunks, chunk_readable
 from apps.knowledge.selectors import knowledge_bases
 from apps.users.models import Tenant, User
@@ -86,6 +87,7 @@ def begin_run(ctx, conversation_id, question, key, parent_id=None):
             "embedding_profile": settings.EMBEDDING_PROFILE,
             "prompt": "grounded-v2",
             "retrieval": "rrf-v1",
+            "retrieval_options": defaults().snapshot(),
             "kb_ids": [str(pk) for pk in scope_ids],
         },
     )

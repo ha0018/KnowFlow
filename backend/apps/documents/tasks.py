@@ -33,6 +33,7 @@ def recover_work():
 
     for run_id in EvalRun.objects.filter(status="PENDING").values_list("id", flat=True)[:20]:
         dispatch_evaluation(run_id)
-    EvalRun.objects.filter(status="RUNNING", started_at__lt=timezone.now() - timedelta(minutes=10)).update(
-        status="FAILED", metrics={"error": "WORKER_INTERRUPTED"}, finished_at=timezone.now()
-    )
+    EvalRun.objects.filter(status="RUNNING").filter(
+        Q(heartbeat_at__lt=timezone.now() - timedelta(minutes=10))
+        | Q(heartbeat_at__isnull=True, started_at__lt=timezone.now() - timedelta(minutes=10))
+    ).update(status="FAILED", metrics={"error": "WORKER_INTERRUPTED"}, finished_at=timezone.now())

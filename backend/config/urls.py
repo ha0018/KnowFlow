@@ -6,7 +6,7 @@ from apps.agents.api import ToolsView
 from apps.conversations.api import CancelRunView, ConversationViewSet, FeedbackView, ReferenceView, RunView
 from apps.conversations.stream import messages_stream
 from apps.documents.api import DocumentViewSet, TaskView, UploadView
-from apps.evaluation.api import DatasetsView, EvalRunsView
+from apps.evaluation.api import DatasetsView, EvalResultsView, EvalReviewView, EvalRunsView
 from apps.knowledge.api import KnowledgeBaseViewSet
 from apps.knowledge.retrieval_api import SearchView
 from apps.monitoring.api import CallsView, DashboardView, live, ready
@@ -40,6 +40,8 @@ urlpatterns = [
     path("api/v1/retrieval/search", SearchView.as_view()),
     path("api/v1/evaluations/datasets", DatasetsView.as_view()),
     path("api/v1/evaluations/runs", EvalRunsView.as_view()),
+    path("api/v1/evaluations/runs/<uuid:run_id>", EvalResultsView.as_view()),
+    path("api/v1/evaluations/runs/<uuid:run_id>/results/<uuid:result_id>/review", EvalReviewView.as_view()),
     path("api/v1/monitoring/dashboard", DashboardView.as_view()),
     path("api/v1/monitoring/calls", CallsView.as_view()),
     path("api/v1/monitoring/models", ModelsView.as_view()),

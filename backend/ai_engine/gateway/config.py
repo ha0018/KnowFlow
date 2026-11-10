@@ -78,6 +78,11 @@ def profile(kind):
         )
     else:
         raise GatewayError("MODEL_KIND_INVALID")
+    return validate_profile(result)
+
+
+def validate_profile(result):
+    kind = result.kind
     if result.provider not in {"demo", "compatible"}:
         raise GatewayError("MODEL_PROVIDER_INVALID")
     if not 1 <= result.timeout <= 120:
@@ -123,7 +128,7 @@ def profile(kind):
             or not 0 <= settings.GENERATION_HISTORY_BUDGET <= settings.GENERATION_INPUT_BUDGET
         ):
             raise GatewayError("MODEL_TOKEN_BUDGET_INVALID")
-    elif (
+    elif kind == "embedding" and (
         not 1 <= settings.EMBEDDING_DIMENSIONS <= 16000
         or not 1 <= settings.EMBEDDING_MAX_INPUT_TOKENS <= 1_000_000
     ):

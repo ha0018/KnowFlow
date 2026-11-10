@@ -1,0 +1,57 @@
+name: retrieval-quality
+on:
+  workflow_dispatch:
+    inputs:
+      split:
+        description: Frozen split (holdout only after configuration is fixed)
+        type: choice
+        options: [tuning, holdout]
+        default: tuning
+  push:
+    paths: ['backend/**', 'docs/datasets/**', '.github/workflows/retrieval-quality.yaml']
+  pull_request:
+    paths: ['backend/**', 'docs/datasets/**', '.github/workflows/retrieval-quality.yaml']
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.1-pg17@sha256:3e8b3adfd27b5707128f60956f62a793c3c9326ea8cfaf0eab7adccb5d700b21
+        env: {POSTGRES_USER: knowflow, POSTGRES_PASSWORD: knowflow, POSTGRES_DB: knowflow}
+        ports: ['5432:5432']
+        options: --health-cmd "pg_isready -U knowflow" --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.test
+      DATABASE_URL: postgres://knowflow:knowflow@localhost:5432/knowflow
+      DEFAULT_TENANT_DAILY_TOKENS: '10000000'
+      DEFAULT_USER_DAILY_TOKENS: '1000000'
+      QUALITY_SPLIT: ${{ inputs.split || 'tuning' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: '0.11.32'}
+      - run: uv sync --frozen --python 3.12
+        working-directory: backend
+      - name: Import frozen synthetic fixtures
+        working-directory: backend
+        run: |
+          uv run python manage.py migrate --noinput
+          uv run python manage.py seed_demo --password SyntheticCI-Only-2026
+          uv run python manage.py seed_quality --password SyntheticCI-Only-2026
+      - name: Compare B0 B1 B2 with per-case answers
+        working-directory: backend
+        run: uv run python manage.py evaluate_quality --split "$QUALITY_SPLIT" --answers --output ../reports/quality.json
+      - name: Independent authorization and unsafe-tool matrix
+        working-directory: backend
+        run: uv run python manage.py verify_retrieval_security --output ../reports/security.json
+      - name: Exact versus HNSW at two corpus sizes and two selectivities
+        working-directory: backend
+        run: uv run python manage.py benchmark_retrieval_index --disposable --sizes 1000 10000 --queries 30 --output ../reports/index.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: retrieval-quality-${{ github.sha }}-${{ env.QUALITY_SPLIT }}
+          path: reports/

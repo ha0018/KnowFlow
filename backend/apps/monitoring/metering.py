@@ -107,12 +107,12 @@ def settle(
     if (
         known
         and price.get("input_per_million")
-        and (row.task_type == "embedding" or price.get("output_per_million"))
+        and (row.task_type not in {"generation", "rewrite"} or price.get("output_per_million"))
     ):
         inputs, outputs = usage.get("input_tokens"), usage.get("output_tokens", 0)
         if type(inputs) is int and type(outputs) is int:
             cost = Decimal(price["input_per_million"]) * inputs
-            if row.task_type == "generation":
+            if row.task_type in {"generation", "rewrite"}:
                 cost += Decimal(price["output_per_million"]) * outputs
             price["estimated_cost_usd"] = str(cost / 1_000_000)
     ModelCallLog.objects.create(
