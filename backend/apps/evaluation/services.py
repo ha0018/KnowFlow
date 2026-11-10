@@ -107,6 +107,8 @@ def perform_evaluation(run_id):
     if split:
         cases = [c for c in cases if c.split == split]
     try:
+        if run.dataset.split == "stratified" and split not in {"tuning", "holdout"}:
+            raise ValueError("EVALUATION_SPLIT_REQUIRED")
         ctx = RequestContext.for_user(run.actor, run.trace_id)
         if not run.actor.is_active or not run.actor.tenant.is_active:
             raise ValueError("ACTOR_DISABLED")
@@ -215,6 +217,7 @@ def perform_evaluation(run_id):
             "FROZEN_DATASET_CHANGED",
             "EVALUATION_CONFIG_CHANGED",
             "EMPTY_EVALUATION_SPLIT",
+            "EVALUATION_SPLIT_REQUIRED",
         }
         status, metrics = (
             "FAILED",

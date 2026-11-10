@@ -9,6 +9,7 @@ from types import SimpleNamespace
 import pytest
 from django.conf import settings as config
 from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.db import IntegrityError, connection, transaction
 
 from ai_engine.gateway.config import GatewayError
@@ -35,10 +36,27 @@ def quality(world):
     return EvalDataset.objects.get(tenant=world["tenant"], version="quality-v1")
 
 
-def test_frozen_dataset_exact_split_spans_and_idempotent_import(world, quality):
+def test_frozen_dataset_exact_split_spans_and_idempotent_import(world, quality, tmp_path):
     raw = Path(config.BASE_DIR.parent / "docs/datasets/quality-v1.json").read_bytes()
     assert hashlib.sha256(raw).hexdigest() == quality.manifest["source_sha256"]
     assert quality.cases.count() == 100
+    with pytest.raises(CommandError, match="Dataset not found"):
+        call_command(
+            "evaluate_demo",
+            email=world["admin"].email,
+            output=str(tmp_path / "legacy.json"),
+            stdout=StringIO(),
+        )
+    unscoped = EvalRun.objects.create(
+        tenant=world["tenant"],
+        dataset=quality,
+        actor=world["admin"],
+        trace_id="no-implicit-holdout",
+        config_snapshot={"mode": "hybrid"},
+    )
+    perform_evaluation(unscoped.pk)
+    unscoped.refresh_from_db()
+    assert unscoped.metrics["error"] == "EVALUATION_SPLIT_REQUIRED" and not unscoped.results.exists()
     assert Counter(quality.cases.filter(split="tuning").values_list("category", flat=True)) == {
         "answerable": 28,
         "unanswerable": 6,
