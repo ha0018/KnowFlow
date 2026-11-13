@@ -1,0 +1,305 @@
+{
+  "date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "source_revision": "9ead408412afc4f19459163ecbc686912958e32a",
+  "recovery_fix_revision": "da9b56e",
+  "scope": "engineering_delivery_demo_models_actual_container_infrastructure",
+  "real_supplier_verified": false,
+  "human_semantic_quality_accepted": false,
+  "all_A01_A15_passed": false,
+  "checks": {
+    "sqlite": {
+      "total": 172,
+      "passed": 170,
+      "failed": 0,
+      "skipped": [
+        {
+          "name": "test_concurrent_admission_cannot_overspend_tenant",
+          "reason": "Row-lock admission requires PostgreSQL"
+        },
+        {
+          "name": "test_concurrent_settlement_is_exactly_once",
+          "reason": "Concurrent settlement uses PostgreSQL row locks"
+        }
+      ]
+    },
+    "postgres": {
+      "total": 172,
+      "passed": 170,
+      "failed": 0,
+      "skipped": [
+        {
+          "name": "test_backup_restore_preserves_database_and_file_hashes",
+          "reason": "Local snapshot command is specific to SQLite"
+        },
+        {
+          "name": "test_portable_dense_ranking_is_cosine_not_unnormalized_dot_product",
+          "reason": "Portable exact implementation only"
+        }
+      ]
+    },
+    "windows": {
+      "total": 172,
+      "passed": 168,
+      "failed": 0,
+      "skipped": [
+        {
+          "name": "test_native_linux_parser_resource_limits_kill_or_reject_allocation[memory]",
+          "reason": "Deployment CPU/address-space limits use Linux rlimit"
+        },
+        {
+          "name": "test_native_linux_parser_resource_limits_kill_or_reject_allocation[cpu]",
+          "reason": "Deployment CPU/address-space limits use Linux rlimit"
+        },
+        {
+          "name": "test_concurrent_admission_cannot_overspend_tenant",
+          "reason": "Row-lock admission requires PostgreSQL"
+        },
+        {
+          "name": "test_concurrent_settlement_is_exactly_once",
+          "reason": "Concurrent settlement uses PostgreSQL row locks"
+        }
+      ]
+    }
+  },
+  "stream_recovery_windows": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": []
+  },
+  "new_cases_since_S4": 31,
+  "browser": {
+    "passed": 4,
+    "failed": 0
+  },
+  "delivery": {
+    "security_cases": 160,
+    "unauthorized_occurrences": 0,
+    "valid_files": {
+      "passed": 50,
+      "total": 50
+    },
+    "invalid_files": {
+      "passed": 20,
+      "total": 20
+    },
+    "actual_duplicate_deliveries": 10,
+    "failed_version_updates": 10,
+    "superseded_builds_cancelled": 5,
+    "stream_cycles": 20,
+    "trace_samples": 20,
+    "dependency_fault_recoveries": 20,
+    "worker_SIGKILL_recoveries": 5,
+    "worker_lease_expiry_forced": true
+  },
+  "restore": {
+    "files": 93,
+    "tables": 35,
+    "all_database_row_digests_match": true,
+    "all_object_sha256_match": true,
+    "business_groups_passed": 10,
+    "new_project": "knowflow-s5-restore"
+  },
+  "load": {
+    "schema": "knowflow-load-v1",
+    "revision": "9ead408412afc4f19459163ecbc686912958e32a",
+    "environment": {
+      "python": "3.12.16",
+      "platform": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.41",
+      "database": "postgresql",
+      "processor": "",
+      "cpu_count": 4,
+      "memory_bytes": 16759439360,
+      "dependency_lock_sha256": "01d80520bd24c67166d0e8f044624571bdbda1b5124ab5b6d58e9fc8e3819ba3"
+    },
+    "scope": "demo_hash_embedding_10000_synthetic_published_chunks_2_tenants",
+    "fixture_chunk_count": 10000,
+    "fixture_schema": "synthetic-load-v1",
+    "corpus_sha256": "e99b84c8c748551df0bf4b9eec123b39c48646f4a201331138aa734429215f90",
+    "embedding_profile": "demo:demo-hash-v1:128:tokens-v1",
+    "database_chunk_count": 12577,
+    "vector_index": "exact",
+    "rerank": false,
+    "rewrite": false,
+    "concurrency": {
+      "api": 20,
+      "retrieval": 10
+    },
+    "visible_chunks": [
+      500,
+      5000
+    ],
+    "api_mix": "20 closed-loop users alternate knowledge-base and document list requests",
+    "request_interval_seconds_per_user": 0,
+    "concurrent_workloads": true,
+    "pagination_size": 30,
+    "real_supplier_verified": false,
+    "api_user_rate": "100000/min",
+    "fixture_daily_quota": {
+      "tenant": 1000000000,
+      "user": 100000000
+    },
+    "driver_location": "separate_container_on_same_host",
+    "status": "completed",
+    "elapsed_seconds": 602.129535067,
+    "counts": {
+      "api": 9016,
+      "retrieval": 2812
+    },
+    "peak_inflight": {
+      "api": 20,
+      "retrieval": 10
+    },
+    "warmup": {
+      "requests": 60,
+      "failed": 0
+    },
+    "groups": {
+      "api": {
+        "requests": 9036,
+        "passed": 9036,
+        "failed": 0,
+        "success_rate": 1.0,
+        "p50_ms": 1357.6927569999953,
+        "p95_ms": 1816.6987070000005,
+        "max_ms": 2256.4999539999917,
+        "formal_measurement_length_met": true,
+        "latency_threshold_ms": 300,
+        "target_met": false,
+        "failures_in_latency_denominator": true
+      },
+      "retrieval": {
+        "requests": 2822,
+        "passed": 2822,
+        "failed": 0,
+        "success_rate": 1.0,
+        "p50_ms": 2142.6034730000083,
+        "p95_ms": 2601.2191920000305,
+        "max_ms": 3568.7787049999997,
+        "formal_measurement_length_met": true,
+        "latency_threshold_ms": 800,
+        "target_met": false,
+        "failures_in_latency_denominator": true
+      }
+    },
+    "api_endpoints": {
+      "knowledge_bases": {
+        "requests": 4522,
+        "passed": 4522,
+        "failed": 0,
+        "p95_ms": 1788.4461639999927,
+        "target_met": false
+      },
+      "documents": {
+        "requests": 4514,
+        "passed": 4514,
+        "failed": 0,
+        "p95_ms": 1834.2363790000036,
+        "target_met": false
+      }
+    },
+    "all_targets_met": false,
+    "raw_requests_file": "load-report.jsonl",
+    "raw_requests_sha256": "209190df6bb7ad12cfa9ea005ed68a601207e969a5b9b406862b0d2b959290f1"
+  },
+  "load_raw_validated": true,
+  "baseline_counts_note": "counts is the last periodic progress snapshot; final groups and all raw request records are authoritative. da9b56e fixes final counts for future runs; original baseline bytes retained.",
+  "artifact_archives": [
+    {
+      "id": 14009968537,
+      "name": "backend-tests-sqlite",
+      "digest": "sha256:2d9e3e1119f846fd2849cdfd20d61896e51d7094b50faf152f18405b7ed06924"
+    },
+    {
+      "id": 14009519989,
+      "name": "backend-tests-postgres",
+      "digest": "sha256:10626c30d2b7ac32470dbc4a143518f72f08dbb39054a3a724059d9c58574bfe"
+    },
+    {
+      "id": 14010757304,
+      "digest": "sha256:fd8d73e8270c5ef9d063fed3ec7e31e3543a78eb974bd844dc54fc2375e01f31"
+    }
+  ],
+  "ci": {
+    "checks": "https://github.com/ha0018/KnowFlow/actions/runs/43365455476",
+    "retrieval_regression": "https://github.com/ha0018/KnowFlow/actions/runs/43365455433",
+    "infrastructure": "https://github.com/ha0018/KnowFlow/actions/runs/43365455447"
+  },
+  "demo": {
+    "duration_seconds": 143.756,
+    "path": "docs/demo/product-walkthrough.webm",
+    "sha256": "896acf79aecfcd7c4619bfde868b77b31d378aae143c2291fc3d3b0e5e99d93b",
+    "bytes": 11363146
+  },
+  "evidence_files": {
+    "backend-postgres.xml": {
+      "bytes": 22816,
+      "sha256": "55975ec30c5df661be935cdb11ad5e41b3cda83005594eb0bf63857227e71de7"
+    },
+    "backend-sqlite.xml": {
+      "bytes": 22837,
+      "sha256": "8de439c9968a2e0a9522eaa295213a126fd876c97562ac39b2d900e5e9ee19f9"
+    },
+    "backend-windows.xml": {
+      "bytes": 23325,
+      "sha256": "3cf44f56414a6d78d25dcbd29e9ab06202553807e22b3783d0bae573f86d06fd"
+    },
+    "browser-verification.json": {
+      "bytes": 1260,
+      "sha256": "d2007534b41da016e8f65f07118775b1a10f8e321d9fea6c9cafd499de2a4e91"
+    },
+    "delivery-report.json": {
+      "bytes": 74019,
+      "sha256": "b71cba32d3d45cc0750bd61720dea18ad7fd0361471178a6232437ca810324cf"
+    },
+    "delivery-test-matrix.json": {
+      "bytes": 5601,
+      "sha256": "317205453aad4e5139f2479e7acdaf409a323a0caa02885f168a3f7ec51b57bf"
+    },
+    "demo-recording.json": {
+      "bytes": 1485,
+      "sha256": "edc58c6420c412d190dd1cb436a147b12a73d97591b9ff240df622b6c7ece48d"
+    },
+    "dependency-faults.json": {
+      "bytes": 3507,
+      "sha256": "0b18a751be555f9b3bb2a36a232fd19426b6d3b0f3f68ed8aa245d5211cea0e7"
+    },
+    "images.json": {
+      "bytes": 2643,
+      "sha256": "865575054c0745c31badb0eb68cebfb75e308a30d7bdb81d526af95957b42bd1"
+    },
+    "infrastructure-report.json": {
+      "bytes": 3815,
+      "sha256": "57d36d252ec83a8f183bfaa623db72e3df90e0de0a9f565fa9e5d059602ffe53"
+    },
+    "load-report.json": {
+      "bytes": 2803,
+      "sha256": "b753d038be3e0c85d36cb81793787330999a40217953a6a605971a1f4b20133e"
+    },
+    "load-report.jsonl.gz": {
+      "bytes": 452135,
+      "sha256": "3994b88e28d3c88e69f99e8c8470093886d9bae37a001a02408f3480f5856b1b"
+    },
+    "restoration-report.json": {
+      "bytes": 5224,
+      "sha256": "680b15decc056e5aa12f9371cc9dcd42b38e093b45a98bcabf9564b8a8c8628d"
+    },
+    "restored-business.json": {
+      "bytes": 3815,
+      "sha256": "c1d06b4372e3bbfbb6a028aee5bc4077b8f50fe4322c8717df615e50cdee14e9"
+    },
+    "stream-recovery-windows.xml": {
+      "bytes": 1039,
+      "sha256": "e1c0638adc64e1700580a68c06f72232550daec24f71c8b61ce4d54a9c9bc649"
+    },
+    "tls-report.json": {
+      "bytes": 797,
+      "sha256": "06de7bf2647287fb266a85afb12e1e2c2f3923abd40c63a247227f8ad858a6a0"
+    },
+    "worker-recovery.json": {
+      "bytes": 4845,
+      "sha256": "20da6613f12a54748f082c0d10be5307f247938107e6bdcfc3ce5fdc654fb78d"
+    }
+  }
+}

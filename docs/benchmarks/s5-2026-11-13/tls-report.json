@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "scope": "CI_certificate_trusted_explicitly_not_public_CA_deployment",
+  "certificate_sha256": "bfd8a689bc11c8d5e2aa84e6b03cf6b067619be45be9aa9e55b2d8a3d2819157",
+  "checks": [
+    {
+      "path": "/",
+      "status": "passed",
+      "http_status": 200,
+      "hsts": "max-age=31536000"
+    },
+    {
+      "path": "/health/live",
+      "status": "passed",
+      "http_status": 200,
+      "hsts": "max-age=31536000; includeSubDomains; preload"
+    },
+    {
+      "path": "/health/ready",
+      "status": "passed",
+      "http_status": 200,
+      "hsts": "max-age=31536000; includeSubDomains; preload"
+    },
+    {
+      "path": "/api/v1/auth/me",
+      "status": "passed",
+      "http_status": 401,
+      "hsts": "max-age=31536000; includeSubDomains; preload"
+    }
+  ]
+}

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vue-tsc --noEmit && vite build",
-    "test": "vitest run"
+    "test": "vitest run",
+    "demo:record": "node scripts/record-demo.mjs"
   },
   "dependencies": {
     "lucide-vue-next": "^0.468.0",

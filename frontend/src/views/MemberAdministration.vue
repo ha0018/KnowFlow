@@ -68,5 +68,5 @@ async function saveRole() {
 </template>
 
 <style scoped>
-.member-email{display:block;margin-top:6px;color:#84918a}.admin-forms{margin-top:24px}.admin-forms h2{font-size:19px;margin:0 0 16px}.choice-list{display:flex;flex-wrap:wrap;gap:14px;margin:18px 0}.choice-list label{display:flex;align-items:center;gap:8px;margin:0}.choice-list input{width:auto}.role-assignment{border-top:1px solid #e4e9df;margin-top:20px;padding-top:15px}.admin-actions{display:flex;gap:12px}.member-administration .table-actions{white-space:nowrap}@media(max-width:700px){.admin-actions{flex-wrap:wrap}.admin-forms{grid-template-columns:1fr}}
+.member-email{display:block;margin-top:6px;color:#84918a}.admin-forms{margin-top:24px}.admin-forms h2{font-size:19px;margin:0 0 16px}.choice-list{display:flex;flex-wrap:wrap;gap:14px;margin:18px 0}.choice-list label{display:flex;flex-direction:row;align-items:center;gap:8px;margin:0}.choice-list input{width:auto}.role-assignment{border-top:1px solid #e4e9df;margin-top:20px;padding-top:15px}.admin-actions{display:flex;gap:12px}.member-administration .table-actions{white-space:nowrap}@media(max-width:700px){.admin-actions{flex-wrap:wrap}.admin-forms{grid-template-columns:1fr}}
 </style>

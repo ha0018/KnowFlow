@@ -1,0 +1,35 @@
+{
+  "source": "actual_local_Playwright_run",
+  "test_count": 4,
+  "passed": 4,
+  "failed": 0,
+  "elapsed_seconds_rounded": 84,
+  "base_url": "http://127.0.0.1:5174",
+  "database": "isolated SQLite restored from pre-S5 snapshot, migrated to documents.0004",
+  "production_data_mutated_by_this_run": false,
+  "page_errors": [],
+  "specs": {
+    "frontend/tests/administration.spec.ts": {
+      "sha256": "4cd2070404cf25a263eaff70febff2987333e95649dff5fc38f73f147b34d2e2",
+      "result": "passed"
+    },
+    "frontend/tests/agent.spec.ts": {
+      "sha256": "64da1e7dd655faac5dc78c0682ae5600f9dbb316c637eb609dd103b9bab8dcce",
+      "result": "passed"
+    },
+    "frontend/tests/quality.spec.ts": {
+      "sha256": "9005ec8f49f6e2865264b6e877303f9a96c93c2c75f0a13a0882d621384aefc9",
+      "result": "passed"
+    },
+    "frontend/tests/workspace.spec.ts": {
+      "sha256": "55daa039d487ceccbc7d4683015f22bb34f2bad567b49e7530bb431ff89fe8d3",
+      "result": "passed"
+    }
+  },
+  "later_visual_check": {
+    "member_checkboxes": "row",
+    "mode": "read_only",
+    "screenshot": "docs/demo/member-administration.png"
+  },
+  "screenshot_note": "S5 screenshots updated; historical S1-S4 screenshots retain their original bytes."
+}
