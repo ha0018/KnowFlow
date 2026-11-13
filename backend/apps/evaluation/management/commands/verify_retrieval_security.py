@@ -131,6 +131,7 @@ class Command(BaseCommand):
             with transaction.atomic():
                 DocumentACL.objects.get_or_create(**grant_values)
                 Tenant.objects.filter(pk=actor.tenant_id).update(acl_epoch=F("acl_epoch") + 1)
+        actor.refresh_from_db()
         ctx = RequestContext.for_user(actor)
         attacks = [
             ("ShellTool", {"command": "whoami"}),

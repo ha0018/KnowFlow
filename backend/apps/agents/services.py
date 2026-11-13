@@ -88,7 +88,7 @@ def begin_call(ctx, name, args, run=None, step=0):
 def finish_call(ctx, call_id, result=None, *, status="completed", code="", duration=0):
     Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
     call = (
-        ToolCall.objects.select_for_update()
+        ToolCall.objects.select_for_update(of=("self",))
         .select_related("run")
         .get(pk=call_id, tenant_id=ctx.tenant_id, actor=ctx.user)
     )
