@@ -2,11 +2,14 @@
 
 import hashlib
 import json
+import logging
+import math
 import os
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Lock
 
 import httpx
 from django.conf import settings
@@ -31,7 +34,11 @@ def seed():
     scopes = []
     with transaction.atomic():
         for tenant_number in range(2):
-            tenant = Tenant.objects.create(name="S5 load", slug=f"s5-load-{nonce}-{tenant_number}")
+            tenant = Tenant.objects.create(
+                name="S5 load",
+                slug=f"s5-load-{nonce}-{tenant_number}",
+                quota_config={"daily_tokens": 1000000000, "user_daily_tokens": 100000000},
+            )
             owner = User.objects.create_user(
                 f"owner-{nonce}-{tenant_number}@load.test", tenant=tenant, is_tenant_admin=True
             )
@@ -140,7 +147,13 @@ def request(client, actor, iteration):
     try:
         headers = {"Authorization": "Bearer " + actor["token"]}
         if group == "api":
-            response = client.get("/api/v1/knowledge-bases?page=1", headers=headers)
+            if iteration % 2:
+                kb_id = actor["kb_ids"][iteration % len(actor["kb_ids"])]
+                record["endpoint"] = "documents"
+                response = client.get(f"/api/v1/knowledge-bases/{kb_id}/documents?page=1", headers=headers)
+            else:
+                record["endpoint"] = "knowledge_bases"
+                response = client.get("/api/v1/knowledge-bases?page=1", headers=headers)
         else:
             response = client.post(
                 "/api/v1/retrieval/search",
@@ -162,7 +175,9 @@ def request(client, actor, iteration):
         body = response.json()
         if group == "api":
             returned = {row["id"] for row in body["results"]}
-            authorized = returned <= set(actor["kb_ids"])
+            authorized = bool(returned) and returned <= set(
+                actor["doc_ids"] if record["endpoint"] == "documents" else actor["kb_ids"]
+            )
         else:
             sources = body["sources"]
             authorized = bool(sources) and all(row["document_id"] in actor["doc_ids"] for row in sources)
@@ -184,7 +199,7 @@ class Command(BaseCommand):
         parser.add_argument("--base-url", default="http://frontend")
         parser.add_argument("--duration", type=int, default=600)
         parser.add_argument("--min-requests", type=int, default=1000)
-        parser.add_argument("--interval", type=float, default=5)
+        parser.add_argument("--interval", type=float, default=0)
         parser.add_argument("--output", required=True)
 
     def handle(self, **options):
@@ -192,12 +207,13 @@ class Command(BaseCommand):
             connection.vendor != "postgresql"
             or profile("embedding").provider != "demo"
             or profile("generation").provider != "demo"
+            or settings.RETRIEVAL_VECTOR_INDEX != "exact"
         ):
             raise CommandError("Disposable PostgreSQL and demo providers are required")
         if (
             not 1 <= options["duration"] <= 1800
             or not 1 <= options["min_requests"] <= 10000
-            or not 1 <= options["interval"] <= 10
+            or not 0 <= options["interval"] <= 10
         ):
             raise CommandError("Invalid measurement bounds")
         actors = seed()
@@ -218,10 +234,14 @@ class Command(BaseCommand):
             "rewrite": False,
             "concurrency": {"api": 20, "retrieval": 10},
             "visible_chunks": [500, 5000],
+            "api_mix": "20 closed-loop users alternate knowledge-base and document list requests",
             "request_interval_seconds_per_user": options["interval"],
             "concurrent_workloads": True,
             "pagination_size": settings.REST_FRAMEWORK["PAGE_SIZE"],
             "real_supplier_verified": False,
+            "api_user_rate": settings.REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["user"],
+            "fixture_daily_quota": {"tenant": 1000000000, "user": 100000000},
+            "driver_location": "separate_container_on_same_host",
             "status": "running",
         }
         with (
@@ -236,37 +256,62 @@ class Command(BaseCommand):
             for iteration in range(2):
                 futures = [pool.submit(request, client, actor, -2 + iteration) for actor in actors]
                 warmup.extend(f.result() for f in futures)
-            started, iteration = time.monotonic(), 0
+            logging.getLogger("httpx").setLevel(logging.WARNING)
+            started = time.monotonic()
             counts = {"api": 0, "retrieval": 0}
-            try:
+            active, peak = {"api": 0, "retrieval": 0}, {"api": 0, "retrieval": 0}
+            lock = Lock()
+
+            def drive(actor):
+                count, total = 0, 20 if actor["group"] == "api" else 10
+                required = math.ceil(options["min_requests"] / total)
                 while (
-                    time.monotonic() - started < options["duration"]
-                    or min(counts.values()) < options["min_requests"]
-                ):
-                    batch_started = time.monotonic()
-                    futures = [pool.submit(request, client, actor, iteration) for actor in actors]
-                    for future in futures:
-                        record = future.result()
+                    time.monotonic() - started < options["duration"] or count < required
+                ) and time.monotonic() - started < options["duration"] + 300:
+                    group = actor["group"]
+                    with lock:
+                        active[group] += 1
+                        peak[group] = max(peak[group], active[group])
+                    try:
+                        record = request(client, actor, count)
+                    finally:
+                        with lock:
+                            active[group] -= 1
+                    with lock:
                         records.append(record)
                         counts[record["group"]] += 1
                         raw.write(json.dumps(record, sort_keys=True) + "\n")
-                    raw.flush()
-                    iteration += 1
-                    report.update(elapsed_seconds=time.monotonic() - started, counts=counts)
-                    output.write_text(json.dumps(report, indent=2), encoding="utf-8")
-                    if iteration % 12 == 0:
+                    count += 1
+                    if options["interval"]:
+                        time.sleep(options["interval"])
+
+            try:
+                futures = [pool.submit(drive, actor) for actor in actors]
+                next_report = started + 30
+                while not all(f.done() for f in futures):
+                    if time.monotonic() >= next_report:
+                        with lock:
+                            raw.flush()
+                            report.update(elapsed_seconds=time.monotonic() - started, counts=dict(counts))
+                        output.write_text(json.dumps(report, indent=2), encoding="utf-8")
                         print(
                             json.dumps(
                                 {"measurement_seconds": round(time.monotonic() - started), "counts": counts}
                             ),
                             flush=True,
                         )
-                    remaining = options["interval"] - (time.monotonic() - batch_started)
-                    if remaining > 0:
-                        time.sleep(remaining)
-                measurement_completed = True
+                        next_report = time.monotonic() + 30
+                    time.sleep(1)
+                for future in futures:
+                    future.result()
+                raw.flush()
+                measurement_completed = (
+                    min(counts.values()) >= options["min_requests"]
+                    and time.monotonic() - started >= options["duration"]
+                )
             finally:
                 report["elapsed_seconds"] = time.monotonic() - started
+                report["peak_inflight"] = peak
                 report["warmup"] = {
                     "requests": len(warmup),
                     "failed": sum(r["status"] != "passed" for r in warmup),
@@ -276,7 +321,13 @@ class Command(BaseCommand):
                     items = [r for r in records if r["group"] == group]
                     latency = [r["latency_ms"] for r in items]
                     passed = sum(r["status"] == "passed" for r in items)
-                    enough = measurement_completed and len(items) >= 1000 and report["elapsed_seconds"] >= 600
+                    enough = (
+                        measurement_completed
+                        and options["interval"] == 0
+                        and peak[group] == (20 if group == "api" else 10)
+                        and len(items) >= 1000
+                        and report["elapsed_seconds"] >= 600
+                    )
                     p95 = percentile(latency)
                     report["groups"][group] = {
                         "requests": len(items),
@@ -291,13 +342,36 @@ class Command(BaseCommand):
                         "target_met": enough and p95 <= threshold and passed / len(items) >= 0.99,
                         "failures_in_latency_denominator": True,
                     }
+                report["api_endpoints"] = {}
+                for endpoint in ("knowledge_bases", "documents"):
+                    items = [r for r in records if r.get("endpoint") == endpoint]
+                    latency = [r["latency_ms"] for r in items]
+                    passed = sum(r["status"] == "passed" for r in items)
+                    p95 = percentile(latency)
+                    enough = (
+                        measurement_completed
+                        and options["interval"] == 0
+                        and peak["api"] == 20
+                        and len(items) >= 1000
+                        and report["elapsed_seconds"] >= 600
+                    )
+                    report["api_endpoints"][endpoint] = {
+                        "requests": len(items),
+                        "passed": passed,
+                        "failed": len(items) - passed,
+                        "p95_ms": p95,
+                        "target_met": enough and p95 <= 300 and passed / len(items) >= 0.99,
+                    }
                 report["status"] = "completed" if measurement_completed else "interrupted"
                 report["all_targets_met"] = (
                     all(g["target_met"] for g in report["groups"].values())
+                    and all(g["target_met"] for g in report["api_endpoints"].values())
                     and report["warmup"]["failed"] == 0
                 )
                 report["raw_requests_file"] = raw_path.name
-                report["raw_requests_sha256"] = hashlib.sha256(raw_path.read_bytes()).hexdigest()
+                raw.flush()
+                with raw_path.open("rb") as source:
+                    report["raw_requests_sha256"] = hashlib.file_digest(source, "sha256").hexdigest()
                 output.write_text(json.dumps(report, indent=2), encoding="utf-8")
         print(
             json.dumps(

@@ -10,6 +10,12 @@ def model_configuration(app_configs, **kwargs):
 
     if not 1 <= settings.CLEANUP_STORAGE_GRACE_DAYS <= 365:
         errors.append(Error("Invalid cleanup retention", id="knowflow.E004"))
+    from rest_framework.throttling import UserRateThrottle
+
+    try:
+        UserRateThrottle().parse_rate(settings.REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["user"])
+    except (ValueError, KeyError, TypeError):
+        errors.append(Error("Invalid API_USER_RATE", id="knowflow.E005"))
     from ai_engine.parsers import ParseError
     from ai_engine.parsers.isolation import parser_limits
 

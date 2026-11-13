@@ -110,7 +110,12 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 30,
     "EXCEPTION_HANDLER": "common.exceptions.exception_handler",
     "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.UserRateThrottle"],
-    "DEFAULT_THROTTLE_RATES": {"user": "120/min", "anon": "10/min", "login": "10/min"},
+    "DEFAULT_THROTTLE_RATES": {
+        "user": env("API_USER_RATE", default="120/min"),
+        "anon": "10/min",
+        "login": "10/min",
+        "run-cancel": "60/min",
+    },
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),

@@ -163,3 +163,22 @@ def test_storage_inventory_ownership_is_database_guarded(world):
         StorageObject.objects.filter(pk=row.pk).update(tenant=world["other"])
     with pytest.raises(IntegrityError), transaction.atomic():
         StorageObject.objects.filter(pk=row.pk).update(key="other.md")
+
+
+def test_cancel_has_its_own_budget_after_ordinary_api_throttle_is_exhausted(world, client_for, monkeypatch):
+    from rest_framework.throttling import UserRateThrottle
+
+    from apps.conversations.models import Conversation
+    from apps.conversations.services import begin_run
+    from apps.knowledge.api import KnowledgeBaseViewSet
+
+    monkeypatch.setattr(UserRateThrottle, "rate", "1/min", raising=False)
+    monkeypatch.setattr(KnowledgeBaseViewSet, "throttle_classes", [UserRateThrottle])
+    client = client_for(world["admin"])
+    conversation = Conversation.objects.create(tenant=world["tenant"], user=world["admin"])
+    run, _ = begin_run(world["ctx"], conversation.pk, "退款？", "cancel-separate-budget")
+    assert client.get("/api/v1/knowledge-bases").status_code == 200
+    assert client.get("/api/v1/knowledge-bases").status_code == 429
+    assert client.post(f"/api/v1/runs/{run.pk}/cancel").status_code == 200
+    run.refresh_from_db()
+    assert run.status == "cancelled"

@@ -4,6 +4,7 @@ from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from apps.documents.selectors import chunk_readable
@@ -89,6 +90,9 @@ class RunView(APIView):
 
 
 class CancelRunView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "run-cancel"
+
     def post(self, request, run_id):
         run = cancel_run(RequestContext.from_request(request), run_id)
         return Response({"id": run.pk, "status": run.status})
