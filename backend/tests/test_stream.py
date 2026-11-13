@@ -1,9 +1,11 @@
 import asyncio
 import json
+from datetime import timedelta
 
 import pytest
 from asgiref.sync import async_to_sync, sync_to_async
 from django.test import AsyncClient
+from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.conversations.models import Conversation, Run
@@ -58,6 +60,27 @@ def test_repeated_idempotency_key_does_not_create_messages(world):
 
     with pytest.raises(Conflict):
         begin_run(ctx, c.pk, "不同问题", "same-key")
+
+
+def test_stale_stream_converges_within_two_minute_scan_window(world, settings):
+    from apps.conversations.services import interrupt_stale_runs
+
+    now = timezone.now()
+    runs = []
+    for age in (91, 89, 180):
+        conversation = Conversation.objects.create(tenant=world["tenant"], user=world["admin"])
+        run, _ = begin_run(world["ctx"], conversation.pk, "退款", f"stale-{age}")
+        save_progress(run.pk, "已经保存的部分内容", "completed" if age == 180 else None)
+        Run.objects.filter(pk=run.pk).update(heartbeat_at=now - timedelta(seconds=age))
+        runs.append(run)
+    interrupt_stale_runs()
+    for run in runs:
+        run.refresh_from_db()
+    assert [run.status for run in runs] == ["interrupted", "streaming", "completed"]
+    assert runs[0].error_code == "HEARTBEAT_EXPIRED"
+    assert runs[0].output_message.content == "已经保存的部分内容"
+    assert runs[0].output_message.status == "interrupted"
+    assert 90 + settings.CELERY_BEAT_SCHEDULE["recover-work"]["schedule"] <= 120
 
 
 def test_history_hides_whole_answer_and_reference_after_revocation(world, ingest, client_for):

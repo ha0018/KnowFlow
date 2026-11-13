@@ -316,6 +316,7 @@ class Command(BaseCommand):
                 )
             finally:
                 report["elapsed_seconds"] = time.monotonic() - started
+                report["counts"] = dict(counts)
                 report["peak_inflight"] = peak
                 report["warmup"] = {
                     "requests": len(warmup),

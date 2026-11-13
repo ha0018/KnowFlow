@@ -294,5 +294,13 @@ def cancel_run(ctx, run_id):
 
 
 def interrupt_stale_runs():
-    for run in Run.objects.filter(status="streaming", heartbeat_at__lt=timezone.now() - timedelta(minutes=2)):
-        save_progress(run.pk, run.output_message.content, "interrupted", error="HEARTBEAT_EXPIRED")
+    # Leave one 30-second beat interval inside the two-minute recovery window.
+    cutoff = timezone.now() - timedelta(seconds=90)
+    for run_id in Run.objects.filter(status="streaming", heartbeat_at__lt=cutoff).values_list(
+        "id", flat=True
+    ):
+        with transaction.atomic():
+            run = Run.objects.select_for_update().get(pk=run_id)
+            # A heartbeat or terminal transition may have happened since the scan.
+            if run.status == "streaming" and run.heartbeat_at < cutoff:
+                save_progress(run.pk, run.output_message.content, "interrupted", error="HEARTBEAT_EXPIRED")
