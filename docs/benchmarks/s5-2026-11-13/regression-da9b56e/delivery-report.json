@@ -1,0 +1,2397 @@
+{
+  "schema": "knowflow-delivery-v1",
+  "revision": "da9b56e9a95d67bb05ce69e65a035bfe8bbb853f",
+  "started_at": "2026-11-13T05:05:35.265869+00:00",
+  "model": "demo",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "fixtures",
+      "status": "passed",
+      "details": {
+        "tenants": 2,
+        "actors": 4,
+        "resource_scopes": [
+          "public",
+          "private",
+          "restricted",
+          "deleted",
+          "foreign"
+        ]
+      },
+      "duration_ms": 5978
+    },
+    {
+      "name": "security",
+      "status": "passed",
+      "details": {
+        "case_count": 160,
+        "failed": 0,
+        "unauthorized_occurrences": 0,
+        "cases": [
+          {
+            "actor": "admin",
+            "scope": "public",
+            "surface": "document",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "public",
+            "surface": "task",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "public",
+            "surface": "download",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "public",
+            "surface": "search",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "public",
+            "surface": "tool",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "public",
+            "surface": "reference",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "public",
+            "surface": "history",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "public",
+            "surface": "run",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "private",
+            "surface": "document",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "private",
+            "surface": "task",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "private",
+            "surface": "download",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "private",
+            "surface": "search",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "private",
+            "surface": "tool",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "private",
+            "surface": "reference",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "private",
+            "surface": "history",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "private",
+            "surface": "run",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "restricted",
+            "surface": "document",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "restricted",
+            "surface": "task",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "restricted",
+            "surface": "download",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "restricted",
+            "surface": "search",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "restricted",
+            "surface": "tool",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "restricted",
+            "surface": "reference",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "restricted",
+            "surface": "history",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "restricted",
+            "surface": "run",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "deleted",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "deleted",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "deleted",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "deleted",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "deleted",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "deleted",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "deleted",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "deleted",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "foreign",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "foreign",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "foreign",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "foreign",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "admin",
+            "scope": "foreign",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "foreign",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "foreign",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "admin",
+            "scope": "foreign",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "public",
+            "surface": "document",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "public",
+            "surface": "task",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "public",
+            "surface": "download",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "public",
+            "surface": "search",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "public",
+            "surface": "tool",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "public",
+            "surface": "reference",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "public",
+            "surface": "history",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "public",
+            "surface": "run",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "private",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "private",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "private",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "private",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "private",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "private",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "private",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "private",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "restricted",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "restricted",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "restricted",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "restricted",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "restricted",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "restricted",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "restricted",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "restricted",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "deleted",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "deleted",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "deleted",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "deleted",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "deleted",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "deleted",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "deleted",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "deleted",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "foreign",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "foreign",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "foreign",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "foreign",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "member",
+            "scope": "foreign",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "foreign",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "foreign",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "member",
+            "scope": "foreign",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "public",
+            "surface": "document",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "public",
+            "surface": "task",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "public",
+            "surface": "download",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "public",
+            "surface": "search",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "public",
+            "surface": "tool",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "public",
+            "surface": "reference",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "public",
+            "surface": "history",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "public",
+            "surface": "run",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "private",
+            "surface": "document",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "private",
+            "surface": "task",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "private",
+            "surface": "download",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "private",
+            "surface": "search",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "private",
+            "surface": "tool",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "private",
+            "surface": "reference",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "private",
+            "surface": "history",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "private",
+            "surface": "run",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "restricted",
+            "surface": "document",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "restricted",
+            "surface": "task",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "restricted",
+            "surface": "download",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "restricted",
+            "surface": "search",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "restricted",
+            "surface": "tool",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "restricted",
+            "surface": "reference",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "restricted",
+            "surface": "history",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "restricted",
+            "surface": "run",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "deleted",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "deleted",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "deleted",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "deleted",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "deleted",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "deleted",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "deleted",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "deleted",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "foreign",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "foreign",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "foreign",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "foreign",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "editor",
+            "scope": "foreign",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "foreign",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "foreign",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "editor",
+            "scope": "foreign",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "public",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "public",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "public",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "public",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "public",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "public",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "public",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "public",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "private",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "private",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "private",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "private",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "private",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "private",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "private",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "private",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "restricted",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "restricted",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "restricted",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "restricted",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "restricted",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "restricted",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "restricted",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "restricted",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "deleted",
+            "surface": "document",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "deleted",
+            "surface": "task",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "deleted",
+            "surface": "download",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "deleted",
+            "surface": "search",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "deleted",
+            "surface": "tool",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "deleted",
+            "surface": "reference",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "deleted",
+            "surface": "history",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "deleted",
+            "surface": "run",
+            "read_allowed": false,
+            "status": "passed",
+            "http_status": 404
+          },
+          {
+            "actor": "foreign",
+            "scope": "foreign",
+            "surface": "document",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "foreign",
+            "surface": "task",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "foreign",
+            "surface": "download",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "foreign",
+            "surface": "search",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "foreign",
+            "surface": "tool",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "foreign",
+            "surface": "reference",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "foreign",
+            "surface": "history",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          },
+          {
+            "actor": "foreign",
+            "scope": "foreign",
+            "surface": "run",
+            "read_allowed": true,
+            "status": "passed",
+            "http_status": 200
+          }
+        ]
+      },
+      "duration_ms": 42358
+    },
+    {
+      "name": "ingestion",
+      "status": "passed",
+      "details": {
+        "valid_total": 50,
+        "valid_passed": 50,
+        "invalid_total": 20,
+        "invalid_passed": 20,
+        "valid": [
+          {
+            "name": "valid-00.pdf",
+            "sha256": "f7064c8da57e49c78431749840aa75e0f3af4a04da9246cb1fa28d8acc6bae73",
+            "bytes": 684,
+            "status": "passed",
+            "task_id": "8dfa790c-3561-4cc1-b682-8838f4640e36",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-01.docx",
+            "sha256": "116a4e8daaa76cf464cf57c6583ccdcfe91c03b525144089902921a429686b1f",
+            "bytes": 36689,
+            "status": "passed",
+            "task_id": "235a8077-7ee2-4c54-8087-f9fa9b426304",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-02.txt",
+            "sha256": "79c156003cc892eb25064d45414bd4d57ac9e161cab0c4476a22f81f10bee67f",
+            "bytes": 65,
+            "status": "passed",
+            "task_id": "ebc6e50f-0b1a-4f17-bf9a-0713cc414072",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-03.md",
+            "sha256": "1f70eb85f1bc15bd8ed86b25ce08cb6c2fb5e5bd88efbf11f5afec58beb41810",
+            "bytes": 65,
+            "status": "passed",
+            "task_id": "c31fab1c-6af7-4a97-9bdf-1b98c9697167",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-04.pdf",
+            "sha256": "95c5589c22c38cbf3217324efeee55dfd3b5bdf674d2dc00de37f9fe5725ed36",
+            "bytes": 684,
+            "status": "passed",
+            "task_id": "48f00dc2-3fd1-4038-91e8-f73b2d29d576",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-05.docx",
+            "sha256": "6c05bcc48cd6fa3e31cc23eb567ac7b180200e69db837234d8b03503fb36b8db",
+            "bytes": 36690,
+            "status": "passed",
+            "task_id": "69d5625f-9e09-43e5-86e9-009c00ab16e9",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-06.txt",
+            "sha256": "8a470c0701d30c3063ae20a99f0c3ff311b9fde1f72029524fe25210be05678d",
+            "bytes": 65,
+            "status": "passed",
+            "task_id": "fb39e58d-c058-427e-bda9-815ffe8efc6a",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-07.md",
+            "sha256": "dee2eac82258940c6236cd73a90e955cd1b2c8ce8eb20437ab4ac30daf775882",
+            "bytes": 65,
+            "status": "passed",
+            "task_id": "96c1df4f-a5f6-483b-ae62-b94530ce4610",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-08.pdf",
+            "sha256": "945ce528039e54e75b362e3dac3b11f551a066109688b4cf88305b4911297989",
+            "bytes": 684,
+            "status": "passed",
+            "task_id": "9293654c-bd3a-4867-b82a-7af3adfbe836",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-09.docx",
+            "sha256": "d125ee6b66fce64750ca0a8aba2e206639c51e89b15bd13701dbc6978d0f9c79",
+            "bytes": 36690,
+            "status": "passed",
+            "task_id": "2c9df5b0-38ba-485b-8b4b-bcadf6d5ecb2",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-10.txt",
+            "sha256": "66b5ebbf52fb3300db4566d05b4dbc456492a9dd63cd5dbb619f306d45ab1344",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "10186791-21ce-43a2-8b43-8316a2eb0dc4",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-11.md",
+            "sha256": "2ce3e2d2486de0367763e932143e9ada50155aabd85b88b4c695646c32e44c3d",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "2e6362ff-a81a-49fb-8346-00fc9f668b24",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-12.pdf",
+            "sha256": "a8f1ce5f7ab15221f48cd8e9841da13fa887af7129c5168032085b5f778ec148",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "fa752abc-ebf0-416b-a7c9-1157c5b6f3ba",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-13.docx",
+            "sha256": "d406b74e7ffca6cb446cb8beb6fc5d13e46a66addb27d2206dc9491e7dba9738",
+            "bytes": 36690,
+            "status": "passed",
+            "task_id": "705056b1-2bf8-4de8-94b1-7e9061d32697",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-14.txt",
+            "sha256": "c27983f0c1a9178be4b61a08896734e589986a0e2d4d64019720b1f5f8db776a",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "7eb4d676-284d-468d-ae63-2295265a4bc3",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-15.md",
+            "sha256": "0a7a439e9c42e835c3a682877063c190ea5be9e1870bd01f8cf860140a94951b",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "ff2e66d3-1f19-464f-bd4f-a657ba127792",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-16.pdf",
+            "sha256": "9404f70bbaf089272976157acc3e3ad22cfa2962539603a9014bf7798584e2f6",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "8375f446-f8f7-48a5-9c8e-e75ac5b6734d",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-17.docx",
+            "sha256": "c070eaa04ea46fe43521922e8d228c8ed659cf496422bb54e2b4b7aafc0ee5c7",
+            "bytes": 36691,
+            "status": "passed",
+            "task_id": "5433f2fc-0970-4aa3-bf50-e04ca0ecb9f6",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-18.txt",
+            "sha256": "01290bbb1d9f7d8db8cc46921f8549a1a229fec11bf03c9fe1b70282da0f2b7f",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "999e8cb7-3f11-4ceb-91d4-1419aeba908a",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-19.md",
+            "sha256": "765a827a25e8525573eaa106c97eca367c489e581fc5285c3dd48b2b9c1c66cd",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "602c3dbf-80d4-4b61-a899-92aae4916ef5",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-20.pdf",
+            "sha256": "ec43ebf1af4a3c1c3c51f18556c8fa684eec72e35c129fc1b3668a4a5a277e71",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "f3902567-43ea-4b83-b370-a0e7ae8c2dfc",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-21.docx",
+            "sha256": "29d379d6d3c37960f88355fbfc995f96d92f425d6d666cc3cbd83dd8e11e84fa",
+            "bytes": 36690,
+            "status": "passed",
+            "task_id": "5733facc-60b9-41e1-8726-79bc2478bc36",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-22.txt",
+            "sha256": "6b5e7a34f928015f612e4ed09dc5850082c98ce9e81031585c8efa9a9958bf37",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "7c62267e-5c03-4367-81e0-eece3b4be989",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-23.md",
+            "sha256": "114f0115f750670321bb902352006c7fb5f874d9c0b56fbb50c303bc4a7c6511",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "8725c86f-15f0-474c-b465-b08a98f4bade",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-24.pdf",
+            "sha256": "814e4798e38f158294a02d9da28a25e6b1e2cfac90620ce1b2cc5648bc08e60d",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "87286f91-4ebf-4875-b72b-3d841ab6ed0f",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-25.docx",
+            "sha256": "fe8adff5291b03abbf8738d655be5e36ab86ec4c272b924ae56f7e62cb5be497",
+            "bytes": 36691,
+            "status": "passed",
+            "task_id": "757c4b80-9b32-4398-bbf4-606f06998cc7",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-26.txt",
+            "sha256": "4e17121ebaea17680046db1f8f50a3b53c80cf38247814e9317b7efb17bb2dc0",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "6082f5a7-4886-4827-84b4-952df642efe6",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-27.md",
+            "sha256": "b50e361cbbe5992ae3798fdac53430980f8b6c740dd73c2b68a31584ceb27af4",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "46e61498-73e1-4d6c-9a48-b4de6382eeba",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-28.pdf",
+            "sha256": "7cce9f333727f8625749c52f3f8d38a83c0c6f4866ee16a2f7d730fb0aec7f23",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "943a4481-fb75-42d0-8327-ece4abec4cec",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-29.docx",
+            "sha256": "554e65a226c95d97586139efde3ab91adcc2dec54b5b278e1916627534e65a29",
+            "bytes": 36691,
+            "status": "passed",
+            "task_id": "554b7eeb-4384-426b-a9c2-fbc6114a6366",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-30.txt",
+            "sha256": "6031da15b99e59f00f4f360bccfd5dbe91d2cc7e9ec57e306baff6c40d534ab1",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "64df425d-b650-4dd4-a359-2db980db3e54",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-31.md",
+            "sha256": "6755227601b044034a147f9b3337c65ad010f81b587195757b02da2b055997c6",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "6261c13a-bad4-40a1-8071-8c24562ad002",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-32.pdf",
+            "sha256": "797af38ed0bb1428aac954e8e5e7d0d4ffc16f7eb2fc61ac983d4e9ca21fa807",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "0ac1b4d4-98fd-40af-9927-5387002ac6de",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-33.docx",
+            "sha256": "e0e39b10ed46ced1164610bdb932e7fbf7023adb255e39a613b9cb88fb08c0f5",
+            "bytes": 36689,
+            "status": "passed",
+            "task_id": "672f58ac-af43-4a24-8b17-aa17d2770e90",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-34.txt",
+            "sha256": "bf2283ce9771443955312e13e97dcfa2dce547390c512872e4af38d1a0e4a63f",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "85233d95-b1c3-41ed-b358-1b17724da677",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-35.md",
+            "sha256": "71983a7d3c4a8003865fd886ee1380d078b3c02e4a517050476f96046afe5c0f",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "17f74e8a-abbb-4312-ab61-dc8becad51c1",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-36.pdf",
+            "sha256": "b4590ebc4391946c296d0392fb6a2ccd065bc21a1eda603de91a6f228db01cf8",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "5bc8c74f-ada3-4054-a570-616c8d184ae8",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-37.docx",
+            "sha256": "4860d41f1bf2255ffab9d4f3f5fc94826fa79ae7eb1e0d742c0bfe296efdbe23",
+            "bytes": 36691,
+            "status": "passed",
+            "task_id": "11ba8ad3-b42c-4e96-8e46-ed5f61ddfec5",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-38.txt",
+            "sha256": "d5259912d8be7b18613171eccfc972d7366755f8ee286a75180450cc4e8bd8bd",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "cb5b0f0f-5647-44be-a9f5-dd6f09703ed7",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-39.md",
+            "sha256": "020c81801f05e460c3cf8848ed62a7de0eb3fb124e3aea69251182655a55eef8",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "2c9798b4-2854-4f7b-84ff-f0c9b543532f",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-40.pdf",
+            "sha256": "7f0d76620c2e4c23facfff4386377d6a54bada1ada653da1e2ab485c18931fa0",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "5ecb0c10-7983-4947-8d4f-dbf6a30e92c7",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-41.docx",
+            "sha256": "7090a3c468f9787a384ce9a1c8935f095dd86e265b01b5bc9e4a696583b12113",
+            "bytes": 36690,
+            "status": "passed",
+            "task_id": "248c3ab9-26d2-47d8-ae49-a98993da6e3d",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-42.txt",
+            "sha256": "6ed4d618195c2ff54d3f2b34e848302e6eab068f97a3db9eb6250f2553c1b428",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "0e7864db-9aec-4778-a259-325a2bc5e91f",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-43.md",
+            "sha256": "771dae654fd4b3ec51e8ab5941d0eea43d4d2ce53bc630586493ab6c8e4cbd59",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "cf6a3785-7097-4bf4-bae6-c4f0f64a3170",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-44.pdf",
+            "sha256": "ee4089ade23d3837467f541d8fb229fe72445e5e38187d3cc028955dcefe300c",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "73e400b1-1ed1-44e6-bda0-8ba2deb9130c",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-45.docx",
+            "sha256": "2948107a52a9571cd986868aa2ddb1a0142d3329a389b17f9a41cefe7c56261d",
+            "bytes": 36691,
+            "status": "passed",
+            "task_id": "266aefd1-afbe-4e41-bde0-8664bf0fbcd7",
+            "error_code": "",
+            "chunks": 2
+          },
+          {
+            "name": "valid-46.txt",
+            "sha256": "47987c4b7b4ec9eadb5ece05cd61a70654d7602fee5bbff0712094226c297007",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "b8da70fc-e3a4-484c-91b6-4d77c3d796ca",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-47.md",
+            "sha256": "931ff5210775f2e28d227e9f91c4cec56129fdb05aa26ec4556256f61710eefa",
+            "bytes": 66,
+            "status": "passed",
+            "task_id": "afee59b1-62d2-4910-b950-d55f34d1a3cb",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-48.pdf",
+            "sha256": "025fd315fae7fae532648bcb16e1d40b811ce05f66d944a6127258fb8b18abe7",
+            "bytes": 685,
+            "status": "passed",
+            "task_id": "dd149248-da15-45bb-8e6f-b660e509bb6f",
+            "error_code": "",
+            "chunks": 1
+          },
+          {
+            "name": "valid-49.docx",
+            "sha256": "5bc013819d8dfaf9a41c451049105e07cd6e8d64c532975834200d50eab290c3",
+            "bytes": 36691,
+            "status": "passed",
+            "task_id": "604af1db-cdc5-47e3-9c08-5ec085e453fd",
+            "error_code": "",
+            "chunks": 2
+          }
+        ],
+        "invalid": [
+          {
+            "name": "program.exe",
+            "sha256": "9b8db510ef42b8ed54a3712636fda55a4f8cfcd5493e20b74ab00cd4f3979f2d",
+            "expected": "UNSUPPORTED_TYPE",
+            "status": "passed"
+          },
+          {
+            "name": "page.html",
+            "sha256": "8397912ada2760dca34d1adb644cf54fc5c8d05d0ad56b4a6f99096b03ac8431",
+            "expected": "UNSUPPORTED_TYPE",
+            "status": "passed"
+          },
+          {
+            "name": "sheet.xlsx",
+            "sha256": "b5d54c39e66671c9731b9f471e585d8262cd4f54963f0c93082d8dcf334d4c78",
+            "expected": "UNSUPPORTED_TYPE",
+            "status": "passed"
+          },
+          {
+            "name": "empty.txt",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "EMPTY_FILE",
+            "status": "passed"
+          },
+          {
+            "name": "empty.md",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "EMPTY_FILE",
+            "status": "passed"
+          },
+          {
+            "name": "empty.pdf",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "EMPTY_FILE",
+            "status": "passed"
+          },
+          {
+            "name": "fake.pdf",
+            "sha256": "f1234d75178d892a133a410355a5a990cf75d2f33eba25d575943d4df632f3a4",
+            "expected": "INVALID_PDF",
+            "status": "passed"
+          },
+          {
+            "name": "fake.docx",
+            "sha256": "f1234d75178d892a133a410355a5a990cf75d2f33eba25d575943d4df632f3a4",
+            "expected": "INVALID_DOCX",
+            "status": "passed"
+          },
+          {
+            "name": "encoding.txt",
+            "sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89",
+            "expected": "UTF8_REQUIRED",
+            "status": "passed"
+          },
+          {
+            "name": "binary.md",
+            "sha256": "268576d50a742ae1cd715dd6a92d811c5b04f1a66a7e13ae15f75f315a3ebe5c",
+            "expected": "BINARY_TEXT",
+            "status": "passed"
+          },
+          {
+            "name": "spaces.txt",
+            "sha256": "cd686159289a5e43faaaa62c47b7ade385f9d234ea501782d39959d35a8183f6",
+            "expected": "EMPTY_TEXT",
+            "status": "passed",
+            "task_id": "83477a6e-b138-4ca3-a31c-67b1fbdaa627",
+            "error_code": "EMPTY_TEXT"
+          },
+          {
+            "name": "spaces.md",
+            "sha256": "cd686159289a5e43faaaa62c47b7ade385f9d234ea501782d39959d35a8183f6",
+            "expected": "EMPTY_TEXT",
+            "status": "passed",
+            "task_id": "657fcdd9-6b2d-4d6e-81f1-2aae8d09d0e3",
+            "error_code": "EMPTY_TEXT"
+          },
+          {
+            "name": "scan.pdf",
+            "sha256": "59be5d5fcfff9756bb58c04ef3a981e106565d58b6c2acb2ff1aabbe37112724",
+            "expected": "OCR_REQUIRED",
+            "status": "passed",
+            "task_id": "e7e06ad3-4f05-4de5-bc48-8ccfb47f91c4",
+            "error_code": "OCR_REQUIRED"
+          },
+          {
+            "name": "encrypted.pdf",
+            "sha256": "0d1cc7b63549d8c89a34806950b8a724765dc626845f0b37105f746aeafad487",
+            "expected": "ENCRYPTED_PDF",
+            "status": "passed",
+            "task_id": "e66d6461-3c72-4aa1-b804-3ef57d434238",
+            "error_code": "ENCRYPTED_PDF"
+          },
+          {
+            "name": "broken.pdf",
+            "sha256": "b9e295f0c86730ee956a72a38716ba58f3ab765ee596bbd92d70ad7b7218ed97",
+            "expected": "INVALID_DOCUMENT",
+            "status": "passed",
+            "task_id": "41be1459-42a9-4aa8-9f3a-deee0d15233e",
+            "error_code": "INVALID_DOCUMENT"
+          },
+          {
+            "name": "incomplete.docx",
+            "sha256": "eec12140e4d3823f3d3554ea9371055ac4f869c2127bc93de2f5d82168977ab3",
+            "expected": "INVALID_DOCX",
+            "status": "passed",
+            "task_id": "82337fc8-900b-433b-a8ed-d71f510825de",
+            "error_code": "INVALID_DOCX"
+          },
+          {
+            "name": "macro.docx",
+            "sha256": "07b90144836dec08ced368e12786510f53c589dee73f1ff537c507c4e163ef26",
+            "expected": "MACROS_NOT_ALLOWED",
+            "status": "passed",
+            "task_id": "7352e935-4159-4f4e-ba3e-54c678655248",
+            "error_code": "MACROS_NOT_ALLOWED"
+          },
+          {
+            "name": "broken.docx",
+            "sha256": "3dd317bde78c0698e2c0b89b39343e31f165d6c1873695891d3cfdfdd225c7b1",
+            "expected": "INVALID_DOCUMENT",
+            "status": "passed",
+            "task_id": "558e672a-0fb7-47d6-94ef-d93a588f3248",
+            "error_code": "INVALID_DOCUMENT"
+          },
+          {
+            "name": "no-pages.pdf",
+            "sha256": "c1770c29539e4267a02e8d2257ff36d606f3e72701f923c90ef73fb2b6058b9d",
+            "expected": "OCR_REQUIRED",
+            "status": "passed",
+            "task_id": "d73f3f5f-5554-4f81-b1d5-800ad1cdb67a",
+            "error_code": "OCR_REQUIRED"
+          },
+          {
+            "name": "encoding.md",
+            "sha256": "b3d510ef04275ca8e698e5b3cbb0ece3949ef9252f0cdc839e9ee347409a2209",
+            "expected": "UTF8_REQUIRED",
+            "status": "passed"
+          }
+        ]
+      },
+      "duration_ms": 28073
+    },
+    {
+      "name": "duplicates",
+      "status": "passed",
+      "details": {
+        "deliveries": 10,
+        "scope": "ten actual Redis/Celery redeliveries followed by a processing barrier; worker interruption is recorded separately",
+        "barrier_task_id": "a8a4e020-4220-4dc3-b370-096b7b52ddee",
+        "cases": [
+          {
+            "delivery": 1,
+            "queue_id": "549e2b2d-a2e2-42af-bf5f-1c7844b54aa3",
+            "status": "passed"
+          },
+          {
+            "delivery": 2,
+            "queue_id": "b7a79a9f-3926-4fe1-8082-61526f0b48e1",
+            "status": "passed"
+          },
+          {
+            "delivery": 3,
+            "queue_id": "2f01825b-50a6-4ceb-b7af-7a48c8527fd2",
+            "status": "passed"
+          },
+          {
+            "delivery": 4,
+            "queue_id": "7e781c03-47a4-44bc-aff1-f533109703bb",
+            "status": "passed"
+          },
+          {
+            "delivery": 5,
+            "queue_id": "2c6e3461-7ca8-4143-b20a-55665a38ec3e",
+            "status": "passed"
+          },
+          {
+            "delivery": 6,
+            "queue_id": "14624dbf-386a-4d1a-bf8e-d0b92bb95f31",
+            "status": "passed"
+          },
+          {
+            "delivery": 7,
+            "queue_id": "014b2cb7-2269-4b1a-b15f-cd183dceffb9",
+            "status": "passed"
+          },
+          {
+            "delivery": 8,
+            "queue_id": "c1f05116-c38e-4f50-9efe-c5c2e94961d0",
+            "status": "passed"
+          },
+          {
+            "delivery": 9,
+            "queue_id": "73d64605-08c3-4b82-8d46-c2d64880150e",
+            "status": "passed"
+          },
+          {
+            "delivery": 10,
+            "queue_id": "c16d767a-4d71-4178-af6b-e0335231d52b",
+            "status": "passed"
+          }
+        ]
+      },
+      "duration_ms": 1322
+    },
+    {
+      "name": "versions",
+      "status": "passed",
+      "details": {
+        "failed_updates": 10,
+        "old_active_preserved": true,
+        "old_reference_readable": true,
+        "cases": [
+          {
+            "iteration": 1,
+            "task_id": "105acd11-dad8-4dca-b934-df909a5029a1",
+            "status": "passed"
+          },
+          {
+            "iteration": 2,
+            "task_id": "b8782c1f-bd4f-4b20-9cc7-caf9e896a724",
+            "status": "passed"
+          },
+          {
+            "iteration": 3,
+            "task_id": "7e91431c-bb65-4651-a1fe-1826c97bfa99",
+            "status": "passed"
+          },
+          {
+            "iteration": 4,
+            "task_id": "620048d6-0918-4b3f-97cb-185fee6e8db8",
+            "status": "passed"
+          },
+          {
+            "iteration": 5,
+            "task_id": "a7a43188-bc5c-4951-97ad-75a010fff3d8",
+            "status": "passed"
+          },
+          {
+            "iteration": 6,
+            "task_id": "9d85a8b2-e92e-415a-8f6b-73070154bbf9",
+            "status": "passed"
+          },
+          {
+            "iteration": 7,
+            "task_id": "ed7a0ccc-6651-4a4e-af81-b7a7a2061270",
+            "status": "passed"
+          },
+          {
+            "iteration": 8,
+            "task_id": "32eb88f5-411e-405a-a5c9-80eeb52ee446",
+            "status": "passed"
+          },
+          {
+            "iteration": 9,
+            "task_id": "8b47ec5f-d885-4ed7-b504-d0c73d7f1133",
+            "status": "passed"
+          },
+          {
+            "iteration": 10,
+            "task_id": "cead168c-ef40-40a9-a6ec-471cb8b9a094",
+            "status": "passed"
+          }
+        ],
+        "superseded_build_cases": [
+          {
+            "iteration": 1,
+            "old_build": "50be5f96-1bb5-482b-a4ba-d4e6e2f301fb",
+            "new_build": "97cf7dd3-8383-43d2-b39f-f68539d37bcc",
+            "status": "passed"
+          },
+          {
+            "iteration": 2,
+            "old_build": "01645f08-0649-446c-b1aa-2aa25542f6e2",
+            "new_build": "1f2950cc-a03c-4572-bd34-eb4bf900eaeb",
+            "status": "passed"
+          },
+          {
+            "iteration": 3,
+            "old_build": "cb991d22-4c0b-4066-ace4-7e1042999997",
+            "new_build": "ef95e4c3-4b30-405a-b1fc-3e13b1ee53ce",
+            "status": "passed"
+          },
+          {
+            "iteration": 4,
+            "old_build": "1fa533d0-62c7-4402-ac82-b23168aa9c05",
+            "new_build": "6e29620f-1fe8-4903-ba0c-cc1ebbfe3b6e",
+            "status": "passed"
+          },
+          {
+            "iteration": 5,
+            "old_build": "0058d1c9-bab2-4243-aec7-6df8fe42b838",
+            "new_build": "d1bc233e-308d-4e2e-a414-fbd8266fe256",
+            "status": "passed"
+          }
+        ]
+      },
+      "duration_ms": 13881
+    },
+    {
+      "name": "stream_cycles",
+      "status": "passed",
+      "details": {
+        "case_count": 20,
+        "pending_streaming": 0,
+        "cases": [
+          {
+            "iteration": 1,
+            "mode": "disconnect",
+            "run_id": "cbaa60a2-4b82-4333-a3c1-7be13810c5d2",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 2,
+            "mode": "cancel",
+            "run_id": "a06b8622-6bdc-48eb-a438-4a6021bc253a",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 3,
+            "mode": "disconnect",
+            "run_id": "3933ca24-69df-42af-80c6-cf57ccd9d1d2",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 4,
+            "mode": "cancel",
+            "run_id": "c9a860bf-f721-4b11-a219-b1fa440f0338",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 5,
+            "mode": "disconnect",
+            "run_id": "d099ae90-32db-4674-9e19-aff90b1ea02c",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 6,
+            "mode": "cancel",
+            "run_id": "742930a2-3746-4728-985c-634f9336a168",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 7,
+            "mode": "disconnect",
+            "run_id": "0dd7b3ce-4f24-4a07-b9ce-176186c37884",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 8,
+            "mode": "cancel",
+            "run_id": "49a64e0b-935e-4e10-b32d-b7a1ad3b96e1",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 9,
+            "mode": "disconnect",
+            "run_id": "c16cca49-8aef-44ad-92a1-b1eeecbe32b6",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 10,
+            "mode": "cancel",
+            "run_id": "02874ff1-6ff0-4368-8704-ab00158173f4",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 11,
+            "mode": "disconnect",
+            "run_id": "3efe6a9d-b62b-4bbe-b115-11cc2c1ef618",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 12,
+            "mode": "cancel",
+            "run_id": "deddd533-3e74-471c-b6a3-4e73761d6835",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 13,
+            "mode": "disconnect",
+            "run_id": "9ecee828-6a63-451b-a335-81b8edc643ac",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 14,
+            "mode": "cancel",
+            "run_id": "c86a30be-234d-4b00-be0e-16425f5e9b4c",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 15,
+            "mode": "disconnect",
+            "run_id": "2e0887f8-44d2-4473-b586-dbcbbc6378d3",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 16,
+            "mode": "cancel",
+            "run_id": "080783ab-cb04-4199-a787-ee6b06f0f9f2",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 17,
+            "mode": "disconnect",
+            "run_id": "8f263789-b2f7-4415-a98a-7e33b283663a",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 18,
+            "mode": "cancel",
+            "run_id": "363a5037-92be-42ec-adeb-4416c922f610",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 19,
+            "mode": "disconnect",
+            "run_id": "e61e056c-040f-409b-94cd-5c761f2fcabd",
+            "status": "passed",
+            "terminal": "interrupted",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "iteration": 20,
+            "mode": "cancel",
+            "run_id": "50c9861a-c738-4fd8-96c9-d15465c752df",
+            "status": "passed",
+            "terminal": "cancelled",
+            "saved_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "timeout_note": "Native HTTP timeout and partial-content cancellation are additionally covered by protocol JUnit tests."
+      },
+      "duration_ms": 2469
+    },
+    {
+      "name": "normal_runs",
+      "status": "passed",
+      "details": {
+        "completed": 10
+      },
+      "duration_ms": 1870
+    },
+    {
+      "name": "traceability",
+      "status": "passed",
+      "details": {
+        "sample_count": 20,
+        "cases": [
+          {
+            "kind": "task",
+            "id": "8dfa790c-3561-4cc1-b682-8838f4640e36",
+            "trace_id": "58c6a51302ac4aa6ad0ae3e7670333fa",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "235a8077-7ee2-4c54-8087-f9fa9b426304",
+            "trace_id": "125b5ccb3d40436caea2b71cda9b61a0",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "ebc6e50f-0b1a-4f17-bf9a-0713cc414072",
+            "trace_id": "dc98420648a14256929ab14aba73a8c3",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "c31fab1c-6af7-4a97-9bdf-1b98c9697167",
+            "trace_id": "d2828038965345ab839e66d195969da8",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "48f00dc2-3fd1-4038-91e8-f73b2d29d576",
+            "trace_id": "7bc637922f034e798a7dccaba477dbb6",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "69d5625f-9e09-43e5-86e9-009c00ab16e9",
+            "trace_id": "b65e2a750aef4a5a823215f5effdf697",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "fb39e58d-c058-427e-bda9-815ffe8efc6a",
+            "trace_id": "69911324351547cba0b2a12589f9675b",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "96c1df4f-a5f6-483b-ae62-b94530ce4610",
+            "trace_id": "0339c0c3e74c48aa983b2fddd5793c11",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "9293654c-bd3a-4867-b82a-7af3adfbe836",
+            "trace_id": "bc9d598712b14aabb861260eae15fd1f",
+            "status": "passed"
+          },
+          {
+            "kind": "task",
+            "id": "2c9df5b0-38ba-485b-8b4b-bcadf6d5ecb2",
+            "trace_id": "55cc71f3176b498d92f41093b0145e97",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "bedc4844-2a10-4e8a-847c-73225833ccd9",
+            "trace_id": "c5edcfdf0cd94d8ebacbdfde001270af",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "45f21da6-24c6-4997-a133-de8a276ae641",
+            "trace_id": "920dac3703d94e09b4a1a140d00fde8d",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "2bd7a004-7058-4dbe-b6f9-89913db95c0a",
+            "trace_id": "f4b61f7c92e540588da94da0413b4c9c",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "6b8e77ab-4a3a-4106-b6f4-119813700076",
+            "trace_id": "0f06e9a524624ece960b70a59efeaf24",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "a70ae968-a510-44bb-a424-749496fba0c2",
+            "trace_id": "c8780e06eb08450699755a58e8eb92b0",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "d04fbee6-a135-4401-bf21-e22597d34e3b",
+            "trace_id": "78fc1fe4418b48da8538a7a94bb9c0ea",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "894955af-a101-4a82-bf2f-d4a590717eb0",
+            "trace_id": "fa0e8558584047a0ae6f288c4cb78383",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "02e055bb-f8a9-42bf-8d7d-1093fad39abc",
+            "trace_id": "f3e1a2629b394f6ab36f4fdb17a6ec88",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "71b23eb4-818e-4769-a554-883875470b8a",
+            "trace_id": "b919e55635644b00a5f9dfd4242a8b17",
+            "usage_source": "unknown",
+            "status": "passed"
+          },
+          {
+            "kind": "run",
+            "id": "cbc92a68-5e2e-41e8-b41e-2c54f085c6d6",
+            "trace_id": "59c80d6717ff4315992e304bb2f89357",
+            "usage_source": "unknown",
+            "status": "passed"
+          }
+        ]
+      },
+      "duration_ms": 14
+    }
+  ],
+  "finished_at": "2026-11-13T05:07:11.230954+00:00"
+}

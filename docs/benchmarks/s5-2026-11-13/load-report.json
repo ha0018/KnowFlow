@@ -1,0 +1,102 @@
+{
+  "schema": "knowflow-load-v1",
+  "revision": "9ead408412afc4f19459163ecbc686912958e32a",
+  "environment": {
+    "python": "3.12.16",
+    "platform": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.41",
+    "database": "postgresql",
+    "processor": "",
+    "cpu_count": 4,
+    "memory_bytes": 16759439360,
+    "dependency_lock_sha256": "01d80520bd24c67166d0e8f044624571bdbda1b5124ab5b6d58e9fc8e3819ba3"
+  },
+  "scope": "demo_hash_embedding_10000_synthetic_published_chunks_2_tenants",
+  "fixture_chunk_count": 10000,
+  "fixture_schema": "synthetic-load-v1",
+  "corpus_sha256": "e99b84c8c748551df0bf4b9eec123b39c48646f4a201331138aa734429215f90",
+  "embedding_profile": "demo:demo-hash-v1:128:tokens-v1",
+  "database_chunk_count": 12577,
+  "vector_index": "exact",
+  "rerank": false,
+  "rewrite": false,
+  "concurrency": {
+    "api": 20,
+    "retrieval": 10
+  },
+  "visible_chunks": [
+    500,
+    5000
+  ],
+  "api_mix": "20 closed-loop users alternate knowledge-base and document list requests",
+  "request_interval_seconds_per_user": 0,
+  "concurrent_workloads": true,
+  "pagination_size": 30,
+  "real_supplier_verified": false,
+  "api_user_rate": "100000/min",
+  "fixture_daily_quota": {
+    "tenant": 1000000000,
+    "user": 100000000
+  },
+  "driver_location": "separate_container_on_same_host",
+  "status": "completed",
+  "elapsed_seconds": 602.129535067,
+  "counts": {
+    "api": 9016,
+    "retrieval": 2812
+  },
+  "peak_inflight": {
+    "api": 20,
+    "retrieval": 10
+  },
+  "warmup": {
+    "requests": 60,
+    "failed": 0
+  },
+  "groups": {
+    "api": {
+      "requests": 9036,
+      "passed": 9036,
+      "failed": 0,
+      "success_rate": 1.0,
+      "p50_ms": 1357.6927569999953,
+      "p95_ms": 1816.6987070000005,
+      "max_ms": 2256.4999539999917,
+      "formal_measurement_length_met": true,
+      "latency_threshold_ms": 300,
+      "target_met": false,
+      "failures_in_latency_denominator": true
+    },
+    "retrieval": {
+      "requests": 2822,
+      "passed": 2822,
+      "failed": 0,
+      "success_rate": 1.0,
+      "p50_ms": 2142.6034730000083,
+      "p95_ms": 2601.2191920000305,
+      "max_ms": 3568.7787049999997,
+      "formal_measurement_length_met": true,
+      "latency_threshold_ms": 800,
+      "target_met": false,
+      "failures_in_latency_denominator": true
+    }
+  },
+  "api_endpoints": {
+    "knowledge_bases": {
+      "requests": 4522,
+      "passed": 4522,
+      "failed": 0,
+      "p95_ms": 1788.4461639999927,
+      "target_met": false
+    },
+    "documents": {
+      "requests": 4514,
+      "passed": 4514,
+      "failed": 0,
+      "p95_ms": 1834.2363790000036,
+      "target_met": false
+    }
+  },
+  "all_targets_met": false,
+  "raw_requests_file": "load-report.jsonl",
+  "raw_requests_sha256": "209190df6bb7ad12cfa9ea005ed68a601207e969a5b9b406862b0d2b959290f1"
+}

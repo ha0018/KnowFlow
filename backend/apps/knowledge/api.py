@@ -4,8 +4,10 @@ from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.users.models import Tenant
 from apps.users.permissions import require_capability
-from common.context import RequestContext, audit
+from common.context import RequestContext, audit, reload_context
+from common.serializers import StrictInput
 
 from .models import KnowledgeBase
 from .selectors import get_knowledge_base, knowledge_bases
@@ -13,16 +15,37 @@ from .services import bump_epoch, replace_acl
 
 
 class KnowledgeBaseSerializer(serializers.ModelSerializer):
+    can_manage = serializers.SerializerMethodField()
+
+    def get_can_manage(self, obj):
+        if "manage_ids" not in self.context:
+            request = self.context.get("request")
+            self.context["manage_ids"] = (
+                set(
+                    knowledge_bases(RequestContext.from_request(request), "manage").values_list(
+                        "id", flat=True
+                    )
+                )
+                if request
+                else set()
+            )
+        return obj.pk in self.context["manage_ids"]
+
     class Meta:
         model = KnowledgeBase
-        fields = ["id", "name", "description", "visibility", "owner_id", "created_at"]
+        fields = ["id", "name", "description", "visibility", "owner_id", "created_at", "can_manage"]
         read_only_fields = ["id", "owner_id", "created_at"]
 
 
-class ACLEntrySerializer(serializers.Serializer):
+class ACLEntrySerializer(StrictInput):
     user_id = serializers.UUIDField(required=False, allow_null=True)
     role_id = serializers.UUIDField(required=False, allow_null=True)
     access_level = serializers.ChoiceField(choices=["read", "edit", "manage"])
+
+
+class KnowledgeAccessInput(StrictInput):
+    visibility = serializers.ChoiceField(choices=["private", "tenant"])
+    entries = ACLEntrySerializer(many=True)
 
 
 class KnowledgeBaseViewSet(viewsets.ModelViewSet):
@@ -61,3 +84,21 @@ class KnowledgeBaseViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             replace_acl(ctx, obj, serializer.validated_data)
         return Response(ACLEntrySerializer(obj.acl.all(), many=True).data)
+
+    @action(detail=True, methods=["get", "post"])
+    def access(self, request, pk=None):
+        ctx = RequestContext.from_request(request)
+        obj = get_knowledge_base(ctx, pk, "manage")
+        if request.method == "POST":
+            serializer = KnowledgeAccessInput(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            with transaction.atomic():
+                Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
+                ctx = reload_context(ctx)
+                obj = get_knowledge_base(ctx, pk, "manage")
+                obj.visibility = serializer.validated_data["visibility"]
+                obj.save(update_fields=["visibility", "updated_at"])
+                replace_acl(ctx, obj, serializer.validated_data["entries"])
+        return Response(
+            {"visibility": obj.visibility, "entries": ACLEntrySerializer(obj.acl.all(), many=True).data}
+        )

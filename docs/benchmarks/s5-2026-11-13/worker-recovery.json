@@ -1,0 +1,161 @@
+{
+  "scope": "disposable_real_Celery_SIGKILL_and_forced_lease_expiry",
+  "status": "passed",
+  "cases": [
+    {
+      "iteration": 1,
+      "status": "passed",
+      "task_id": "c27aa0c4-121b-41a3-8690-04daded6eb54",
+      "before": {
+        "task_id": "c27aa0c4-121b-41a3-8690-04daded6eb54",
+        "status": "RUNNING",
+        "stage": "PARSING",
+        "attempt": 1,
+        "fence_token": 1,
+        "chunks": 0,
+        "expected_chunks": 0,
+        "active_build": null,
+        "build_id": "f247254f-ac67-499b-8022-1b6df4ef0fb4",
+        "error_code": ""
+      },
+      "lease_expiry_forced": true,
+      "after": {
+        "task_id": "c27aa0c4-121b-41a3-8690-04daded6eb54",
+        "status": "READY",
+        "stage": "READY",
+        "attempt": 2,
+        "fence_token": 2,
+        "chunks": 500,
+        "expected_chunks": 500,
+        "active_build": "f247254f-ac67-499b-8022-1b6df4ef0fb4",
+        "build_id": "f247254f-ac67-499b-8022-1b6df4ef0fb4",
+        "error_code": ""
+      },
+      "recovery_ms_after_forced_expiry": 10091
+    },
+    {
+      "iteration": 2,
+      "status": "passed",
+      "task_id": "00fe76d0-d6ee-404b-b367-eb2a8eff995f",
+      "before": {
+        "task_id": "00fe76d0-d6ee-404b-b367-eb2a8eff995f",
+        "status": "RUNNING",
+        "stage": "PARSING",
+        "attempt": 1,
+        "fence_token": 1,
+        "chunks": 0,
+        "expected_chunks": 0,
+        "active_build": null,
+        "build_id": "e741a3c8-6dfd-458f-b8cb-05ac4307137d",
+        "error_code": ""
+      },
+      "lease_expiry_forced": true,
+      "after": {
+        "task_id": "00fe76d0-d6ee-404b-b367-eb2a8eff995f",
+        "status": "READY",
+        "stage": "READY",
+        "attempt": 2,
+        "fence_token": 2,
+        "chunks": 500,
+        "expected_chunks": 500,
+        "active_build": "e741a3c8-6dfd-458f-b8cb-05ac4307137d",
+        "build_id": "e741a3c8-6dfd-458f-b8cb-05ac4307137d",
+        "error_code": ""
+      },
+      "recovery_ms_after_forced_expiry": 13226
+    },
+    {
+      "iteration": 3,
+      "status": "passed",
+      "task_id": "a430dcdf-91a5-464e-8b19-03e6af419046",
+      "before": {
+        "task_id": "a430dcdf-91a5-464e-8b19-03e6af419046",
+        "status": "RUNNING",
+        "stage": "PARSING",
+        "attempt": 1,
+        "fence_token": 1,
+        "chunks": 0,
+        "expected_chunks": 0,
+        "active_build": null,
+        "build_id": "1635ff63-cb9d-4c56-a704-29e6a9d4a032",
+        "error_code": ""
+      },
+      "lease_expiry_forced": true,
+      "after": {
+        "task_id": "a430dcdf-91a5-464e-8b19-03e6af419046",
+        "status": "READY",
+        "stage": "READY",
+        "attempt": 2,
+        "fence_token": 2,
+        "chunks": 500,
+        "expected_chunks": 500,
+        "active_build": "1635ff63-cb9d-4c56-a704-29e6a9d4a032",
+        "build_id": "1635ff63-cb9d-4c56-a704-29e6a9d4a032",
+        "error_code": ""
+      },
+      "recovery_ms_after_forced_expiry": 17254
+    },
+    {
+      "iteration": 4,
+      "status": "passed",
+      "task_id": "4c61e570-b0c1-4cc3-831a-5b03b85287d4",
+      "before": {
+        "task_id": "4c61e570-b0c1-4cc3-831a-5b03b85287d4",
+        "status": "RUNNING",
+        "stage": "PARSING",
+        "attempt": 1,
+        "fence_token": 1,
+        "chunks": 0,
+        "expected_chunks": 0,
+        "active_build": null,
+        "build_id": "d4e34355-bcaf-453b-9750-efdfe0a86c09",
+        "error_code": ""
+      },
+      "lease_expiry_forced": true,
+      "after": {
+        "task_id": "4c61e570-b0c1-4cc3-831a-5b03b85287d4",
+        "status": "READY",
+        "stage": "READY",
+        "attempt": 2,
+        "fence_token": 2,
+        "chunks": 500,
+        "expected_chunks": 500,
+        "active_build": "d4e34355-bcaf-453b-9750-efdfe0a86c09",
+        "build_id": "d4e34355-bcaf-453b-9750-efdfe0a86c09",
+        "error_code": ""
+      },
+      "recovery_ms_after_forced_expiry": 17301
+    },
+    {
+      "iteration": 5,
+      "status": "passed",
+      "task_id": "d82abe3e-66cf-44aa-97a3-4c5333365def",
+      "before": {
+        "task_id": "d82abe3e-66cf-44aa-97a3-4c5333365def",
+        "status": "RUNNING",
+        "stage": "PARSING",
+        "attempt": 1,
+        "fence_token": 1,
+        "chunks": 0,
+        "expected_chunks": 0,
+        "active_build": null,
+        "build_id": "eaed3f54-c270-42b6-94d6-d561bd071baf",
+        "error_code": ""
+      },
+      "lease_expiry_forced": true,
+      "after": {
+        "task_id": "d82abe3e-66cf-44aa-97a3-4c5333365def",
+        "status": "READY",
+        "stage": "READY",
+        "attempt": 2,
+        "fence_token": 2,
+        "chunks": 500,
+        "expected_chunks": 500,
+        "active_build": "eaed3f54-c270-42b6-94d6-d561bd071baf",
+        "build_id": "eaed3f54-c270-42b6-94d6-d561bd071baf",
+        "error_code": ""
+      },
+      "recovery_ms_after_forced_expiry": 21135
+    }
+  ]
+}

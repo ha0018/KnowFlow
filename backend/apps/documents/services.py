@@ -21,9 +21,9 @@ from ai_engine.gateway.config import GatewayError
 from ai_engine.parsers import ParseError, parse, validate_file
 from apps.knowledge.selectors import get_knowledge_base
 from apps.users.models import Tenant
-from common.context import RequestContext, audit
+from common.context import RequestContext, audit, reload_context
 
-from .models import Document, DocumentChunk, DocumentTask, DocumentVersion, IndexBuild
+from .models import Document, DocumentChunk, DocumentTask, DocumentVersion, IndexBuild, StorageObject
 from .selectors import get_document
 
 logger = logging.getLogger(__name__)
@@ -67,12 +67,30 @@ def upload(ctx, kb_id, uploaded, title=None, document_id=None):
     doc = get_document(ctx, document_id, "edit") if document_id else None
     if doc and doc.knowledge_base_id != kb.pk:
         raise ValidationError("文档不属于此知识库")
-    key = default_storage.save(f"tenants/{ctx.tenant_id}/{uuid.uuid4().hex}{ext}", ContentFile(raw))
+    key = f"tenants/{ctx.tenant_id}/{uuid.uuid4().hex}{ext}"
+    with transaction.atomic():
+        Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
+        ctx = reload_context(ctx)
+        get_knowledge_base(ctx, kb_id, "edit")
+        storage_object = StorageObject.objects.create(
+            tenant_id=ctx.tenant_id,
+            key=key,
+            lease_until=timezone.now() + timedelta(hours=1),
+        )
+    key = default_storage.save(key, ContentFile(raw))
     try:
         with transaction.atomic():
             Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
+            ctx = reload_context(ctx)
+            get_knowledge_base(ctx, kb_id, "edit")
+            storage_object.refresh_from_db()
+            if storage_object.state != "writing" or storage_object.lease_until <= timezone.now():
+                raise ValidationError("上传租约已过期，请重新提交")
+            storage_object.key, storage_object.state, storage_object.lease_until = key, "available", None
+            storage_object.save(update_fields=["key", "state", "lease_until", "updated_at"])
             if doc:
-                doc = Document.objects.select_for_update().get(pk=doc.pk)
+                doc = get_document(ctx, doc.pk, "edit")
+                Document.objects.select_for_update().get(pk=doc.pk)
             else:
                 doc = Document.objects.create(tenant_id=ctx.tenant_id, knowledge_base=kb, title=title or name)
             number = (doc.versions.aggregate(n=Max("version_no"))["n"] or 0) + 1
@@ -93,6 +111,7 @@ def upload(ctx, kb_id, uploaded, title=None, document_id=None):
     except Exception:
         if not DocumentVersion.objects.filter(file=key).exists():
             default_storage.delete(key)
+            StorageObject.objects.filter(pk=storage_object.pk).update(state="deleted", lease_until=None)
         raise
     return doc, version, build, task
 
@@ -168,7 +187,7 @@ def process(task_id):
         stage(task, fence, "PARSING")
         with build.version.file.open("rb") as source:
             raw = source.read(settings.MAX_UPLOAD_BYTES + 1)
-        blocks = parse(build.version.original_name, raw)
+        blocks = parse(build.version.original_name, raw, check=lambda: check_task(task, fence))
         stage(task, fence, "CHUNKING")
         chunks = split_blocks(blocks, build.config_snapshot["size"], build.config_snapshot["overlap"])
         stage(task, fence, "EMBEDDING")

@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { BookOpen, LayoutDashboard, Library, MessageSquare, Search, Workflow, ChartNoAxesCombined, Activity, ArrowUpRight, LogOut, ArrowRight, Layers } from 'lucide-vue-next'
 import { useAuth } from './stores/auth'
 const auth = useAuth()
 const email = ref('admin@acme.demo'), password = ref(''), error = ref(''), busy = ref(false)
-const nav = [
+const nav = computed(() => [
   { path: 'overview', name: '工作台', icon: LayoutDashboard }, { path: 'knowledge', name: '知识空间', icon: Library },
   { path: 'chat', name: '知识问答', icon: MessageSquare }, { path: 'retrieval', name: '检索调试', icon: Search },
   { path: 'tools', name: '只读工具', icon: Workflow }, { path: 'evaluation', name: '效果评估', icon: ChartNoAxesCombined },
   { path: 'monitoring', name: '调用记录', icon: Activity },
-]
+  ...(auth.user?.is_tenant_admin ? [{ path: 'members', name: '成员与角色', icon: Layers }] : []),
+])
 onMounted(() => auth.restore())
 async function login() { busy.value = true; error.value = ''; try { await auth.login(email.value, password.value) } catch (e: any) { error.value = e.message } finally { busy.value = false } }
 </script>

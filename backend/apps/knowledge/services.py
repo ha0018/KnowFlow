@@ -3,13 +3,22 @@ from django.db.models import F
 from rest_framework.exceptions import ValidationError
 
 from apps.users.models import Role, Tenant, User
-from common.context import audit
+from common.context import audit, reload_context
 
 
 @transaction.atomic
 def replace_acl(ctx, obj, entries):
     # Serialize all authorization mutations with generation/publication checks.
     Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
+    ctx = reload_context(ctx)
+    if obj._meta.label_lower == "knowledge.knowledgebase":
+        from .selectors import get_knowledge_base
+
+        get_knowledge_base(ctx, obj.pk, "manage")
+    else:
+        from apps.documents.selectors import get_document
+
+        get_document(ctx, obj.pk, "manage")
     users = {str(u) for u in User.objects.filter(tenant_id=ctx.tenant_id).values_list("id", flat=True)}
     roles = {str(r) for r in Role.objects.filter(tenant_id=ctx.tenant_id).values_list("id", flat=True)}
     seen = set()

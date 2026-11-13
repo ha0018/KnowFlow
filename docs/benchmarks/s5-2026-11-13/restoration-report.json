@@ -1,0 +1,152 @@
+{
+  "all_database_row_digests_match": true,
+  "all_object_sha256_match": true,
+  "files": 93,
+  "status": "passed",
+  "tables": {
+    "agents_businessissue": {
+      "rows": 1,
+      "sha256": "46f8794a5b178d930dfb20244c36c96e24e3b5ae7ac5c7e0163b7f4f9f55263c"
+    },
+    "agents_toolcall": {
+      "rows": 23,
+      "sha256": "0cb6f8914dea1fa86741ba1e94c1d9231f46729dbc18f0108b7e799ab6c1f550"
+    },
+    "conversations_conversation": {
+      "rows": 39,
+      "sha256": "9e04367c4ce6ef2133797cfbe6e70aa5352361c0266c056d1a01fe24d34175dd"
+    },
+    "conversations_conversationknowledgebase": {
+      "rows": 34,
+      "sha256": "f0b0765ce0cd0eba9d270b889d624ae67dc4542bafba6f67251d1053a9297d91"
+    },
+    "conversations_message": {
+      "rows": 78,
+      "sha256": "02cbb146ec773d2c623ad2558b296d69c03aa05f854f3e8faade2697de66fd3c"
+    },
+    "conversations_messagefeedback": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "conversations_messagereference": {
+      "rows": 21,
+      "sha256": "ff454d11a950b61f55f6878efaac259e7f13b0be882fc40a8e95a2814eed8144"
+    },
+    "conversations_run": {
+      "rows": 39,
+      "sha256": "983058d36c54ec49b93cefc7965784f99ba971342b3b650e90bac18e212cbe51"
+    },
+    "django_session": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "documents_document": {
+      "rows": 72,
+      "sha256": "9e2bbc887e483f9149dd0e27dc69c0511ff698c6d6a8ac0c1282c8cf44d88123"
+    },
+    "documents_documentacl": {
+      "rows": 1,
+      "sha256": "b8ea716b98cccbf42a8373988ecb6c38784ae9f733ec4ce6ec4d0f492b6b466d"
+    },
+    "documents_documentchunk": {
+      "rows": 2577,
+      "sha256": "f20d3ca7255e775bb2cbe2f8ae0c2081f1139db35c5fd17020b660846b2782f7"
+    },
+    "documents_documenttask": {
+      "rows": 93,
+      "sha256": "3b74fa508459956da011ea1a4b059609e6006f637a902d0b1d727b099f94009c"
+    },
+    "documents_documentversion": {
+      "rows": 93,
+      "sha256": "0e2493e1d5fc7862a3810c0d88fb9669165be5a33073b937107493e0518d5dd6"
+    },
+    "documents_indexbuild": {
+      "rows": 93,
+      "sha256": "82baac1604798d8564438c7ee928bdb910a1e3a38d6c91617071b21e0a9c9b98"
+    },
+    "documents_storageobject": {
+      "rows": 93,
+      "sha256": "f90e0214427f67ad9244baa76867a50b3e6d9cabc78d36296f17427238fad068"
+    },
+    "evaluation_evalcase": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evaluation_evaldataset": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evaluation_evalresult": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evaluation_evalrun": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "knowledge_knowledgebase": {
+      "rows": 9,
+      "sha256": "946224f40541e7c3a7b8c81c0266ff322a4d4877122fdec282ecbe27a7b3a1ce"
+    },
+    "knowledge_knowledgebaseacl": {
+      "rows": 1,
+      "sha256": "2c845a20f53a124e37f3121798368c23da0b15d63a5a13d55bfa3d4e931e4434"
+    },
+    "monitoring_auditevent": {
+      "rows": 197,
+      "sha256": "a3ade557d483132f362499f62a087d104af2069aab4aab635d99f911cd06ebcb"
+    },
+    "monitoring_modelcalllog": {
+      "rows": 294,
+      "sha256": "861481d0ffeaa84c694007a7a7f6a62143e1ed259cfd1538a5b077890be77fbf"
+    },
+    "monitoring_usagereservation": {
+      "rows": 294,
+      "sha256": "01f89771e2efce64eb07df4b46ab9129b0c3c53f888825e105273c9e613e4061"
+    },
+    "token_blacklist_blacklistedtoken": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "token_blacklist_outstandingtoken": {
+      "rows": 7,
+      "sha256": "740e9deec272593fc8af0e705adef396f9c99d2ca0dfe32b9523fc7d8609c468"
+    },
+    "users_permission": {
+      "rows": 1,
+      "sha256": "8c153d6061d7fb814ad3ee0a1e1f3e12f8f205e075f4bef5be4554ded14b6562"
+    },
+    "users_role": {
+      "rows": 1,
+      "sha256": "ca8a83432f8ddbe82b027b2c2637bf5f7e24113dfba8fab90a53459d38909585"
+    },
+    "users_role_permissions": {
+      "rows": 1,
+      "sha256": "05cef091eef149f80f87ada265c7613e99717c662002b4555480232ff5df1cbd"
+    },
+    "users_tenant": {
+      "rows": 9,
+      "sha256": "2170c247301c637c38b4b40b68ce39608dbd6876f1ce10ea54bf4f6e7308f5dc"
+    },
+    "users_user": {
+      "rows": 12,
+      "sha256": "b3db9aae7c08bed40c3e90038f49829832704660241377e52301147beed07390"
+    },
+    "users_user_groups": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "users_user_user_permissions": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "users_userrole": {
+      "rows": 2,
+      "sha256": "6262efdbf2995f7608845826d71ee77a780c7866a50dbd7135bd76c9e2a46458"
+    }
+  },
+  "source_project": "knowflow",
+  "restored_project": "knowflow-s5-restore",
+  "archive_sha256": "7beb32494b231bb5450463f149728ca6305044a7e6bd874e41e1faa7d624e471",
+  "restored_at": "2026-11-13T04:34:23.505453+00:00"
+}

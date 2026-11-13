@@ -2,7 +2,7 @@
 
 基于 Django 5.2 / DRF 与 Vue 3 的多租户企业知识库项目。按所提供的技术方案实现了可运行的核心业务链路，并附带中文演示界面、数据库迁移、自动化测试和部署模板。
 
-> 当前版本为开发演示版。默认用本地哈希向量、规则规划和原文摘录演示完整流程，不代表真实语义模型的回答质量。已建立 100 条分层题（40 调参/60 保留）及受控 Agent；真实供应商的规划/回答效果、人工语义复核与正式负载仍待验收。
+> 当前版本为开发演示版。默认用本地哈希向量、规则规划和原文摘录演示完整流程，不代表真实语义模型的回答质量。S1–S5 工程交付及新环境备份恢复已完成；持续并发测量中 API/检索延迟未达目标，真实模型与人工语义项仍待验收。见 [逐项验收状态](docs/acceptance.md)。
 
 ![工作台](docs/demo/workspace.png)
 
@@ -48,9 +48,9 @@ npm run dev
 ## 已实现的内容
 
 - 邮箱登录、JWT 刷新轮换/撤销、停用账号检查；单账号归属单租户。
-- 租户角色及操作权限；知识库用户/角色 ACL；文档继承权限或进一步收紧。
+- 租户角色及操作权限；成员创建/停用、角色分配/编辑；知识库用户/角色 ACL、文档继承或进一步收紧的可视化管理。
 - 私有/租户可见知识库，上传、授权下载、版本列表、重试、软删除。
-- PDF/DOCX/TXT/Markdown 解析、保留原文位置、确定性切片、批量向量化。
+- PDF/DOCX/TXT/Markdown 解析、保留原文位置、确定性切片、批量向量化；固定解析子进程墙钟/输出控制和 Linux CPU/内存限制。
 - 不可变文件版本及构建配置；数据库任务清单、租约、fencing、重复投递保护、旧版本继续服务。
 - 授权范围内的向量/关键词召回、RRF、检索调试；PostgreSQL 路径使用 pgvector 和中文分词后的 `simple` 全文检索。
 - ASGI POST SSE、来源引用、无证据拒答、部分答案保存、取消、断流处理、幂等请求、悬挂运行扫描。
@@ -60,12 +60,15 @@ npm run dev
 - 100 条分层题和独立 50 项安全矩阵；B0/B1/B2 对照、原文范围 gold、EvidenceHit/MRR/Precision、逐题回答与人工复核。
 - 可开关的查询改写、独立重排适配器；默认规则/词项对照，外部协议使用受控替身验证；1,000/10,000 Chunk 精确/HNSW 诊断。
 - 结构化日志、trace_id、任务状态、模型调用记录、活性/就绪检查。
-- SQLite 本地备份恢复、文件 SHA-256 校验、Docker Compose 模板、CI 配置。
+- SQLite 本地备份恢复、PostgreSQL/私有对象联合快照及全新环境恢复、原文件 SHA-256/业务行摘要核验、可选 TLS、完整 Compose CI。
+- 上传对象租约、孤儿清单与两次观察的保留期清理、过期凭据和临时解析目录清理；默认预览，保留所有版本引用的文件。
 - 生成/向量服务独立配置、连通性检查、授权历史预算、每日额度、按次原子预留和幂等结算；未知用量与估算费用明确标记。
 
 API 文档见 [docs/api.md](docs/api.md)，实现边界和验收状态见 [docs/implementation-status.md](docs/implementation-status.md)。
 
-后续开发按 [分阶段计划](docs/development-plan.md) 推进。S1–S4 的代码及自动验收已交付；真实供应商、人工语义复核与正式负载分别保留状态。S3 入口与 [实测报告](docs/benchmarks/retrieval-quality-2026-11-10.md) 见 [检索质量说明](docs/retrieval-quality.md)。S4 使用方法、预算及验收边界见 [受控 Agent](docs/controlled-agent.md) 和 [S4 报告](docs/benchmarks/controlled-agent-2026-11-13.md)。
+后续开发按 [分阶段计划](docs/development-plan.md) 推进。S1–S5 代码和工程验收材料已交付；[S5 实测报告](docs/benchmarks/delivery-2026-11-13.md) 保留 160 项授权、50/20 份文件、重复故障、恢复和两轮持续并发的原始结果。最终 API/检索 P95 为 1.74/2.50 秒，未达 300/800 毫秒目标，下一步优先剖析并复测。S3 入口见 [检索质量说明](docs/retrieval-quality.md)，S4 使用方法见 [受控 Agent](docs/controlled-agent.md)。
+
+[部署与数据运维](docs/operations.md) 包含解析、清理、联合备份/恢复及 HTTPS；[演示流程](docs/demo/walkthrough.md) 附实际录屏和截图。完整 A01–A15 尚未全部通过，真实供应商及人工语义验收继续保留。
 
 ## 接入真实模型
 
@@ -89,7 +92,7 @@ EMBEDDING_DIMENSIONS=128
 
 ## PostgreSQL / Redis / MinIO 部署模板
 
-需要 Docker Compose。本机没有 Docker，完整容器组合已在 [GitHub Actions](https://github.com/ha0018/KnowFlow/actions/runs/42160359237) 实际启动并通过业务及故障恢复验收。
+需要 Docker Compose。本机没有 Docker，完整容器组合已在 [S5 GitHub Actions](https://github.com/ha0018/KnowFlow/actions/runs/43365455447) 从空卷启动，完成十组业务、重复故障、联合备份/新环境恢复和 HTTPS 检查；负载测量也在该运行中完成，延迟目标未通过。
 
 1. 复制 `.env.example` 为 `.env`，替换 `SECRET_KEY`（至少 32 位随机字符）、迁移账号密码 `POSTGRES_PASSWORD`、应用账号密码 `POSTGRES_APP_PASSWORD` 和 MinIO 密码。
 2. `.env` 的 `ALLOWED_HOSTS` 加入实际访问域名。默认容器映射本地 HTTP 8080；对外部署请设置 HTTPS 并启用 `SECURE_SSL_REDIRECT`。
@@ -102,7 +105,7 @@ docker compose --env-file .env -f deploy/compose.yaml exec backend uv run --no-s
 
 访问 [http://localhost:8080](http://localhost:8080)。Compose 提供 PostgreSQL 17/pgvector、Redis、MinIO/bucket 初始化、迁移、后端、worker、scheduler 与 Nginx/Vue。迁移为一次性服务，后端等待迁移成功；文档文件不通过公开静态目录提供。SSE 已关闭 Nginx 缓冲。
 
-迁移和应用已使用独立数据库账号，基础镜像固定 digest。MinIO 从固定源码版本构建。完整容器验收由独立 CI 执行，状态及操作说明见基础设施验收文档；对外部署仍需增加备份和 TLS。
+迁移和应用已使用独立数据库账号，基础镜像固定 digest。MinIO 从固定源码版本构建。完整容器验收由独立 CI 执行；联合备份及 TLS 模板的配置与验收边界见 [运维说明](docs/operations.md)。对外部署需配置实际域名、受信证书及私有备份保管位置。
 
 ## 测试与开发
 
@@ -141,7 +144,7 @@ uv run python manage.py backup_local --output ../.runtime/backup.zip
 uv run python manage.py restore_local --archive ../.runtime/backup.zip --destination ../.runtime/restored
 ```
 
-该命令使用 SQLite 在线备份 API，归档数据库快照内引用的本地文件及校验清单。恢复只允许写入新的空目录，先核验所有哈希和路径，再写入；不会覆盖运行中的数据库。可用 `.env` 的 `DATABASE_URL` 与 `MEDIA_ROOT` 指向恢复副本。包含账号和原文的备份需妥善保管。PostgreSQL/S3 部署请使用对应的数据库快照和对象存储备份流程，本命令不适用。
+该命令使用 SQLite 在线备份 API，归档数据库快照内引用的本地文件及校验清单。恢复只允许写入新的空目录，先核验所有哈希和路径，再写入；不会覆盖运行中的数据库。可用 `.env` 的 `DATABASE_URL` 与 `MEDIA_ROOT` 指向恢复副本。包含账号和原文的备份需妥善保管。PostgreSQL/S3 部署使用 [联合快照和新环境恢复流程](docs/operations.md)，本地命令不适用。
 
 ## 结构
 

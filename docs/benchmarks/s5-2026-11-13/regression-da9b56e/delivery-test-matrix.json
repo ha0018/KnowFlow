@@ -1,0 +1,165 @@
+{
+  "new_since_S4": 32,
+  "cases": [
+    {
+      "case": "tests.test_delivery_maintenance.test_archive_directory_is_not_decoded_in_the_parent",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_background_cleanup_continues_after_a_full_batch",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_cleanup_ignores_upload_lease_and_resets_changed_object",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_cleanup_pagination_and_foreign_namespace",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_cleanup_requires_two_pass_retention_and_protects_all_versions",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_expired_cleanup_keeps_live_tokens",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_native_linux_parser_resource_limits_kill_or_reject_allocation[cpu]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_native_linux_parser_resource_limits_kill_or_reject_allocation[memory]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_old_parser_temp_cleanup_is_bounded_to_its_own_prefix",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_parser_environment_excludes_model_and_storage_secrets",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_parser_output_and_text_limits_are_enforced",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_parser_revoke_check_stops_pending_process",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_maintenance.test_parser_timeout_kills_actual_process_and_has_no_late_write",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_acl_browser_contract_and_atomic_scope_change",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_admin_member_role_workflow_revokes_existing_capability",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_cancel_has_its_own_budget_after_ordinary_api_throttle_is_exhausted",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_empty_upload_returns_the_parser_error_code_before_storage",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_management_rejects_cross_tenant_and_privilege_fields",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_nonadmin_cannot_enumerate_management[authorization/subjects]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_nonadmin_cannot_enumerate_management[members]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_nonadmin_cannot_enumerate_management[permissions]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_nonadmin_cannot_enumerate_management[roles]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_stale_manager_context_cannot_replace_acl",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_delivery_management.test_storage_inventory_ownership_is_database_guarded",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_deployment_archives.test_object_import_validates_entire_archive_before_writes[content]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_deployment_archives.test_object_import_validates_entire_archive_before_writes[duplicate]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_deployment_archives.test_object_import_validates_entire_archive_before_writes[extra]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_deployment_archives.test_object_import_validates_entire_archive_before_writes[traversal]",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_deployment_archives.test_object_restore_rejects_database_divergence_before_writes",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_deployment_archives.test_object_snapshot_restores_files_and_row_digests_without_overwrite",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_health.test_tls_redirect_keeps_internal_health_probes_available",
+      "sqlite": "passed",
+      "postgres": "passed"
+    },
+    {
+      "case": "tests.test_stream.test_stale_stream_converges_within_two_minute_scan_window",
+      "sqlite": "passed",
+      "postgres": "passed"
+    }
+  ]
+}

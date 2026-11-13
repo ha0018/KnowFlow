@@ -71,6 +71,7 @@ LANGUAGE_CODE = "zh-hans"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+SECURE_REDIRECT_EXEMPT = [r"^health/(?:live|ready)$"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -109,7 +110,12 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 30,
     "EXCEPTION_HANDLER": "common.exceptions.exception_handler",
     "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.UserRateThrottle"],
-    "DEFAULT_THROTTLE_RATES": {"user": "120/min", "anon": "10/min", "login": "10/min"},
+    "DEFAULT_THROTTLE_RATES": {
+        "user": env("API_USER_RATE", default="120/min"),
+        "anon": "10/min",
+        "login": "10/min",
+        "run-cancel": "60/min",
+    },
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
@@ -148,10 +154,19 @@ CELERY_TASK_ROUTES = {
     "apps.documents.tasks.*": {"queue": "documents"},
     "apps.evaluation.tasks.*": {"queue": "evaluation"},
 }
-CELERY_BEAT_SCHEDULE = {"recover-work": {"task": "apps.documents.tasks.recover_work", "schedule": 30.0}}
+CELERY_BEAT_SCHEDULE = {
+    "recover-work": {"task": "apps.documents.tasks.recover_work", "schedule": 30.0},
+    "cleanup-expired": {"task": "apps.documents.tasks.cleanup_data", "schedule": 3600.0},
+}
+CLEANUP_STORAGE_ENABLED = env.bool("CLEANUP_STORAGE_ENABLED", default=False)
+CLEANUP_STORAGE_GRACE_DAYS = env.int("CLEANUP_STORAGE_GRACE_DAYS", default=7)
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024
 MAX_DOCUMENT_PAGES = 200
 MAX_PARSED_CHARS = 2_000_000
+PARSER_TIMEOUT_SECONDS = env.float("PARSER_TIMEOUT_SECONDS", default=15)
+PARSER_CPU_SECONDS = env.int("PARSER_CPU_SECONDS", default=10)
+PARSER_MEMORY_MB = env.int("PARSER_MEMORY_MB", default=512)
+PARSER_OUTPUT_BYTES = env.int("PARSER_OUTPUT_BYTES", default=16 * 1024**2)
 AI_PROVIDER = env("AI_PROVIDER", default="demo")
 AI_BASE_URL = env("AI_BASE_URL", default="https://api.openai.com/v1")
 AI_API_KEY = env("AI_API_KEY", default="")

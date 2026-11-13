@@ -15,6 +15,7 @@ x-backend: &backend
     AI_API_KEY: ${AI_API_KEY:-}
     AI_MODEL: ${AI_MODEL:-}
     AI_TIMEOUT_SECONDS: ${AI_TIMEOUT_SECONDS:-60}
+    API_USER_RATE: ${API_USER_RATE:-120/min}
     EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-demo}
     EMBEDDING_MODEL: ${EMBEDDING_MODEL:-demo-hash-v1}
     EMBEDDING_DIMENSIONS: ${EMBEDDING_DIMENSIONS:-128}
@@ -25,6 +26,14 @@ x-backend: &backend
     AGENT_TOKEN_BUDGET: ${AGENT_TOKEN_BUDGET:-32000}
     AGENT_EVIDENCE_BYTES: ${AGENT_EVIDENCE_BYTES:-6000}
     AGENT_OUTPUT_BYTES: ${AGENT_OUTPUT_BYTES:-16000}
+    PARSER_TIMEOUT_SECONDS: ${PARSER_TIMEOUT_SECONDS:-15}
+    PARSER_CPU_SECONDS: ${PARSER_CPU_SECONDS:-10}
+    PARSER_MEMORY_MB: ${PARSER_MEMORY_MB:-512}
+    PARSER_OUTPUT_BYTES: ${PARSER_OUTPUT_BYTES:-16777216}
+    CLEANUP_STORAGE_ENABLED: ${CLEANUP_STORAGE_ENABLED:-false}
+    CLEANUP_STORAGE_GRACE_DAYS: ${CLEANUP_STORAGE_GRACE_DAYS:-7}
+    PYTHONDONTWRITEBYTECODE: "1"
+    UV_CACHE_DIR: /tmp/uv-cache
     GENERATION_PROVIDER: ${GENERATION_PROVIDER:-}
     GENERATION_BASE_URL: ${GENERATION_BASE_URL:-}
     GENERATION_API_KEY: ${GENERATION_API_KEY:-}
@@ -77,6 +86,12 @@ x-backend: &backend
     redis: { condition: service_healthy }
     bucket: { condition: service_completed_successfully }
   restart: unless-stopped
+  read_only: true
+  tmpfs: ["/tmp:size=256m,mode=1777"]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  pids_limit: 256
+  mem_limit: 2g
 
 services:
   postgres:
@@ -171,7 +186,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile.frontend
-    ports: ["8080:80"]
+    ports: ["${HTTP_PORT:-8080}:80"]
     depends_on:
       backend: { condition: service_healthy }
     restart: unless-stopped

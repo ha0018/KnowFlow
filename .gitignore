@@ -4,6 +4,9 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .env
+.env.*
+!.env.example
+/deploy/certs/
 *.sqlite3
 backend/media/
 backend/staticfiles/

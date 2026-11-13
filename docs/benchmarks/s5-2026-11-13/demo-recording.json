@@ -1,0 +1,70 @@
+{
+  "source": "actual_local_browser_recording",
+  "base_url": "http://127.0.0.1:5174",
+  "started_at": "2026-11-13T04:38:57.457Z",
+  "duration_seconds": 143.756,
+  "video": "docs/demo/product-walkthrough.webm",
+  "steps": [
+    {
+      "name": "工作台与演示范围",
+      "elapsed_seconds": 4,
+      "seconds": 12
+    },
+    {
+      "name": "发布版本和知识空间",
+      "elapsed_seconds": 16,
+      "seconds": 10
+    },
+    {
+      "name": "有来源的问答",
+      "elapsed_seconds": 27,
+      "seconds": 14
+    },
+    {
+      "name": "原文与引用版本",
+      "elapsed_seconds": 42,
+      "seconds": 12
+    },
+    {
+      "name": "受控 Agent 的预算与模式",
+      "elapsed_seconds": 54,
+      "seconds": 8
+    },
+    {
+      "name": "实际统计和工具轨迹",
+      "elapsed_seconds": 66,
+      "seconds": 12
+    },
+    {
+      "name": "统计快照和口径",
+      "elapsed_seconds": 78,
+      "seconds": 8
+    },
+    {
+      "name": "成员与角色管理",
+      "elapsed_seconds": 86,
+      "seconds": 12
+    },
+    {
+      "name": "知识库权限管理",
+      "elapsed_seconds": 98,
+      "seconds": 12
+    },
+    {
+      "name": "冻结评测与待复核状态",
+      "elapsed_seconds": 111,
+      "seconds": 12
+    },
+    {
+      "name": "用量与模型元数据",
+      "elapsed_seconds": 123,
+      "seconds": 10
+    },
+    {
+      "name": "手机布局",
+      "elapsed_seconds": 133,
+      "seconds": 8
+    }
+  ],
+  "page_errors": []
+}

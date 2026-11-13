@@ -9,6 +9,9 @@
 backend/media
 backend/staticfiles
 .env
+.env.*
+!.env.example
 .runtime
 test-results
 docs/demo/*.png
+docs/demo/*.webm

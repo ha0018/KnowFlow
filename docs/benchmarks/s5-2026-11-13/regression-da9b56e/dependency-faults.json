@@ -1,0 +1,165 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "cycle": 1,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 113,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 1,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 284,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 2,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 129,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 2,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 790,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 3,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 124,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 3,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 1115,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 4,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 141,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 4,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 767,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 5,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 121,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 5,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 731,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 6,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 125,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 6,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 361,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 7,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 622,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 7,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 371,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 8,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 126,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 8,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 1105,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 9,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 121,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 9,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 354,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 10,
+      "service": "redis",
+      "status": "passed",
+      "unavailable_in_ms": 121,
+      "live_during_outage": true,
+      "recovered": true
+    },
+    {
+      "cycle": 10,
+      "service": "minio",
+      "status": "passed",
+      "unavailable_in_ms": 1003,
+      "live_during_outage": true,
+      "recovered": true
+    }
+  ]
+}

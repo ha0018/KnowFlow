@@ -9,17 +9,22 @@
 | POST `/auth/logout` | `{refresh}` → 撤销该刷新凭据，access 最长继续有效 15 分钟 |
 | GET `/auth/me` | 当前用户与租户 |
 | GET/POST `/members` | 管理员列出/创建本租户成员；创建输入 email、password、display_name |
+| PATCH `/members/{id}` | 管理员更新 display_name/is_active；不能修改管理员身份或停用自己 |
 | GET/POST `/roles` | 管理员列出/创建角色；输入 code、name、permission_codes |
+| PATCH `/roles/{id}` | 管理员更新 name/permission_codes，code 保持不变 |
+| GET `/permissions` | 管理员读取可分配的操作权限定义 |
+| GET `/authorization/subjects` | 管理员或指定资料的管理者读取本租户授权主体；支持 knowledge_base_id/document_id |
 | PUT `/members/{id}/roles` | `{role_ids:[...]}` 替换角色归属，递增 ACL epoch |
 | GET/POST `/knowledge-bases` | 分页列表/创建；name、description、visibility（private/tenant） |
 | GET/PATCH/DELETE `/knowledge-bases/{id}` | 读取/修改/软删除 |
 | GET/POST `/knowledge-bases/{id}/acl` | 查询/整体替换授权；数组元素 `{user_id 或 role_id,access_level}` |
+| GET/POST `/knowledge-bases/{id}/access` | 查询或原子更新 `{visibility,entries:[...]}` |
 | GET/POST `/knowledge-bases/{id}/documents` | 分页文档/上传 multipart：file、title、可选 document_id（新版本） |
 | GET/DELETE `/documents/{id}` | 查看/软删除文档 |
 | GET `/documents/{id}/versions` | 文件版本清单 |
 | GET `/documents/{id}/download` | 授权下载，支持 `?version_id=UUID` |
 | POST `/documents/{id}/reindex` | 同版本、同 pipeline 复用构建；失败任务可重试，成功任务幂等返回 |
-| POST `/documents/{id}/access` | `{acl_mode:"inherit"或"restricted",entries:[...]}` |
+| GET/POST `/documents/{id}/access` | 查询或更新 `{acl_mode:"inherit"或"restricted",entries:[...]}` |
 | GET `/tasks/{id}` | 处理阶段、状态、尝试次数、Chunk 数、trace_id |
 | POST `/retrieval/search` | `{query,kb_ids?,top_k?,mode?,rewrite?,rerank?}` → 本次授权片段及分段 diagnostics |
 | GET/POST `/conversations` | 分页会话/创建；`{title?,kb_ids?}` |
@@ -43,7 +48,13 @@
 
 角色权限代码：`knowledge.create`、`agent.execute`、`evaluation.run`、`monitoring.read`。租户管理员在本租户内具有上述能力。ACL 的 read/edit/manage 为递进权限，文档授权只能收紧知识库范围。
 
+用户响应另含 role_ids；知识库/文档元数据另含只读 can_manage，供界面显示管理入口。成员、角色及 ACL 授权条目拒绝未知字段；主体必须为本租户用户或角色，不能伪造 tenant_id/is_tenant_admin 等身份。授权、账号状态及角色变更在事务内复查当前操作者，递增 ACL epoch 并保留审计。
+
+普通认证 API 默认每账号 120 次/分钟（API_USER_RATE），取消接口使用独立的 run-cancel 范围 60 次/分钟，仍仅允许运行所有者。超过速率返回 429；模型 Token 额度由独立账本控制。
+
 上传返回 HTTP 202 和 `document_id/version_id/build_id/task_id`。本地 inline 模式下处理会在请求返回前执行，因此仅用于开发；部署使用 Celery 异步队列。
+
+空文件等基本校验错误返回 400 和机器可读错误码，例如 `{"error":{"file":["EMPTY_FILE"]},"trace_id":"..."}`。DOCX ZIP 目录、PDF/DOCX 结构及正文解析在子进程中执行，基本校验通过的坏文件可能先返回 202，再以 FAILED 任务报告错误。解析预算、维护命令、备份恢复与 HTTPS 入口见 [运维说明](operations.md)。
 
 SSE 依次发送 `meta`、`references`、零到多条 `delta`、`done`；错误发送 `error` 后结束。空闲等待时发送注释心跳。幂等键重复返回 JSON `{run_id,status,replayed:true}`，不会再开模型请求；同键不同请求返回 409。客户端应查询 run，本版本不续播。
 
