@@ -58,7 +58,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 
 class UploadInput(serializers.Serializer):
-    file = serializers.FileField()
+    file = serializers.FileField(allow_empty_file=True)
     title = serializers.CharField(max_length=240, required=False)
     document_id = serializers.UUIDField(required=False)
 

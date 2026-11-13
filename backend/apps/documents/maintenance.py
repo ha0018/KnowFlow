@@ -1,4 +1,7 @@
 import re
+import shutil
+import tempfile
+import time
 from datetime import timedelta
 from pathlib import Path
 
@@ -11,6 +14,29 @@ from apps.users.models import Tenant
 from common.models import AuditEvent
 
 from .models import DocumentVersion, StorageObject
+
+
+def cleanup_parser_files(*, apply=False, root=None):
+    root = Path(root or tempfile.gettempdir()).resolve()
+    cutoff = timezone.now().timestamp() - 24 * 3600
+    report = {"eligible": 0, "removed": 0, "busy": 0}
+    for path in root.glob("knowflow-parse-*"):
+        if path.is_symlink() or not path.is_dir() or path.resolve().parent != root:
+            continue
+        if path.stat().st_mtime >= cutoff:
+            continue
+        report["eligible"] += 1
+        if apply:
+            try:
+                # Resolve and verify the absolute target immediately before rmtree.
+                target = path.resolve()
+                if target.parent != root or not target.name.startswith("knowflow-parse-"):
+                    continue
+                shutil.rmtree(target)
+                report["removed"] += 1
+            except PermissionError:
+                report["busy"] += 1
+    return report
 
 
 def safe_key(key, tenant_id):
@@ -46,6 +72,7 @@ def cleanup_storage(*, apply=False, grace_days=7, limit=1000, after="", tenant_i
         "next_cursor": None,
     }
     count = 0
+    deadline = time.monotonic() + 120
     for tenant in tenants:
         prefix = f"tenants/{tenant.pk}"
         try:
@@ -56,7 +83,7 @@ def cleanup_storage(*, apply=False, grace_days=7, limit=1000, after="", tenant_i
             key = prefix + "/" + filename
             if key <= after or not safe_key(key, tenant.pk) or not safe_local_key(key):
                 continue
-            if count >= limit:
+            if count >= limit or (count and time.monotonic() >= deadline):
                 report["next_cursor"] = report["objects"][-1]["key"]
                 return report
             count += 1

@@ -71,6 +71,7 @@ LANGUAGE_CODE = "zh-hans"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+SECURE_REDIRECT_EXEMPT = [r"^health/(?:live|ready)$"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"

@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 from django.core.management.base import BaseCommand, CommandError
@@ -21,7 +22,8 @@ class Command(BaseCommand):
                 options["action"]
             ](options["archive"])
         except (ValueError, OSError) as exc:
-            raise CommandError(type(exc).__name__ + ": snapshot verification failed") from None
+            code = str(exc) if re.fullmatch(r"[A-Z0-9_]+", str(exc)) else type(exc).__name__
+            raise CommandError(code + ": snapshot verification failed") from None
         value = json.dumps(result, ensure_ascii=False, sort_keys=True)
         if options["report"]:
             Path(options["report"]).write_text(value + "\n", encoding="utf-8")

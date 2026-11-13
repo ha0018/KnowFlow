@@ -75,6 +75,12 @@ jobs:
           docker compose --env-file .env -f deploy/compose.yaml exec -T backend uv run --no-sync python manage.py benchmark_delivery --disposable --duration 600 --min-requests 1000 --output /tmp/load-report.json
           docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/load-report.json > .runtime/load-report.json
           docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/load-report.jsonl > .runtime/load-report.jsonl
+      - name: Verify opt-in HTTPS with a disposable trusted certificate
+        run: |
+          mkdir -p "$RUNNER_TEMP/tls"
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj /CN=localhost -addext subjectAltName=DNS:localhost -keyout "$RUNNER_TEMP/tls/key.pem" -out "$RUNNER_TEMP/tls/cert.pem"
+          TLS_CERT_FILE="$RUNNER_TEMP/tls/cert.pem" TLS_KEY_FILE="$RUNNER_TEMP/tls/key.pem" HTTPS_PORT=8443 docker compose --env-file .env -f deploy/compose.yaml -f deploy/compose.tls.yaml up -d --no-deps --wait backend frontend
+          python scripts/verify-tls.py --certificate "$RUNNER_TEMP/tls/cert.pem"
       - name: Collect reports and service logs
         if: always()
         shell: bash

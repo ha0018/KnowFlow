@@ -2,10 +2,12 @@
 
 import hashlib
 import json
+import os
 import uuid
 import zipfile
 
 from django.apps import apps
+from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import default_storage
 from django.core.serializers.json import DjangoJSONEncoder
@@ -81,6 +83,8 @@ def export_objects(destination):
     files = expected_files()
     manifest = {
         "schema": "knowflow-objects-v1",
+        "revision": os.environ.get("CODE_REVISION", "workspace"),
+        "embedding_profile": settings.EMBEDDING_PROFILE,
         "inventory": database_inventory(),
         "files": list(files.values()),
     }
@@ -106,6 +110,8 @@ def validate_archive(archive):
     manifest = json.loads(archive.read("manifest.json"))
     if manifest.get("schema") != "knowflow-objects-v1" or not isinstance(manifest.get("files"), list):
         raise ValueError("INVALID_OBJECT_ARCHIVE")
+    if manifest.get("embedding_profile") != settings.EMBEDDING_PROFILE:
+        raise ValueError("RESTORE_EMBEDDING_PROFILE_MISMATCH")
     files = {}
     for item in manifest["files"]:
         key = item["key"]

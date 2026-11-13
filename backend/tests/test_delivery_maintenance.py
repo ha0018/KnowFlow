@@ -2,6 +2,7 @@ import io
 import os
 import subprocess
 import sys
+import time
 import uuid
 from datetime import timedelta
 from pathlib import Path
@@ -67,6 +68,39 @@ def test_cleanup_pagination_and_foreign_namespace(world, settings):
     second = cleanup_storage(limit=2, after=first["next_cursor"])
     assert [v["key"] for v in second["objects"]] == [keys[2]]
     assert default_storage.exists("unmanaged/keep.md")
+
+
+def test_background_cleanup_continues_after_a_full_batch(settings, monkeypatch):
+    from apps.documents.tasks import cleanup_data
+
+    settings.CLEANUP_STORAGE_ENABLED = True
+    called = []
+    monkeypatch.setattr("django.core.management.call_command", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        "apps.documents.maintenance.cleanup_storage",
+        lambda **kwargs: {"next_cursor": "tenants/next", "objects": []},
+    )
+    monkeypatch.setattr(cleanup_data, "apply_async", lambda **kwargs: called.append(kwargs))
+    cleanup_data()
+    assert called[0]["kwargs"] == {"after": "tenants/next", "storage_only": True}
+
+
+def test_old_parser_temp_cleanup_is_bounded_to_its_own_prefix(tmp_path):
+    from apps.documents.maintenance import cleanup_parser_files
+
+    stale, fresh, unrelated = [
+        tmp_path / name for name in ("knowflow-parse-old", "knowflow-parse-new", "unrelated")
+    ]
+    for path in (stale, fresh, unrelated):
+        path.mkdir()
+        (path / "source").write_bytes(b"private fixture")
+    old = time.time() - 48 * 3600
+    os.utime(stale, (old, old))
+    os.utime(unrelated, (old, old))
+    assert cleanup_parser_files(root=tmp_path)["eligible"] == 1
+    assert stale.exists()
+    assert cleanup_parser_files(root=tmp_path, apply=True)["removed"] == 1
+    assert fresh.exists() and unrelated.exists()
 
 
 def test_expired_cleanup_keeps_live_tokens(world):
@@ -144,6 +178,19 @@ def test_parser_environment_excludes_model_and_storage_secrets(monkeypatch):
     monkeypatch.setattr("ai_engine.parsers.isolation.subprocess.Popen", capture)
     assert parse("a.md", "无凭据解析".encode())[0]["text"] == "无凭据解析"
     assert "AI_API_KEY" not in environments[0] and "DATABASE_URL" not in environments[0]
+
+
+def test_archive_directory_is_not_decoded_in_the_parent(monkeypatch):
+    from ai_engine.parsers import validate_file
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("ZIP decoding must happen only in the child")
+
+    monkeypatch.setattr("ai_engine.parsers.core.zipfile.ZipFile", forbidden)
+    raw = b"PK\x03\x04broken"
+    assert validate_file("a.docx", raw)[0] == ".docx"
+    with pytest.raises(ParseError, match="INVALID_DOCX"):
+        parse("a.docx", raw)
 
 
 def test_parser_output_and_text_limits_are_enforced(settings):

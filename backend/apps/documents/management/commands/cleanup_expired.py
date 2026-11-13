@@ -14,6 +14,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--apply", action="store_true")
+        parser.add_argument("--parser-files", action="store_true")
 
     def handle(self, **options):
         from apps.conversations.services import interrupt_stale_runs
@@ -24,6 +25,11 @@ class Command(BaseCommand):
             "sessions": Session.objects.filter(expire_date__lt=timezone.now()).count(),
             "tokens": OutstandingToken.objects.filter(expires_at__lt=timezone.now()).count(),
         }
+        from apps.documents.maintenance import cleanup_parser_files
+
+        report["parser_directories"] = cleanup_parser_files(
+            apply=options["apply"] and options["parser_files"]
+        )
         if options["apply"]:
             call_command("clearsessions", verbosity=0)
             call_command("flushexpiredtokens", verbosity=0)

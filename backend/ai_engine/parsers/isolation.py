@@ -1,14 +1,39 @@
 import json
+import logging
 import os
 import subprocess
 import sys
 import tempfile
 import time
+from contextlib import contextmanager
 from pathlib import Path
 
 from django.conf import settings
 
 from .core import ParseError, validate_file
+
+logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def parser_directory():
+    holder = tempfile.TemporaryDirectory(prefix="knowflow-parse-", ignore_cleanup_errors=True)
+    directory = Path(holder.name).resolve()
+    root = Path(tempfile.gettempdir()).resolve()
+    if not directory.is_relative_to(root) or directory.parent != root:
+        raise ParseError("PARSER_TEMP_PATH_INVALID")
+    try:
+        yield directory
+    finally:
+        # Windows can briefly retain a terminated child's file handles.
+        holder.cleanup()
+        for _ in range(5):
+            if not directory.exists():
+                break
+            time.sleep(0.05)
+            holder.cleanup()
+        if directory.exists():
+            logger.warning("parser_cleanup_deferred")
 
 
 def parser_limits():
@@ -32,14 +57,13 @@ def parser_limits():
 
 
 def parse(name, raw, *, check=None):
-    validate_file(name, raw)
+    validate_file(name, raw, inspect_archive=False)
     limits = parser_limits()
     deadline = time.monotonic() + limits["seconds"]
     # No database/model/storage credentials or application settings are inherited.
     env = {k: os.environ[k] for k in ("SystemRoot", "WINDIR", "PATH") if k in os.environ}
     env.update(PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1")
-    with tempfile.TemporaryDirectory(prefix="knowflow-parse-") as folder:
-        directory = Path(folder)
+    with parser_directory() as directory:
         source, output = directory / "source", directory / "result.json"
         source.write_bytes(raw)
         config = {

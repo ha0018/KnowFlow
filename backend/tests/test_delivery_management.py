@@ -50,6 +50,18 @@ def test_nonadmin_cannot_enumerate_management(world, client_for, endpoint):
     assert client_for(world["member"]).get("/api/v1/" + endpoint).status_code == 403
 
 
+def test_empty_upload_returns_the_parser_error_code_before_storage(world, client_for):
+    from django.core.files.uploadedfile import SimpleUploadedFile
+
+    response = client_for(world["admin"]).post(
+        f"/api/v1/knowledge-bases/{world['kb'].pk}/documents",
+        {"file": SimpleUploadedFile("empty.md", b"")},
+        format="multipart",
+    )
+    assert response.status_code == 400 and "EMPTY_FILE" in response.content.decode()
+    assert not StorageObject.objects.exists()
+
+
 def test_management_rejects_cross_tenant_and_privilege_fields(world, client_for):
     client = client_for(world["admin"])
     foreign = Role.objects.create(tenant=world["other"], code="foreign", name="外部")

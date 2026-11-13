@@ -40,13 +40,19 @@ def recover_work():
 
 
 @shared_task
-def cleanup_data():
+def cleanup_data(after="", storage_only=False):
     from django.conf import settings
     from django.core.management import call_command
 
     from .maintenance import cleanup_storage
 
-    call_command("cleanup_expired", apply=True)
+    if not storage_only:
+        call_command("cleanup_expired", apply=True, parser_files=True)
     if settings.CLEANUP_STORAGE_ENABLED:
-        return cleanup_storage(apply=True, grace_days=settings.CLEANUP_STORAGE_GRACE_DAYS)
+        report = cleanup_storage(apply=True, grace_days=settings.CLEANUP_STORAGE_GRACE_DAYS, after=after)
+        if report["next_cursor"]:
+            cleanup_data.apply_async(
+                kwargs={"after": report["next_cursor"], "storage_only": True}, countdown=5
+            )
+        return report
     return {"storage": "disabled"}

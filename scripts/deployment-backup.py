@@ -103,18 +103,22 @@ def backup(options):
                     "--no-acl",
                     stdout=target,
                 )
+            with zipfile.ZipFile(directory / "objects.zip") as objects:
+                object_manifest = json.loads(objects.read("manifest.json"))
             manifest = {
                 "schema": "knowflow-deployment-v1",
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "source_project": options.project,
-                "revision": os.environ.get("CODE_REVISION", "workspace"),
+                "revision": object_manifest["revision"],
+                "embedding_profile": object_manifest["embedding_profile"],
                 "quiesced_services": stopped,
                 "files": {
                     name: {"sha256": digest(directory / name), "size": (directory / name).stat().st_size}
                     for name in ("database.dump", "objects.zip")
                 },
             }
-            with zipfile.ZipFile(output, "x", zipfile.ZIP_STORED) as archive:
+            fd = os.open(output, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0), 0o600)
+            with os.fdopen(fd, "wb") as binary, zipfile.ZipFile(binary, "w", zipfile.ZIP_STORED) as archive:
                 for name in manifest["files"]:
                     archive.write(directory / name, name)
                 archive.writestr("manifest.json", json.dumps(manifest, sort_keys=True))

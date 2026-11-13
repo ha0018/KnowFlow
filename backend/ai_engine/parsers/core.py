@@ -19,7 +19,7 @@ class ParseError(ValueError):
     pass
 
 
-def validate_file(name, raw):
+def validate_file(name, raw, *, inspect_archive=True):
     ext = Path(name).suffix.lower()
     if ext not in MIME_TYPES:
         raise ParseError("UNSUPPORTED_TYPE")
@@ -30,6 +30,9 @@ def validate_file(name, raw):
     if ext == ".pdf" and not raw.startswith(b"%PDF-"):
         raise ParseError("INVALID_PDF")
     if ext == ".docx":
+        if not raw.startswith(b"PK"):
+            raise ParseError("INVALID_DOCX")
+    if ext == ".docx" and inspect_archive:
         try:
             with zipfile.ZipFile(io.BytesIO(raw)) as archive:
                 if (
