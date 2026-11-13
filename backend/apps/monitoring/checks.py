@@ -6,6 +6,13 @@ from ai_engine.gateway.config import GatewayError, profile
 @register()
 def model_configuration(app_configs, **kwargs):
     errors = []
+    from ai_engine.parsers import ParseError
+    from ai_engine.parsers.isolation import parser_limits
+
+    try:
+        parser_limits()
+    except ParseError as exc:
+        errors.append(Error(str(exc), id="knowflow.E003"))
     from apps.agents.policy import limits
 
     try:

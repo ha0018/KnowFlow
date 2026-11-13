@@ -110,3 +110,17 @@ class DocumentTask(TenantEntity):
 
     class Meta(TenantEntity.Meta):
         indexes = [models.Index(fields=["status", "lease_until"])]
+
+
+class StorageObject(TenantEntity):
+    """Upload lease and delayed orphan inventory; never a replacement for provenance."""
+
+    key = models.CharField(max_length=500, unique=True)
+    state = models.CharField(max_length=16, default="writing")
+    lease_until = models.DateTimeField(null=True)
+    first_unreferenced_at = models.DateTimeField(null=True)
+    observed_modified_at = models.DateTimeField(null=True)
+    observed_size = models.PositiveBigIntegerField(default=0)
+
+    class Meta(TenantEntity.Meta):
+        indexes = [models.Index(fields=["state", "first_unreferenced_at"])]

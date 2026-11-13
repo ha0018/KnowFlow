@@ -29,3 +29,23 @@ def audit(ctx, action, obj):
         resource_id=str(obj.pk),
         trace_id=ctx.trace_id,
     )
+
+
+def reload_context(ctx):
+    from rest_framework.exceptions import PermissionDenied
+
+    from apps.users.models import User
+
+    user = (
+        User.objects.select_related("tenant")
+        .filter(
+            pk=ctx.user.pk,
+            tenant_id=ctx.tenant_id,
+            is_active=True,
+            tenant__is_active=True,
+        )
+        .first()
+    )
+    if not user:
+        raise PermissionDenied("账号或租户已停用")
+    return RequestContext.for_user(user, ctx.trace_id)

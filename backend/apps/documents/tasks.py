@@ -37,3 +37,16 @@ def recover_work():
         Q(heartbeat_at__lt=timezone.now() - timedelta(minutes=10))
         | Q(heartbeat_at__isnull=True, started_at__lt=timezone.now() - timedelta(minutes=10))
     ).update(status="FAILED", metrics={"error": "WORKER_INTERRUPTED"}, finished_at=timezone.now())
+
+
+@shared_task
+def cleanup_data():
+    from django.conf import settings
+    from django.core.management import call_command
+
+    from .maintenance import cleanup_storage
+
+    call_command("cleanup_expired", apply=True)
+    if settings.CLEANUP_STORAGE_ENABLED:
+        return cleanup_storage(apply=True, grace_days=settings.CLEANUP_STORAGE_GRACE_DAYS)
+    return {"storage": "disabled"}

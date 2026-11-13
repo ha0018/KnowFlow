@@ -13,7 +13,7 @@ concurrency:
 jobs:
   compose:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     env:
       COMPOSE_PROJECT_NAME: knowflow
       COMPOSE_PARALLEL_LIMIT: '2'
@@ -56,11 +56,24 @@ jobs:
         run: docker compose --env-file .env -f deploy/compose.yaml exec -T backend uv run --no-sync python manage.py verify_stack --report /tmp/infrastructure-report.json
       - name: Check dependency failures and recovery
         run: python scripts/verify-infrastructure.py
+      - name: Run S5 authorization ingestion consistency and tracing acceptance
+        run: docker compose --env-file .env -f deploy/compose.yaml exec -T backend uv run --no-sync python manage.py verify_delivery --disposable --output /tmp/delivery-report.json
+      - name: Preserve reports before quiesced backup
+        run: |
+          docker compose --env-file .env -f deploy/compose.yaml cp backend:/tmp/infrastructure-report.json .runtime/infrastructure-report.json
+          docker compose --env-file .env -f deploy/compose.yaml cp backend:/tmp/delivery-report.json .runtime/delivery-report.json
+      - name: Back up PostgreSQL and private objects and restore a new deployment
+        run: |
+          python scripts/deployment-backup.py backup --output "$RUNNER_TEMP/knowflow-backup.zip"
+          python scripts/deployment-backup.py restore --archive "$RUNNER_TEMP/knowflow-backup.zip" --env-file .env --new-project knowflow-s5-restore --port 8081 --report .runtime/restoration-report.json
+          docker compose -p knowflow-s5-restore --env-file .env -f deploy/compose.yaml exec -T backend uv run --no-sync python manage.py verify_stack --report /tmp/restored-business.json
+          docker compose -p knowflow-s5-restore --env-file .env -f deploy/compose.yaml cp backend:/tmp/restored-business.json .runtime/restored-business.json
       - name: Collect reports and service logs
         if: always()
         shell: bash
         run: |
-          docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/infrastructure-report.json > .runtime/infrastructure-report.json || true
+          docker compose --env-file .env -f deploy/compose.yaml cp backend:/tmp/infrastructure-report.json .runtime/infrastructure-report.json || true
+          docker compose --env-file .env -f deploy/compose.yaml cp backend:/tmp/delivery-report.json .runtime/delivery-report.json || true
           docker compose --env-file .env -f deploy/compose.yaml ps -a > .runtime/containers.txt || true
           docker compose --env-file .env -f deploy/compose.yaml logs --no-color --tail 300 > .runtime/service-logs.txt 2>&1 || true
           docker compose --env-file .env -f deploy/compose.yaml images --format json > .runtime/images.json || true
@@ -74,4 +87,6 @@ jobs:
           include-hidden-files: true
       - name: Stop disposable deployment
         if: always()
-        run: docker compose --env-file .env -f deploy/compose.yaml down -v --remove-orphans
+        run: |
+          docker compose -p knowflow-s5-restore --env-file .env -f deploy/compose.yaml down -v --remove-orphans
+          docker compose --env-file .env -f deploy/compose.yaml down -v --remove-orphans

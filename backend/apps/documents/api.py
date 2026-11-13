@@ -12,7 +12,8 @@ from rest_framework.views import APIView
 from apps.knowledge.api import ACLEntrySerializer
 from apps.knowledge.selectors import get_knowledge_base
 from apps.knowledge.services import bump_epoch, replace_acl
-from common.context import RequestContext, audit
+from apps.users.models import Tenant
+from common.context import RequestContext, audit, reload_context
 
 from .models import Document, DocumentTask
 from .selectors import documents, get_document
@@ -20,6 +21,18 @@ from .services import reindex, upload
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    can_manage = serializers.SerializerMethodField()
+
+    def get_can_manage(self, obj):
+        if "manage_ids" not in self.context:
+            request = self.context.get("request")
+            self.context["manage_ids"] = (
+                set(documents(RequestContext.from_request(request), "manage").values_list("id", flat=True))
+                if request
+                else set()
+            )
+        return obj.pk in self.context["manage_ids"]
+
     status = serializers.CharField(source="desired_build.status", default="PENDING", read_only=True)
     active_version = serializers.IntegerField(
         source="active_build.version.version_no", default=None, read_only=True
@@ -39,6 +52,7 @@ class DocumentSerializer(serializers.ModelSerializer):
             "active_build_id",
             "desired_build_id",
             "created_at",
+            "can_manage",
         ]
         read_only_fields = ["id", "knowledge_base_id", "active_build_id", "desired_build_id", "created_at"]
 
@@ -64,7 +78,9 @@ class UploadView(APIView):
 
         paginator = PageNumberPagination()
         page = paginator.paginate_queryset(qs, request)
-        return paginator.get_paginated_response(DocumentSerializer(page, many=True).data)
+        return paginator.get_paginated_response(
+            DocumentSerializer(page, many=True, context={"request": request}).data
+        )
 
     def post(self, request, kb_id):
         serializer = UploadInput(data=request.data)
@@ -136,16 +152,23 @@ class DocumentViewSet(viewsets.ReadOnlyModelViewSet):
             content_type=version.mime_type,
         )
 
-    @action(detail=True, methods=["post"], url_path="access")
+    @action(detail=True, methods=["get", "post"], url_path="access")
     def access(self, request, pk=None):
         ctx = RequestContext.from_request(request)
         doc = get_document(ctx, pk, "manage")
+        if request.method == "GET":
+            return Response(
+                {"acl_mode": doc.acl_mode, "entries": ACLEntrySerializer(doc.acl.all(), many=True).data}
+            )
         mode = serializers.ChoiceField(choices=["inherit", "restricted"]).run_validation(
             request.data.get("acl_mode")
         )
         entries = ACLEntrySerializer(data=request.data.get("entries", []), many=True)
         entries.is_valid(raise_exception=True)
         with transaction.atomic():
+            Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
+            ctx = reload_context(ctx)
+            doc = get_document(ctx, pk, "manage")
             replace_acl(ctx, doc, entries.validated_data)
             doc.acl_mode = mode
             doc.save(update_fields=["acl_mode"])

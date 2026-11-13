@@ -12,7 +12,19 @@ from apps.knowledge.api import KnowledgeBaseViewSet
 from apps.knowledge.retrieval_api import SearchView
 from apps.monitoring.api import CallsView, DashboardView, live, ready
 from apps.monitoring.model_api import ModelsView, QuotaView
-from apps.users.api import LoginView, LogoutView, MemberRolesView, MembersView, MeView, RefreshView, RolesView
+from apps.users.api import (
+    AuthorizationSubjectsView,
+    LoginView,
+    LogoutView,
+    MemberDetailView,
+    MemberRolesView,
+    MembersView,
+    MeView,
+    PermissionsView,
+    RefreshView,
+    RoleDetailView,
+    RolesView,
+)
 
 router = DefaultRouter(trailing_slash=False)
 router.register("knowledge-bases", KnowledgeBaseViewSet, basename="knowledge-base")
@@ -28,7 +40,11 @@ urlpatterns = [
     path("api/v1/auth/logout", LogoutView.as_view()),
     path("api/v1/auth/me", MeView.as_view()),
     path("api/v1/members", MembersView.as_view()),
+    path("api/v1/members/<uuid:member_id>", MemberDetailView.as_view()),
     path("api/v1/roles", RolesView.as_view()),
+    path("api/v1/roles/<uuid:role_id>", RoleDetailView.as_view()),
+    path("api/v1/permissions", PermissionsView.as_view()),
+    path("api/v1/authorization/subjects", AuthorizationSubjectsView.as_view()),
     path("api/v1/members/<uuid:member_id>/roles", MemberRolesView.as_view()),
     path("api/v1/knowledge-bases/<uuid:kb_id>/documents", UploadView.as_view()),
     path("api/v1/tasks/<uuid:task_id>", TaskView.as_view()),
