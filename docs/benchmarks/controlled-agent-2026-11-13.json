@@ -1,0 +1,161 @@
+{
+  "date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "source_revision": "94aa3dfc77e7699dcbbdabcff9a23e74c5fd37d4",
+  "scope": "demo_rule_planning_real_tool_subprocesses_real_local_HTTP_fixture",
+  "real_supplier_verified": false,
+  "human_planning_and_citation_quality_accepted": false,
+  "production_load_accepted": false,
+  "limits": {
+    "max_tool_calls": 4,
+    "max_model_decisions": 5,
+    "tool_seconds": 10,
+    "total_active_seconds": 60,
+    "token_budget": 32000,
+    "evidence_bytes": 6000,
+    "output_bytes": 16000,
+    "terminal_cleanup_excluded_from_active_deadline": true
+  },
+  "checks": {
+    "sqlite": {
+      "passed": 139,
+      "skipped": 2,
+      "failures": 0,
+      "skipped_cases": [
+        {
+          "name": "test_concurrent_admission_cannot_overspend_tenant",
+          "reason": "Row-lock admission requires PostgreSQL"
+        },
+        {
+          "name": "test_concurrent_settlement_is_exactly_once",
+          "reason": "Concurrent settlement uses PostgreSQL row locks"
+        }
+      ]
+    },
+    "postgres": {
+      "passed": 139,
+      "skipped": 2,
+      "failures": 0,
+      "skipped_cases": [
+        {
+          "name": "test_backup_restore_preserves_database_and_file_hashes",
+          "reason": "Local snapshot command is specific to SQLite"
+        },
+        {
+          "name": "test_portable_dense_ranking_is_cosine_not_unnormalized_dot_product",
+          "reason": "Portable exact implementation only"
+        }
+      ]
+    }
+  },
+  "agent_tests": {
+    "total": 50,
+    "invalid_schema": 31,
+    "invalid_schema_workers_started": 0,
+    "other_cases": 19,
+    "databases": [
+      "sqlite",
+      "postgres"
+    ],
+    "all_passed": true,
+    "actual_HTTP_fixture_cases": 4,
+    "late_side_effect_prevented_by_actual_process_kill": true
+  },
+  "frontend": {
+    "build": "passed",
+    "SSE_protocol_tests": 2,
+    "browser_scenarios": 3,
+    "screenshot": "../demo/controlled-agent.png"
+  },
+  "infrastructure": {
+    "status": "passed",
+    "checks_passed": 10,
+    "faults_passed": 2,
+    "agent_tools": [
+      "search",
+      "summary",
+      "analysis"
+    ]
+  },
+  "S3_regression": {
+    "split": "tuning",
+    "workflow": "success",
+    "security_cases": 50,
+    "security_failed": 0,
+    "unauthorized_occurrences": 0,
+    "holdout_reexecuted": false,
+    "parameters_retuned": false
+  },
+  "workflows": {
+    "checks": "https://github.com/ha0018/KnowFlow/actions/runs/43353473323",
+    "infrastructure": "https://github.com/ha0018/KnowFlow/actions/runs/43353473392",
+    "retrieval_quality": "https://github.com/ha0018/KnowFlow/actions/runs/43353473337"
+  },
+  "artifacts": [
+    {
+      "id": 14005381214,
+      "name": "backend-tests-postgres",
+      "run_id": 43353473323,
+      "zip_sha256_verified": "a12088de62d8bf5102db95b697b4f574fffb0f607d9e79322efab95476f2179a"
+    },
+    {
+      "id": 14003834993,
+      "name": "backend-tests-sqlite",
+      "run_id": 43353473323,
+      "zip_sha256_verified": "0c1380e2ada91b08ccd6dd28acf4795393e5868bf50ef2ba8f298de5790d9f17"
+    },
+    {
+      "id": 14004682930,
+      "name": "infrastructure-verification",
+      "run_id": 43353473392,
+      "zip_sha256_verified": "58733eed2804b019889ba1f212f9dc3187ceb73cdc87868e90a57f5435e0a81d"
+    },
+    {
+      "id": 14004368476,
+      "name": "retrieval-quality-94aa3dfc77e7699dcbbdabcff9a23e74c5fd37d4-tuning",
+      "run_id": 43353473337,
+      "zip_sha256_verified": "d2be0216c64415e5483e20a3528ce4f57d760fd931635b33e0f6ce3cf0319b30"
+    }
+  ],
+  "raw_reports": [
+    {
+      "path": "s4-2026-11-13/agent-test-matrix.json",
+      "sha256": "b116784fdfbcd6baf2b90d06a9fc6d67b1dfe5eb4da404c6ae5a1213bb2dce31"
+    },
+    {
+      "path": "s4-2026-11-13/backend-postgres.xml",
+      "sha256": "590fb45d487ad9458486ebd472a812df213f75cfda4beab63750a8d497751976"
+    },
+    {
+      "path": "s4-2026-11-13/backend-sqlite.xml",
+      "sha256": "18c511f9fe9870d6ea6d0c33e01c7de1fab48de307a20a0674945f089a2347fe"
+    },
+    {
+      "path": "s4-2026-11-13/browser-verification.json",
+      "sha256": "6d160b123eb9d4ec7fdb6d90e83feb9feb8af0ce39c7c96fcc634b56ddfa23fe"
+    },
+    {
+      "path": "s4-2026-11-13/dependency-faults.json",
+      "sha256": "5275687b63bee83a67237e48647eb5e5f88892f91b01e093da591fa97d76f646"
+    },
+    {
+      "path": "s4-2026-11-13/images.json",
+      "sha256": "9653f5ea8d754858e908af779e3a33c807a8665547301bd4affb74d50873f757"
+    },
+    {
+      "path": "s4-2026-11-13/infrastructure-report.json",
+      "sha256": "e623112d89bb7bb91e891e5ba3f3503bbf375769029d6215ab102cc69ebc7d4d"
+    },
+    {
+      "path": "s4-2026-11-13/retrieval-security.json",
+      "sha256": "635d580c656e6b87fe80f4555cdb0f6aea4c59664b72d6d5efa3eeaa253cdaee"
+    }
+  ],
+  "remaining": [
+    "real_supplier_native_tool_call_and_multistep_planning_quality",
+    "real_provider_usage_cancellation_and_tokenizer_calibration",
+    "human_fact_and_citation_support_review",
+    "formal_concurrent_load_and_full_A01_A15_acceptance",
+    "S5_delivery_and_parser_isolation"
+  ]
+}

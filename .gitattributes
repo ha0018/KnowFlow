@@ -5,3 +5,5 @@
 *.gif binary
 *.ico binary
 *.zip binary
+# Preserve the original Compose artifact, including its trailing blank line.
+docs/benchmarks/s4-2026-11-13/images.json whitespace=-blank-at-eof

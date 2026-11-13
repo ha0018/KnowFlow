@@ -1,5 +1,7 @@
 # 验证记录
 
+2026-11-13 的 S4 记录及原始 JUnit 见 [S4 报告](benchmarks/controlled-agent-2026-11-13.md)：SQLite/PostgreSQL 各 139 通过、2 跳过，Ruff/系统检查/迁移一致性、前端生产构建和 2 项 SSE 协议测试通过；三个浏览器场景全部通过。新增 50 项 Agent 专项测试包含 31 条非法参数，以及越权、四次执行上限、重复循环、真实子进程硬超时/取消、原生 HTTP 超时/取消及结算。完整容器十组业务检查和 Redis/MinIO 两项故障恢复通过；S3 调参、安全矩阵及索引诊断回归通过。新截图：[受控 Agent](demo/controlled-agent.png)。使用规则演示和实际 socket 协议替身，没有真实供应商质量结论。
+
 2026-11-10 的 S3 记录及原始证据见 [S3 报告](benchmarks/retrieval-quality-2026-11-10.md)：SQLite/PostgreSQL 各 89 通过、2 跳过；前端构建与协议测试通过；浏览器业务和 S3 查看逐题/复核保存/导出/手机布局两场景通过，临时额度已恢复。固定 60 题保留集 B0/B1/B2 各组错误 0；独立 50 项安全矩阵、两种规模/选择率的真实 HNSW 诊断与完整容器九组业务/两项故障恢复通过。
 
 S3 使用演示模型，人工语义指标保持 N/A，没有替代真实模型及正式负载验收。新截图：[评测配置](demo/retrieval-quality.png)、[逐题复核](demo/quality-case-review.png)。以下各节保留 2026-11-06 的 S1/S2 历史基线。

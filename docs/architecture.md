@@ -28,6 +28,8 @@ PostgreSQL 迁移添加 `(tenant_id,id)` 唯一约束及复合外键；SQLite �
 
 生成和向量模型使用独立 profile；显式设置新 endpoint 时不转发旧 key。每个外部请求尝试在短事务中锁定租户并预留额度，事务外访问模型。结算同样按租户/预留顺序加锁，保留供应商实际用量或明确标记的未知预留。过期/已结算预留禁止再次发送，后台扫描以锁内的最新发送状态回收，防止过期调用绕过额度。
 
-文档内容在 Prompt 中作为非可信证据数据。工具只能调用白名单中的只读函数，严格拒绝未知字段及伪造身份。当前工具为显式单次执行；完整模型规划、四步循环及硬超时 runner 尚未实现。
+文档内容在 Prompt 中作为非可信证据数据。受控 Agent 接收模型的原生 function-calling 建议，服务端重新解析并校验三个只读工具的严格 schema，拒绝未知字段及伪造身份。最多四次工具执行，每次在固定入口子进程内完成；父进程以单工具 10 秒和整轮 60 秒的单调时钟期限停止执行，取消时关闭 HTTP 或 kill/wait 工具进程，再结算审计和预留。
+
+Agent 用量与 S2 账本共用租户锁，额外限制整轮 Token、证据和输出；工具前后、证据入库及最终提交均检查当前身份、ACL epoch 和发布版本。文档证据复用 MessageReference，统计结果保存为 ToolCall 中的带时间/范围快照。最终回答在授权检查后原子提交，再分段推送；工具 SSE 只展示名称/状态/耗时，不包含推理过程。设计与限制见 [ADR 007](decisions/007-controlled-agent.md) 及 [受控 Agent](controlled-agent.md)。
 
 实现参考：[Django ASGI](https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/)、[DRF 权限说明](https://www.django-rest-framework.org/api-guide/permissions/)、[pgvector Python](https://github.com/pgvector/pgvector-python)、[Chat Completions 协议](https://developers.openai.com/api/reference/resources/chat)、[Embeddings 协议](https://developers.openai.com/api/reference/resources/embeddings/methods/create)。

@@ -1,0 +1,628 @@
+{
+  "source_revision": "94aa3dfc77e7699dcbbdabcff9a23e74c5fd37d4",
+  "scope": "native_processes_and_local_socket_protocol_fixture",
+  "case_count": 50,
+  "invalid_schema_cases": [
+    {
+      "id": "invalid-01",
+      "tool": "ShellTool",
+      "arguments": {
+        "command": "whoami"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-02",
+      "tool": "PythonTool",
+      "arguments": {
+        "code": "print(1)"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-03",
+      "tool": "SQLTool",
+      "arguments": {
+        "sql": "SELECT 1"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-04",
+      "tool": "URLTool",
+      "arguments": {
+        "url": "https://invalid"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-05",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "tenant_id": "forged"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-06",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "user_id": "forged"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-07",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "url": "file:///secret"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-08",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "top_k": true
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-09",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "top_k": 1.1
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-10",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "top_k": "5"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-11",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "top_k": 0
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-12",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "top_k": 9
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-13",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "kb_ids": "all"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-14",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "kb_ids": [
+          12
+        ]
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-15",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "kb_ids": [
+          "bad"
+        ]
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-16",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": "x",
+        "kb_ids": [
+          "same",
+          "same"
+        ]
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-17",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": ""
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-18",
+      "tool": "KnowledgeSearchTool",
+      "arguments": {
+        "query": 42
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-19",
+      "tool": "KnowledgeSearchTool",
+      "arguments": "{\"query\":\"x\",\"query\":\"y\"}",
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-20",
+      "tool": "KnowledgeSearchTool",
+      "arguments": "{\"query\":\"x\",\"top_k\":NaN}",
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-21",
+      "tool": "KnowledgeSearchTool",
+      "arguments": "not-json",
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-22",
+      "tool": "KnowledgeSearchTool",
+      "arguments": [],
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-23",
+      "tool": "KnowledgeSearchTool",
+      "arguments": null,
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-24",
+      "tool": "DocumentSummaryTool",
+      "arguments": {
+        "document_id": "bad"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-25",
+      "tool": "DocumentSummaryTool",
+      "arguments": {
+        "document_id": 123
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-26",
+      "tool": "DocumentSummaryTool",
+      "arguments": {
+        "document_id": "bad",
+        "path": "/secret"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-27",
+      "tool": "DataAnalysisTool",
+      "arguments": {
+        "date_from": "2026-12-01",
+        "date_to": "2026-01-01",
+        "group_by": "month"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-28",
+      "tool": "DataAnalysisTool",
+      "arguments": {
+        "date_from": "2020-01-01",
+        "date_to": "2026-01-01",
+        "group_by": "month"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-29",
+      "tool": "DataAnalysisTool",
+      "arguments": {
+        "date_from": "2026-01-01",
+        "date_to": "2026-02-01",
+        "group_by": "sql"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-30",
+      "tool": "DataAnalysisTool",
+      "arguments": {
+        "date_from": "not-date",
+        "date_to": "2026-02-01",
+        "group_by": "month"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    },
+    {
+      "id": "invalid-31",
+      "tool": "DataAnalysisTool",
+      "arguments": {
+        "date_from": "2026-01-01",
+        "date_to": "2026-02-01",
+        "group_by": "month",
+        "tenant_id": "other"
+      },
+      "result": "rejected_before_worker_on_both_databases"
+    }
+  ],
+  "cases": [
+    {
+      "test": "tests.test_agent_http.test_real_http_function_call_contract_and_separate_metering",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_agent_http.test_parallel_model_calls_are_rejected_before_execution",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_agent_http.test_real_http_planner_deadline_closes_and_settles_unknown_usage",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_agent_http.test_total_timeout_below_model_timeout_cancels_native_http",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_three_real_process_tools_end_to_end_with_references[search]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_three_real_process_tools_end_to_end_with_references[summary]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_three_real_process_tools_end_to_end_with_references[analysis]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-01]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-02]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-03]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-04]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-05]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-06]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-07]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-08]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-09]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-10]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-11]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-12]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-13]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-14]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-15]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-16]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-17]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-18]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-19]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-20]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-21]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-22]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-23]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-24]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-25]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-26]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-27]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-28]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-29]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-30]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_invalid_schema_is_rejected_before_starting_a_worker[invalid-31]",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_duplicate_tool_calls_stop_loop_and_run_kind_is_in_idempotency",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_hard_timeout_kills_real_process_before_it_can_finish_late",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_total_deadline_cancels_pending_model",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_owner_cancel_closes_pending_planner_and_disconnect_at_meta_is_terminal",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_agent_sse_idempotency_and_cross_tenant_access",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_tool_call_actor_and_run_kind_are_database_guarded",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_fifth_tool_attempt_never_executes",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_per_run_token_budget_rejects_before_upstream",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_cancel_kills_actual_tool_process",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_summary_is_limited_to_conversation_scope",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_analysis_history_and_reference_hide_after_revocation",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    },
+    {
+      "test": "tests.test_controlled_agent.test_revoke_during_final_model_response_discards_answer",
+      "results": {
+        "sqlite": "passed",
+        "postgres": "passed"
+      }
+    }
+  ]
+}
