@@ -31,6 +31,7 @@ from apps.users.models import Tenant, User
 
 def seed():
     nonce = uuid.uuid4().hex[:12]
+    corpus = hashlib.sha256()
     scopes = []
     with transaction.atomic():
         for tenant_number in range(2):
@@ -49,6 +50,7 @@ def seed():
                 )
                 texts = [f"产品 P{group:02}-{i:04} 退款政策：购买后30天内可以申请退款。" for i in range(500)]
                 raw = "\n\n".join(texts).encode()
+                corpus.update(raw)
                 key = default_storage.save(f"tenants/{tenant.pk}/{uuid.uuid4().hex}.md", ContentFile(raw))
                 StorageObject.objects.create(tenant=tenant, key=key, state="available")
                 doc = Document.objects.create(
@@ -131,7 +133,7 @@ def seed():
                     "visible_chunks": visible * 500,
                 }
             )
-    return clients
+    return clients, corpus.hexdigest()
 
 
 def request(client, actor, iteration):
@@ -216,7 +218,7 @@ class Command(BaseCommand):
             or not 0 <= options["interval"] <= 10
         ):
             raise CommandError("Invalid measurement bounds")
-        actors = seed()
+        actors, corpus_hash = seed()
         output = Path(options["output"])
         output.parent.mkdir(parents=True, exist_ok=True)
         raw_path = output.with_suffix(".jsonl")
@@ -228,6 +230,9 @@ class Command(BaseCommand):
             "environment": environment(),
             "scope": "demo_hash_embedding_10000_synthetic_published_chunks_2_tenants",
             "fixture_chunk_count": 10000,
+            "fixture_schema": "synthetic-load-v1",
+            "corpus_sha256": corpus_hash,
+            "embedding_profile": settings.EMBEDDING_PROFILE,
             "database_chunk_count": DocumentChunk.objects.count(),
             "vector_index": "exact",
             "rerank": False,
