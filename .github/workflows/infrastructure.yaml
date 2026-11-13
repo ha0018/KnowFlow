@@ -82,6 +82,7 @@ jobs:
           for report in infrastructure-report delivery-report load-report; do
             if docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/$report.json > .runtime/$report.json.tmp; then mv .runtime/$report.json.tmp .runtime/$report.json; fi
           done
+          if docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/load-report.jsonl > .runtime/load-report.jsonl.tmp; then mv .runtime/load-report.jsonl.tmp .runtime/load-report.jsonl; fi
           docker compose --env-file .env -f deploy/compose.yaml ps -a > .runtime/containers.txt || true
           docker compose --env-file .env -f deploy/compose.yaml logs --no-color --tail 300 > .runtime/service-logs.txt 2>&1 || true
           docker compose --env-file .env -f deploy/compose.yaml images --format json > .runtime/images.json || true
