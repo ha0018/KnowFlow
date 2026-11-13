@@ -1,0 +1,145 @@
+{
+  "schema": "knowflow-infrastructure-v1",
+  "started_at": "2026-11-13T05:10:55.340851+00:00",
+  "revision": "da9b56e9a95d67bb05ce69e65a035bfe8bbb853f",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "dependencies",
+      "status": "passed",
+      "details": {
+        "database": "PostgreSQL 17.8 (Debian 17.8-1.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+        "pgvector": "0.8.1",
+        "redis": "7.4.12",
+        "worker_count": 1,
+        "model": "demo"
+      },
+      "duration_ms": 5288
+    },
+    {
+      "name": "database_permissions",
+      "status": "passed",
+      "details": {
+        "application_role": "knowflow_app",
+        "schema_create_denied": true
+      },
+      "duration_ms": 1
+    },
+    {
+      "name": "fixtures",
+      "status": "passed",
+      "details": {
+        "tenant_id": "eebfd92c-dd16-4983-b7ae-e742a307fcb8",
+        "knowledge_base_id": "2190c132-7933-406a-bc03-bd2310d08ad2",
+        "cross_tenant_insert_denied": true
+      },
+      "duration_ms": 1057
+    },
+    {
+      "name": "ingestion",
+      "status": "passed",
+      "details": {
+        "task_id": "c5168210-506a-428c-ba4b-92751385cc59",
+        "attempt": 1,
+        "chunk_count": 2,
+        "private_object": true,
+        "authorized_download": true
+      },
+      "duration_ms": 2120
+    },
+    {
+      "name": "retrieval_and_stream",
+      "status": "passed",
+      "details": {
+        "run_id": "473eca74-8a4e-4ab8-9fb1-153e0d6d6a9b",
+        "reference_id": "e01cd254-d689-433d-8fba-a5f6d44ea664",
+        "events": [
+          "meta",
+          "references",
+          "delta",
+          "delta",
+          "delta",
+          "delta",
+          "done"
+        ],
+        "idempotent": true,
+        "through_nginx": true
+      },
+      "duration_ms": 884
+    },
+    {
+      "name": "controlled_agent",
+      "status": "passed",
+      "details": {
+        "model": "demo_rules",
+        "tools": [
+          {
+            "kind": "search",
+            "run_id": "05da4c5b-4ef0-411c-bd33-275436439c4a",
+            "status": "completed",
+            "tool_calls": 1,
+            "citation_readable": true
+          },
+          {
+            "kind": "summary",
+            "run_id": "fd826aee-e742-47fb-bc10-4909628d4eb6",
+            "status": "completed",
+            "tool_calls": 1,
+            "citation_readable": true
+          },
+          {
+            "kind": "analysis",
+            "run_id": "c78e80fb-aebd-47cd-b455-5cdb7b4dd895",
+            "status": "completed",
+            "tool_calls": 1,
+            "citation_readable": true
+          }
+        ],
+        "through_nginx": true,
+        "worker_isolation": "one subprocess per tool"
+      },
+      "duration_ms": 7040
+    },
+    {
+      "name": "revoked_history",
+      "status": "passed",
+      "details": {
+        "history_redacted": true,
+        "reference_denied": true,
+        "run_redacted": true
+      },
+      "duration_ms": 111
+    },
+    {
+      "name": "failed_rebuild",
+      "status": "passed",
+      "details": {
+        "failed_task_id": "a987134a-9a67-4f87-ae53-e0e510bf2c4a",
+        "old_build_preserved": true
+      },
+      "duration_ms": 1338
+    },
+    {
+      "name": "outbox_recovery",
+      "status": "passed",
+      "details": {
+        "task_id": "b69a89a4-872d-4457-9f3e-2ad3e4944cf1",
+        "attempt": 1,
+        "recovered_by_independent_scheduler": true
+      },
+      "duration_ms": 8218
+    },
+    {
+      "name": "resource_accounting",
+      "status": "passed",
+      "details": {
+        "recorded_model_calls": 13,
+        "no_reservation_leak": true,
+        "quota_denied_before_model": true,
+        "model_schema_matches": true
+      },
+      "duration_ms": 74
+    }
+  ],
+  "finished_at": "2026-11-13T05:11:21.472225+00:00"
+}

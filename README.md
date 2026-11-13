@@ -66,7 +66,7 @@ npm run dev
 
 API 文档见 [docs/api.md](docs/api.md)，实现边界和验收状态见 [docs/implementation-status.md](docs/implementation-status.md)。
 
-后续开发按 [分阶段计划](docs/development-plan.md) 推进。S1–S5 代码和工程验收材料已交付；[S5 实测报告](docs/benchmarks/delivery-2026-11-13.md) 保留 160 项授权、50/20 份文件、重复故障、恢复和持续并发的原始结果。API/检索 P95 为 1.82/2.60 秒，未达 300/800 毫秒目标，下一步优先剖析并复测。S3 入口见 [检索质量说明](docs/retrieval-quality.md)，S4 使用方法见 [受控 Agent](docs/controlled-agent.md)。
+后续开发按 [分阶段计划](docs/development-plan.md) 推进。S1–S5 代码和工程验收材料已交付；[S5 实测报告](docs/benchmarks/delivery-2026-11-13.md) 保留 160 项授权、50/20 份文件、重复故障、恢复和两轮持续并发的原始结果。最终 API/检索 P95 为 1.74/2.50 秒，未达 300/800 毫秒目标，下一步优先剖析并复测。S3 入口见 [检索质量说明](docs/retrieval-quality.md)，S4 使用方法见 [受控 Agent](docs/controlled-agent.md)。
 
 [部署与数据运维](docs/operations.md) 包含解析、清理、联合备份/恢复及 HTTPS；[演示流程](docs/demo/walkthrough.md) 附实际录屏和截图。完整 A01–A15 尚未全部通过，真实供应商及人工语义验收继续保留。
 

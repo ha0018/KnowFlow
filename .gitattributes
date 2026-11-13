@@ -12,3 +12,4 @@ docs/benchmarks/s4-2026-11-13/images.json whitespace=-blank-at-eof
 # Keep downloaded evidence and its recorded byte hashes unchanged on checkout.
 docs/benchmarks/s5-2026-11-13/** -text
 docs/benchmarks/s5-2026-11-13/images.json whitespace=-blank-at-eof
+docs/benchmarks/s5-2026-11-13/regression-da9b56e/images.json whitespace=-blank-at-eof

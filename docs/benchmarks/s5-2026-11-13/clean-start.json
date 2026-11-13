@@ -1,0 +1,75 @@
+{
+  "source": "actual_fresh_SQLite_migrate_seed_and_native_HTTP",
+  "date": "2026-11-13",
+  "model": "demo",
+  "isolated_target": ".runtime/s5-clean-start-20261113",
+  "commands": [
+    "uv run python manage.py migrate --noinput",
+    "uv run python manage.py seed_demo --password <demo-password>"
+  ],
+  "checks": [
+    {
+      "name": "fresh_migrations",
+      "status": "passed"
+    },
+    {
+      "name": "seed_two_tenants_four_users_eight_documents",
+      "status": "passed"
+    },
+    {
+      "name": "health_ready",
+      "status": "passed"
+    },
+    {
+      "name": "login",
+      "status": "passed"
+    },
+    {
+      "name": "list_seed_documents",
+      "status": "passed"
+    },
+    {
+      "name": "authorized_download",
+      "status": "passed"
+    },
+    {
+      "name": "hybrid_retrieval",
+      "status": "passed"
+    },
+    {
+      "name": "SSE_completed",
+      "status": "passed"
+    },
+    {
+      "name": "original_reference_preview",
+      "status": "passed"
+    },
+    {
+      "name": "member_and_ACL_read",
+      "status": "passed"
+    }
+  ],
+  "status": "passed",
+  "finished_at": "2026-11-13T06:41:07.468589+00:00",
+  "counts": {
+    "users_tenant": 2,
+    "users_user": 4,
+    "documents_document": 8,
+    "documents_documenttask": 8
+  },
+  "ready_tasks": 8,
+  "download_sha256": "f3bc5ca49f8f99229711f32956eee7407e4fcd23cbc17c46658f5a670151f5f4",
+  "SSE_events": [
+    "meta",
+    "references",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "done"
+  ],
+  "real_supplier_verified": false
+}
