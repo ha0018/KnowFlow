@@ -6,6 +6,10 @@ from ai_engine.gateway.config import GatewayError, profile
 @register()
 def model_configuration(app_configs, **kwargs):
     errors = []
+    from django.conf import settings
+
+    if not 1 <= settings.CLEANUP_STORAGE_GRACE_DAYS <= 365:
+        errors.append(Error("Invalid cleanup retention", id="knowflow.E004"))
     from ai_engine.parsers import ParseError
     from ai_engine.parsers.isolation import parser_limits
 

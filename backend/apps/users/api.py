@@ -171,10 +171,16 @@ class RolesView(MembersView):
         with transaction.atomic():
             Tenant.objects.select_for_update().get(pk=request.user.tenant_id)
             current_admin(RequestContext.from_request(request))
+            if Role.objects.filter(tenant=request.user.tenant, code=data["code"]).exists():
+                raise ValidationError("角色代码已存在")
             role = Role.objects.create(tenant=request.user.tenant, **data)
             role.permissions.set(perms)
             audit(RequestContext.from_request(request), "role.create", role)
         return Response({"id": role.id}, status=201)
+
+
+class RoleAssignment(StrictInput):
+    role_ids = serializers.ListField(child=serializers.UUIDField())
 
 
 class MemberRolesView(MembersView):
@@ -185,8 +191,9 @@ class MemberRolesView(MembersView):
 
         self.check_admin(request)
         member = get_object_or_404(User, pk=member_id, tenant=request.user.tenant)
-        field = serializers.ListField(child=serializers.UUIDField())
-        ids = field.run_validation(request.data.get("role_ids"))
+        data = RoleAssignment(data=request.data)
+        data.is_valid(raise_exception=True)
+        ids = data.validated_data["role_ids"]
         roles = list(Role.objects.filter(pk__in=ids, tenant=request.user.tenant))
         if len(roles) != len(set(ids)):
             raise ValidationError("角色不可用")

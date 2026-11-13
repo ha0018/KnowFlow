@@ -55,25 +55,33 @@ jobs:
       - name: Exercise real queue, storage, authorization and SSE
         run: docker compose --env-file .env -f deploy/compose.yaml exec -T backend uv run --no-sync python manage.py verify_stack --report /tmp/infrastructure-report.json
       - name: Check dependency failures and recovery
-        run: python scripts/verify-infrastructure.py
+        run: python scripts/verify-infrastructure.py --cycles 10
       - name: Run S5 authorization ingestion consistency and tracing acceptance
         run: docker compose --env-file .env -f deploy/compose.yaml exec -T backend uv run --no-sync python manage.py verify_delivery --disposable --output /tmp/delivery-report.json
       - name: Preserve reports before quiesced backup
         run: |
-          docker compose --env-file .env -f deploy/compose.yaml cp backend:/tmp/infrastructure-report.json .runtime/infrastructure-report.json
-          docker compose --env-file .env -f deploy/compose.yaml cp backend:/tmp/delivery-report.json .runtime/delivery-report.json
+          docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/infrastructure-report.json > .runtime/infrastructure-report.json
+          docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/delivery-report.json > .runtime/delivery-report.json
+      - name: Interrupt and recover a real worker five times
+        run: python scripts/verify-worker-recovery.py
       - name: Back up PostgreSQL and private objects and restore a new deployment
         run: |
           python scripts/deployment-backup.py backup --output "$RUNNER_TEMP/knowflow-backup.zip"
           python scripts/deployment-backup.py restore --archive "$RUNNER_TEMP/knowflow-backup.zip" --env-file .env --new-project knowflow-s5-restore --port 8081 --report .runtime/restoration-report.json
           docker compose -p knowflow-s5-restore --env-file .env -f deploy/compose.yaml exec -T backend uv run --no-sync python manage.py verify_stack --report /tmp/restored-business.json
-          docker compose -p knowflow-s5-restore --env-file .env -f deploy/compose.yaml cp backend:/tmp/restored-business.json .runtime/restored-business.json
+          docker compose -p knowflow-s5-restore --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/restored-business.json > .runtime/restored-business.json
+      - name: Measure 20-user API and 10-user hybrid retrieval for ten minutes
+        run: |
+          docker compose --env-file .env -f deploy/compose.yaml exec -T backend uv run --no-sync python manage.py benchmark_delivery --disposable --duration 600 --min-requests 1000 --output /tmp/load-report.json
+          docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/load-report.json > .runtime/load-report.json
+          docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/load-report.jsonl > .runtime/load-report.jsonl
       - name: Collect reports and service logs
         if: always()
         shell: bash
         run: |
-          docker compose --env-file .env -f deploy/compose.yaml cp backend:/tmp/infrastructure-report.json .runtime/infrastructure-report.json || true
-          docker compose --env-file .env -f deploy/compose.yaml cp backend:/tmp/delivery-report.json .runtime/delivery-report.json || true
+          for report in infrastructure-report delivery-report load-report; do
+            if docker compose --env-file .env -f deploy/compose.yaml exec -T backend cat /tmp/$report.json > .runtime/$report.json.tmp; then mv .runtime/$report.json.tmp .runtime/$report.json; fi
+          done
           docker compose --env-file .env -f deploy/compose.yaml ps -a > .runtime/containers.txt || true
           docker compose --env-file .env -f deploy/compose.yaml logs --no-color --tail 300 > .runtime/service-logs.txt 2>&1 || true
           docker compose --env-file .env -f deploy/compose.yaml images --format json > .runtime/images.json || true

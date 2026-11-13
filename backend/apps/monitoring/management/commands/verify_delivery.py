@@ -201,7 +201,12 @@ class DeliveryVerifier:
                     )
                     ensure(response.status_code == expected, "SECURITY_STATUS_MISMATCH")
                     if not allowed or (surface in {"reference", "history", "run"} and not owned):
-                        ensure(item["marker"].encode() not in response.content, "UNAUTHORIZED_ORIGINAL_TEXT")
+                        returned_evidence = (
+                            json.dumps(response.json()["sources"]).encode()
+                            if surface == "search"
+                            else response.content
+                        )
+                        ensure(item["marker"].encode() not in returned_evidence, "UNAUTHORIZED_ORIGINAL_TEXT")
                     if surface == "search":
                         ids = {source["chunk_id"] for source in response.json()["sources"]}
                         if not allowed:

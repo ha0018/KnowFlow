@@ -38,15 +38,18 @@ def main():
     parser.add_argument("--base-url", default="http://127.0.0.1:8080")
     parser.add_argument("--report", default=".runtime/dependency-faults.json")
     parser.add_argument("--project-name", default="knowflow")
+    parser.add_argument("--cycles", type=int, default=1)
     args = parser.parse_args()
+    if not 1 <= args.cycles <= 20:
+        parser.error("cycles must be between 1 and 20")
     root = Path(__file__).resolve().parents[1]
     command = ["docker", "compose", "--project-name", args.project_name, "--env-file", str(root / ".env"),
                "-f", str(root / "deploy/compose.yaml")]
     report = {"status": "running", "checks": []}
     try:
         wait_for_ready(args.base_url)
-        for service, dependency in [("redis", "redis"), ("minio", "object_storage")]:
-            record = {"service": service, "status": "running"}
+        for cycle, service, dependency in [(cycle, service, dependency) for cycle in range(1, args.cycles + 1) for service, dependency in [("redis", "redis"), ("minio", "object_storage")]]:
+            record = {"cycle": cycle, "service": service, "status": "running"}
             report["checks"].append(record)
             try:
                 subprocess.run(command + ["stop", "--timeout", "5", service], check=True)
