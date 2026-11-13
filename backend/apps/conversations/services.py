@@ -16,6 +16,7 @@ from ai_engine.retrieval.options import defaults
 from apps.documents.selectors import active_chunks, chunk_readable
 from apps.knowledge.selectors import knowledge_bases
 from apps.users.models import Tenant, User
+from common.context import RequestContext
 
 from .models import Conversation, Message, MessageReference, Run
 
@@ -32,20 +33,30 @@ def get_conversation(ctx, pk):
 
 
 @transaction.atomic
-def begin_run(ctx, conversation_id, question, key, parent_id=None):
+def begin_run(ctx, conversation_id, question, key, parent_id=None, *, kind="rag"):
     # All admission/accounting paths lock tenant first to avoid lock inversion.
     Tenant.objects.select_for_update().get(pk=ctx.tenant_id)
     User.objects.select_for_update().get(pk=ctx.user.pk)
     conversation = get_conversation(ctx, conversation_id)
     Conversation.objects.select_for_update().get(pk=conversation.pk)
-    digest = hashlib.sha256(json.dumps([str(conversation_id), question, str(parent_id)]).encode()).hexdigest()
+    if kind not in {"rag", "agent"}:
+        raise ValidationError("未知运行类型")
+    if kind == "agent":
+        from apps.agents.policy import fresh_context
+
+        ctx = fresh_context(ctx)
+    identity = [str(conversation_id), question, str(parent_id)]
+    if kind == "agent":
+        identity.append(kind)
+    digest = hashlib.sha256(json.dumps(identity).encode()).hexdigest()
     prior = Run.objects.filter(tenant_id=ctx.tenant_id, user=ctx.user, idempotency_key=key).first()
     if prior:
         if prior.request_hash != digest:
             raise Conflict("相同幂等键不能用于不同请求")
         return prior, False
     model = profile("generation")
-    profile("embedding")
+    if kind == "rag":
+        profile("embedding")
     prepare_input(question, [])
     if Run.objects.filter(user=ctx.user, status="streaming").count() >= settings.MAX_CONCURRENT_RUNS:
         raise Conflict("并发运行数已达上限")
@@ -81,6 +92,7 @@ def begin_run(ctx, conversation_id, question, key, parent_id=None):
         request_hash=digest,
         trace_id=ctx.trace_id,
         acl_epoch=Tenant.objects.get(pk=ctx.tenant_id).acl_epoch,
+        kind=kind,
         config_snapshot={
             "provider": model.provider,
             "model": model.model,
@@ -91,6 +103,11 @@ def begin_run(ctx, conversation_id, question, key, parent_id=None):
             "kb_ids": [str(pk) for pk in scope_ids],
         },
     )
+    if kind == "agent":
+        from apps.agents.policy import limits
+
+        run.config_snapshot.update(agent=limits(), prompt="agent-tools-v1", tool_schema="agent-tools-v2")
+        run.save(update_fields=["config_snapshot"])
     if conversation.title == "新对话":
         conversation.title = question[:80]
         conversation.save(update_fields=["title"])
@@ -136,6 +153,12 @@ def save_progress(run_id, content, status=None, usage=None, error=""):
     if status:
         # Unknown source IDs cannot become citations. Preserve valid source markers only.
         valid = set(run.output_message.references.values_list("source_id", flat=True))
+        if run.kind == "agent":
+            valid.update(
+                run.toolcall_set.filter(status="completed")
+                .exclude(source_id="")
+                .values_list("source_id", flat=True)
+            )
         content = re.sub(r"\[(S\d+)\]", lambda m: m[0] if m[1] in valid else "[来源无效]", content)
     Message.objects.filter(pk=run.output_message_id).update(content=content, status=status or "streaming")
     run.heartbeat_at = timezone.now()
@@ -146,6 +169,29 @@ def save_progress(run_id, content, status=None, usage=None, error=""):
 
 
 def message_visible(ctx, message):
+    run = getattr(message, "output_run", None)
+    if run is not None and run.kind == "agent":
+        from rest_framework.exceptions import PermissionDenied
+
+        from apps.agents.evidence import analysis_visible
+        from apps.users.permissions import require_capability
+
+        actor = (
+            User.objects.select_related("tenant")
+            .filter(pk=ctx.user.pk, is_active=True, tenant__is_active=True)
+            .first()
+        )
+        if not actor:
+            return False
+        try:
+            require_capability(RequestContext.for_user(actor, ctx.trace_id), "agent.execute")
+        except PermissionDenied:
+            return False
+        if any(
+            not analysis_visible(ctx, call)
+            for call in run.toolcall_set.filter(status="completed").exclude(source_id="")
+        ):
+            return False
     return all(chunk_readable(ctx, ref.chunk_id) for ref in message.references.all())
 
 
@@ -159,6 +205,8 @@ def model_history(ctx, run):
     by_seq = {m.seq: m for m in messages}
     for answer in reversed(messages):
         if answer.role != "assistant" or answer.status != "completed":
+            continue
+        if not message_visible(ctx, answer):
             continue
         question = by_seq.get(answer.seq - 1)
         refs = list(answer.references.all())
@@ -213,6 +261,13 @@ def history(ctx, conversation):
         "references__chunk__document", "references__chunk__build__version"
     ):
         visible = message_visible(ctx, message)
+        references = [reference_data(r) for r in message.references.all()] if visible else []
+        run = getattr(message, "output_run", None)
+        if visible and run is not None and run.kind == "agent":
+            from apps.agents.evidence import analysis_references
+
+            references.extend(analysis_references(ctx, run))
+            references.sort(key=lambda r: int(r["source_id"][1:]))
         result.append(
             {
                 "id": str(message.pk),
@@ -220,7 +275,7 @@ def history(ctx, conversation):
                 "seq": message.seq,
                 "content": message.content if visible else "此回复包含已撤权资料，内容已隐藏。",
                 "status": message.status if visible else "redacted",
-                "references": [reference_data(r) for r in message.references.all()] if visible else [],
+                "references": references,
             }
         )
     return result

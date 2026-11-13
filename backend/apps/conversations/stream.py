@@ -34,7 +34,7 @@ class StreamInput(serializers.Serializer):
     parent_id = serializers.UUIDField(required=False)
 
 
-def prepare(request, conversation_id):
+def prepare(request, conversation_id, *, kind="rag"):
     auth = TenantJWTAuthentication().authenticate(request)
     if auth is None:
         from rest_framework.exceptions import NotAuthenticated
@@ -48,6 +48,8 @@ def prepare(request, conversation_id):
         body = json.loads(request.body)
     except (ValueError, UnicodeDecodeError) as exc:
         raise serializers.ValidationError("无效 JSON") from exc
+    if kind == "agent" and (not isinstance(body, dict) or set(body) - {"question", "parent_id"}):
+        raise serializers.ValidationError("Agent 请求包含未知字段")
     serializer = StreamInput(data=body)
     serializer.is_valid(raise_exception=True)
     key = request.headers.get("Idempotency-Key", "")
@@ -59,6 +61,7 @@ def prepare(request, conversation_id):
         serializer.validated_data["question"],
         key,
         serializer.validated_data.get("parent_id"),
+        kind=kind,
     )
     return ctx, run, created
 

@@ -19,8 +19,13 @@ jobs:
         with: {version: "0.11.32"}
       - run: uv sync --frozen --python 3.12
         working-directory: backend
-      - run: uv run python manage.py check && uv run python manage.py makemigrations --check --dry-run && uv run ruff check . && uv run ruff format --check . && uv run pytest -q
+      - run: uv run python manage.py check && uv run python manage.py makemigrations --check --dry-run && uv run ruff check . && uv run ruff format --check . && uv run pytest -q --junitxml=../.runtime/backend-${{ matrix.database }}.xml
         working-directory: backend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-tests-${{ matrix.database }}
+          path: .runtime/backend-${{ matrix.database }}.xml
   frontend:
     runs-on: ubuntu-latest
     steps:

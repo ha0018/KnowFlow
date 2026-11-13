@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from apps.agents.api import ToolsView
+from apps.agents.api import AgentCallsView, AgentReferenceView, ToolsView
+from apps.agents.stream import agent_stream
 from apps.conversations.api import CancelRunView, ConversationViewSet, FeedbackView, ReferenceView, RunView
 from apps.conversations.stream import messages_stream
 from apps.documents.api import DocumentViewSet, TaskView, UploadView
@@ -37,6 +38,9 @@ urlpatterns = [
     path("api/v1/references/<uuid:reference_id>", ReferenceView.as_view()),
     path("api/v1/messages/<uuid:message_id>/feedback", FeedbackView.as_view()),
     path("api/v1/agents/tools", ToolsView.as_view()),
+    path("api/v1/agents/calls", AgentCallsView.as_view()),
+    path("api/v1/agents/references/<uuid:call_id>", AgentReferenceView.as_view()),
+    path("api/v1/conversations/<uuid:conversation_id>/agent:stream", agent_stream),
     path("api/v1/retrieval/search", SearchView.as_view()),
     path("api/v1/evaluations/datasets", DatasetsView.as_view()),
     path("api/v1/evaluations/runs", EvalRunsView.as_view()),
