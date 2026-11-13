@@ -11,7 +11,7 @@ def exception_handler(exc, context):
             if exc.code == "MODEL_RATE_LIMITED"
             else (
                 504
-                if exc.code == "MODEL_TIMEOUT"
+                if exc.code in {"MODEL_TIMEOUT", "TOOL_TIMEOUT", "AGENT_TIMEOUT"}
                 else 400
                 if exc.code
                 in {

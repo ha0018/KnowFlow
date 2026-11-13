@@ -54,16 +54,35 @@ class RunView(APIView):
             Run.objects.select_related("output_message"), pk=run_id, tenant_id=ctx.tenant_id, user=ctx.user
         )
         visible = message_visible(ctx, run.output_message)
+        references = [reference_data(r) for r in run.output_message.references.all()] if visible else []
+        if visible and run.kind == "agent":
+            from apps.agents.evidence import analysis_references
+
+            references.extend(analysis_references(ctx, run))
+            references.sort(key=lambda r: int(r["source_id"][1:]))
         return Response(
             {
                 "id": run.pk,
                 "status": run.status,
+                "kind": run.kind,
                 "trace_id": run.trace_id,
                 "content": run.output_message.content if visible else "此回复包含已撤权资料，内容已隐藏。",
                 "usage": run.usage,
                 "error_code": run.error_code,
-                "references": [reference_data(r) for r in run.output_message.references.all()]
-                if visible
+                "references": references,
+                "tool_calls": list(
+                    run.toolcall_set.values(
+                        "id",
+                        "step_index",
+                        "tool_name",
+                        "status",
+                        "latency_ms",
+                        "error_code",
+                        "args_redacted",
+                        "trace_id",
+                    )
+                )
+                if visible and run.kind == "agent"
                 else [],
             }
         )

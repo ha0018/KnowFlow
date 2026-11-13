@@ -78,4 +78,6 @@ uv run python manage.py probe_models --live --email admin@acme.demo --report ../
 
 临时错误最多重试两次，尊重可等待范围内的 Retry-After；等待超出当前预算时返回限流错误。生成一旦输出正文就不重放。同步向量入口通过独立异步 HTTP 请求实现总超时，流式生成逐次读取受绝对期限限制；取消会关闭上游连接并结算预留。整个问答还受 `AI_TIMEOUT_SECONDS` 总时限约束。
 
+S4 Agent 复用 generation profile，另要求非流式原生 function calling：支持 strict:true 的 tools、tool_choice 以及 parallel_tool_calls:false。每次规划记为 agent_planner，复用相同预留/结算并受整轮额外预算约束；实际供应商的协议兼容性和规划效果需单独验收。操作见 [受控 Agent](controlled-agent.md)。
+
 接口事实参考：[Chat Completions](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)、[Embeddings](https://developers.openai.com/api/reference/resources/embeddings/methods/create)、[Token 计数说明](https://developers.openai.com/api/docs/guides/token-counting)。

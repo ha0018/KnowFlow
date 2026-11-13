@@ -1,0 +1,32 @@
+{
+  "source_revision": "94aa3dfc77e7699dcbbdabcff9a23e74c5fd37d4",
+  "environment": "Windows, local Uvicorn/Vite, Chromium; demo fixtures",
+  "backend_process_revision": "a28f865",
+  "backend_revision_note": "Local process preceded PostgreSQL-only audit locking and test-settings fixes; final revision also passed all three Agent tools in clean Compose.",
+  "scenarios": [
+    {
+      "file": "frontend/tests/agent.spec.ts",
+      "sha256": "64da1e7dd655faac5dc78c0682ae5600f9dbb316c637eb609dd103b9bab8dcce"
+    },
+    {
+      "file": "frontend/tests/quality.spec.ts",
+      "sha256": "9005ec8f49f6e2865264b6e877303f9a96c93c2c75f0a13a0882d621384aefc9"
+    },
+    {
+      "file": "frontend/tests/workspace.spec.ts",
+      "sha256": "55daa039d487ceccbc7d4683015f22bb34f2bad567b49e7530bb431ff89fe8d3"
+    }
+  ],
+  "last_run_status": {
+    "status": "passed",
+    "failedTests": []
+  },
+  "status_file_modified_utc": "2026-11-13T02:37:02.177086+00:00",
+  "verified_flow": [
+    "workspace_login_RAG_upload_delete_models_quota_mobile",
+    "S3_case_review_save_export_mobile",
+    "S4_search_summary_statistics_document_and_analysis_references_mobile"
+  ],
+  "page_errors": 0,
+  "mobile_horizontal_overflow": false
+}

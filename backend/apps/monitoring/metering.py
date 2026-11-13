@@ -54,6 +54,12 @@ def reserve(ctx, amount, model, *, run=None, task=None):
     period = timezone.now().date()
     rows = UsageReservation.objects.filter(tenant=tenant, period=period)
     caps = limits(tenant)
+    if run is not None and run.kind == "agent":
+        from ai_engine.gateway.config import GatewayError
+
+        budget = run.config_snapshot.get("agent", {}).get("token_budget", 0)
+        if consumed(UsageReservation.objects.filter(run=run)) + amount > budget:
+            raise GatewayError("AGENT_TOKEN_BUDGET_EXCEEDED")
     if (
         amount < 0
         or consumed(rows) + amount > caps["daily_tokens"]
@@ -107,12 +113,14 @@ def settle(
     if (
         known
         and price.get("input_per_million")
-        and (row.task_type not in {"generation", "rewrite"} or price.get("output_per_million"))
+        and (
+            row.task_type not in {"generation", "rewrite", "agent_planner"} or price.get("output_per_million")
+        )
     ):
         inputs, outputs = usage.get("input_tokens"), usage.get("output_tokens", 0)
         if type(inputs) is int and type(outputs) is int:
             cost = Decimal(price["input_per_million"]) * inputs
-            if row.task_type in {"generation", "rewrite"}:
+            if row.task_type in {"generation", "rewrite", "agent_planner"}:
                 cost += Decimal(price["output_per_million"]) * outputs
             price["estimated_cost_usd"] = str(cost / 1_000_000)
     ModelCallLog.objects.create(

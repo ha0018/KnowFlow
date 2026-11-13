@@ -25,6 +25,7 @@ from django.db import DatabaseError, IntegrityError, connection, transaction
 from django.utils import timezone
 from kombu.exceptions import OperationalError
 
+from apps.agents.models import BusinessIssue
 from apps.conversations.models import Run
 from apps.documents.models import Document, DocumentChunk, DocumentTask, DocumentVersion
 from apps.documents.services import upload
@@ -408,6 +409,69 @@ class StackVerifier:
             "model_schema_matches": True,
         }
 
+    def controlled_agent(self):
+        BusinessIssue.objects.create(
+            tenant=self.tenant,
+            occurred_at=timezone.now(),
+            product="verification",
+            category="service",
+            description="synthetic agent sample",
+        )
+        questions = [
+            ("search", self.question),
+            ("summary", f"请总结文档 {self.doc_id}"),
+            ("analysis", "统计2026-01-01至2026-12-31按类别分组的问题"),
+        ]
+        results = []
+        for kind, question in questions:
+            conversation = self.request(
+                "POST", "/conversations", self.admin_token, expected=201, json={"kb_ids": [self.kb_id]}
+            ).json()
+            key = f"agent-{kind}-{self.suffix}"
+            response = self.request(
+                "POST",
+                f"/conversations/{conversation['id']}/agent:stream",
+                self.admin_token,
+                headers={"Idempotency-Key": key},
+                json={"question": question},
+            )
+            ensure("event: tool" in response.text and "event: done" in response.text, "AGENT_EVENTS_MISSING")
+            run = Run.objects.get(conversation_id=conversation["id"])
+            ensure(run.kind == "agent" and run.status == "completed", "AGENT_NOT_COMPLETED")
+            ensure(
+                run.toolcall_set.count() == 1 and run.toolcall_set.get().status == "completed",
+                "AGENT_TOOL_NOT_AUDITED",
+            )
+            data = self.request("GET", f"/runs/{run.pk}", self.admin_token).json()
+            ensure(data["references"] and "[S1]" in data["content"], "AGENT_CITATION_MISSING")
+            ref = data["references"][0]
+            route = "agents/references" if ref.get("kind") == "analysis" else "references"
+            self.request("GET", f"/{route}/{ref['id']}", self.admin_token)
+            self.request("GET", f"/{route}/{ref['id']}", self.outsider_token, expected=404)
+            replay = self.request(
+                "POST",
+                f"/conversations/{conversation['id']}/agent:stream",
+                self.admin_token,
+                headers={"Idempotency-Key": key},
+                json={"question": question},
+            ).json()
+            ensure(replay["replayed"], "AGENT_REPLAY_EXECUTED_TWICE")
+            results.append(
+                {
+                    "kind": kind,
+                    "run_id": str(run.pk),
+                    "status": run.status,
+                    "tool_calls": 1,
+                    "citation_readable": True,
+                }
+            )
+        return {
+            "model": "demo_rules",
+            "tools": results,
+            "through_nginx": True,
+            "worker_isolation": "one subprocess per tool",
+        }
+
     def run(self):
         try:
             for name in [
@@ -416,6 +480,7 @@ class StackVerifier:
                 "fixtures",
                 "ingestion",
                 "retrieval_and_stream",
+                "controlled_agent",
                 "revoked_history",
                 "failed_rebuild",
                 "outbox_recovery",

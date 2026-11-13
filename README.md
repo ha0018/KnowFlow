@@ -2,7 +2,7 @@
 
 基于 Django 5.2 / DRF 与 Vue 3 的多租户企业知识库项目。按所提供的技术方案实现了可运行的核心业务链路，并附带中文演示界面、数据库迁移、自动化测试和部署模板。
 
-> 当前版本为开发演示版。默认用本地哈希向量和原文摘录演示完整流程，不代表真实语义模型的回答质量。已建立 100 条分层题（40 调参/60 保留）；真实模型质量、人工语义复核、正式负载及完整自主 Agent 仍待验收。
+> 当前版本为开发演示版。默认用本地哈希向量、规则规划和原文摘录演示完整流程，不代表真实语义模型的回答质量。已建立 100 条分层题（40 调参/60 保留）及受控 Agent；真实供应商的规划/回答效果、人工语义复核与正式负载仍待验收。
 
 ![工作台](docs/demo/workspace.png)
 
@@ -55,7 +55,8 @@ npm run dev
 - 授权范围内的向量/关键词召回、RRF、检索调试；PostgreSQL 路径使用 pgvector 和中文分词后的 `simple` 全文检索。
 - ASGI POST SSE、来源引用、无证据拒答、部分答案保存、取消、断流处理、幂等请求、悬挂运行扫描。
 - 会话只限创建者访问；历史正文、运行结果及引用重新检查当前文档权限。
-- 三个显式只读工具：知识检索、文档摘录摘要、演示业务统计，含参数校验与调用审计。
+- 受控 Agent：模型提出三个白名单只读工具的调用，最多四次执行，单工具 10 秒/总执行 60 秒，独立子进程硬超时、取消、严格参数校验、额度与脱敏审计。
+- 文档摘录及业务统计快照均可追溯引用；工具调用和最终回答重新检查当前权限。保留显式单工具调试入口。
 - 100 条分层题和独立 50 项安全矩阵；B0/B1/B2 对照、原文范围 gold、EvidenceHit/MRR/Precision、逐题回答与人工复核。
 - 可开关的查询改写、独立重排适配器；默认规则/词项对照，外部协议使用受控替身验证；1,000/10,000 Chunk 精确/HNSW 诊断。
 - 结构化日志、trace_id、任务状态、模型调用记录、活性/就绪检查。
@@ -64,7 +65,7 @@ npm run dev
 
 API 文档见 [docs/api.md](docs/api.md)，实现边界和验收状态见 [docs/implementation-status.md](docs/implementation-status.md)。
 
-后续开发按 [分阶段计划](docs/development-plan.md) 推进。S1 基础设施、S2 模型资源控制和 S3 检索评测的代码及自动验收已交付；真实供应商、人工语义复核与正式负载分别保留状态。S3 入口与 [实测报告](docs/benchmarks/retrieval-quality-2026-11-10.md) 见 [检索质量说明](docs/retrieval-quality.md)。
+后续开发按 [分阶段计划](docs/development-plan.md) 推进。S1–S4 的代码及自动验收已交付；真实供应商、人工语义复核与正式负载分别保留状态。S3 入口与 [实测报告](docs/benchmarks/retrieval-quality-2026-11-10.md) 见 [检索质量说明](docs/retrieval-quality.md)。S4 使用方法、预算及验收边界见 [受控 Agent](docs/controlled-agent.md) 和 [S4 报告](docs/benchmarks/controlled-agent-2026-11-13.md)。
 
 ## 接入真实模型
 
@@ -80,7 +81,7 @@ EMBEDDING_MODEL=your-embedding-model
 EMBEDDING_DIMENSIONS=128
 ```
 
-供应商需要实现 Chat Completions SSE 和 Embeddings 协议。密钥只从服务端环境读取。供应商 usage 缺失时记录 `unknown`，不编造 Token 或成本。上面的 `AI_*` 仍兼容旧配置；生成和向量服务现在可以分别设置地址和密钥，配置方式及预算/结算语义见 [模型接入说明](docs/model-integration.md)。
+供应商需要实现 Chat Completions SSE 和 Embeddings 协议。Agent 另要求非流式 Chat Completions 的严格 function calling（`tools`、`tool_choice`、`parallel_tool_calls:false`）。密钥只从服务端环境读取。供应商 usage 缺失时记录 `unknown`，不编造 Token 或成本。上面的 `AI_*` 仍兼容旧配置；生成和向量服务现在可以分别设置地址和密钥，配置方式及预算/结算语义见 [模型接入说明](docs/model-integration.md)。
 
 **向量维度在数据库结构中固定。** 示例初始维度是 128。若所选模型使用其他维度，应先设置环境变量，在新数据库上运行 `uv run python manage.py makemigrations documents` 生成并审阅维度迁移，再迁移及重新导入资料。已有数据需要按独立检索空间迁移，不能直接混用旧向量。profile 改变后旧构建不进入新查询空间，需要重新构建。
 
