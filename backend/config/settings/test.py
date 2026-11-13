@@ -3,15 +3,16 @@ import tempfile
 from pathlib import Path
 
 from .base import *  # noqa: F403
+from .base import DATABASES
 
 # The real killable tool worker must share committed fixtures with its parent.
-if DATABASES["default"]["ENGINE"].endswith("sqlite3"):  # noqa: F405
-    DATABASES["default"]["TEST"] = {  # noqa: F405
+if DATABASES["default"]["ENGINE"].endswith("sqlite3"):
+    DATABASES["default"]["TEST"] = {
         "NAME": str(Path(tempfile.gettempdir()) / f"knowflow-test-{os.getpid()}.sqlite3")
     }
     DATABASES["default"].setdefault("OPTIONS", {}).update(
         {"init_command": "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;"}
-    )  # noqa: F405
+    )
 
 SECRET_KEY = "test-key-with-sufficient-length-for-jwt-tests"
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
